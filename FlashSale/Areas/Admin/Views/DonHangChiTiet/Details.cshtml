@@ -1,0 +1,73 @@
+﻿@model FlashSale.Areas.Admin.Model.DonHangChiTietModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Sửa đơn hàng chi tiết</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.db.ID)
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Nhóm sản phẩm", "db.idSanPham", new Data.mapSanPham().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }), Model.db.idSanPham.ToString(), true, "nhomSanPham", ""))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số lượng", "db.SoLuong", Model.SoLuongView, "formatNumber(this)", true))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giá bán", "db.GiaBan", Model.GiaBanView, "formatNumber(this)", true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giá sale", "db.GiaSale", Model.GiaSaleView, "formatNumber(this)", true))
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end">
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-12">
+                                                <button type="button" class="btn btn-default mr-1">
+                                                    <a href="~/Admin/DonHangChiTiet/Index" style="color:black">Đóng</a>
+                                                </button>
+                                                <input type="submit" value="Sửa" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        CKEDITOR.replace("NoiDung");
+        function formatNumber(input) {
+            let value = input.value.replace(/,/g, ''); // Remove existing commas
+            if (value) {
+                input.value = parseFloat(value).toLocaleString('en-US'); // Format number with commas
+            } else {
+                input.value = '';
+            }
+        }
+    </script>
+}

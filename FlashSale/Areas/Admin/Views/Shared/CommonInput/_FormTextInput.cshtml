@@ -1,0 +1,41 @@
+﻿@*@model Tuple<string, string, string, bool>
+
+<label class="control-label col-md-12">
+    @Model.Item1
+    @Html.ValidationMessageFor(m => m.Item2, "", new { @class = "text-danger" })
+</label>
+<div class="col-md-12">
+    <input type="text"
+           name="@Model.Item2"
+           class="form-control"
+           value="@Model.Item3"
+           @(Model.Item4 ? "disabled" : "") />
+</div>*@
+@{
+    var tupleModel = Model as Tuple<string, string, string, bool>;
+
+    if (tupleModel == null)
+    {
+        <div class="alert alert-danger">Model không phải là kiểu Tuple mong đợi.</div>
+    }
+    else
+    {
+        var label = tupleModel.Item1; // Nhãn của input
+        var validationMessageName = tupleModel.Item2; // Tên của trường dùng cho ValidationMessage
+        var fieldName = tupleModel.Item3; // Tên của trường input (cũng là giá trị mặc định được hiển thị)
+        var isDisabled = tupleModel.Item4; // Kiểm tra xem có disabled hay không
+
+        <label class="control-label col-md-12">
+            @label
+            @Html.ValidationMessage(validationMessageName, "", new { @class = "text-danger" })
+        </label>
+        <div class="col-md-12">
+            <input type="text"
+                   name="@validationMessageName"
+                   class="form-control"
+                   value="@fieldName"
+                   @(isDisabled ? "disabled" : "") />
+
+        </div>
+    }
+}

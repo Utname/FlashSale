@@ -1,0 +1,140 @@
+﻿@model FlashSale.Areas.Admin.Model.PhanQuyenTaiKhoanModel
+
+@{
+    ViewBag.Title = "PhanQuyen";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Phân quyền</h3>
+                            <br>
+                            <div class="col-md-12">
+                                <dl class="dl-horizontal">
+                                    <div>
+                                        <p><span style="font-weight:bold">Tên shop: </span><span> @Html.DisplayFor(model => model.TaiKhoanShop.db.TenShop)</span></p>
+                                    </div>
+                                    <div>
+                                        <p><span style="font-weight:bold">Tên người dùng: </span><span> @Html.DisplayFor(model => model.TaiKhoanShop.db.Username)</span></p>
+                                    </div>
+                                    <div>
+                                        <p><span style="font-weight:bold">Số điện thoại: </span><span> @Html.DisplayFor(model => model.TaiKhoanShop.db.SoDienThoai)</span></p>
+                                    </div>
+                                    <div>
+                                        <p><span style="font-weight:bold">Email: </span><span> @Html.DisplayFor(model => model.TaiKhoanShop.db.Email)</span></p>
+                                    </div>
+                                    <div>
+                                        <p><span style="font-weight:bold">Địa chỉ: </span><span> @Html.DisplayFor(model => model.TaiKhoanShop.db.DiaChi)</span></p>
+                                    </div>
+                                </dl>
+                            </div>
+                            <div class="col-md-12">
+                                <form id="formFilters" method="get" action="@Url.Action("PhanQuyen", "TaiKhoanShop")">
+                                    <input type="hidden" name="id" value="@Model.TaiKhoanShop.db.ID" />
+                                    <label class="control-label">Tìm kiếm (Tên chức năng | Mã chức năng)</label>
+                                    <div class="form-group row">
+                                        <div style="width:85%">
+                                            <div class="col-md-12">
+                                                <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                            </div>
+                                        </div>
+                                        <div style="width:15%">
+                                            <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter"> Tìm kiếm</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>CheckAll</th>
+                                            <th>Chọn tất cả</th>
+                                            <th>
+                                                <input type="checkbox" id="checkAll" @Html.Raw(Model.CheckAll ? "checked" : "") />
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <thead>
+                                        <tr>
+                                            <th>Mã chức năng</th>
+                                            <th>Tên chức năng</th>
+                                            <th>Phân quyền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ListChucNang)
+                                        {
+                                            var phanQuyen = new Data.Entity.FlashSaleEntities().PhanQuyens.Count(m => m.idTaiKhoanShop == Model.TaiKhoanShop.db.ID && m.MaChucNang == item.MaChucNang);
+                                            <tr>
+                                                <td>@item.MaChucNang</td>
+                                                <td>@item.TenChucNang</td>
+                                                <td>
+                                                    <input type="checkbox" name="chucNangCheckbox" data-machucnang="@item.MaChucNang" @Html.Raw(phanQuyen > 0 ? "checked" : "") />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function LuuPhanQuyen(idTaiKhoanShop, maChucNang) {
+            var jsonPhanQuyen = {
+                idTaiKhoanShop: idTaiKhoanShop,
+                maChucNang: maChucNang
+            };
+            $.ajax({
+                url: '/Admin/TaiKhoanShop/PhanQuyen',
+                type: 'post',
+                data: jsonPhanQuyen,
+                dataType: 'JSON',
+                success: function (result) {
+                    // Xử lý kết quả nếu cần
+                },
+                error: function (xhr, status, error) {
+                    alert('Error: ' + error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            $('#checkAll').change(function() {
+                var isChecked = $(this).is(':checked');
+                var idTaiKhoanShop = '@Model.TaiKhoanShop.db.ID';
+                var maChucNang = '-1'; // Để xử lý CheckAll
+
+                // Gửi yêu cầu để cập nhật phân quyền
+                LuuPhanQuyen(idTaiKhoanShop, maChucNang);
+
+                // Cập nhật trạng thái của các checkbox
+                $('input[name="chucNangCheckbox"]').prop('checked', isChecked);
+            });
+
+            $('input[name="chucNangCheckbox"]').change(function() {
+                var isChecked = $(this).is(':checked');
+                var idTaiKhoanShop = '@Model.TaiKhoanShop.db.ID';
+                var maChucNang = $(this).data('machucnang');
+
+                // Gửi yêu cầu để cập nhật phân quyền
+                LuuPhanQuyen(idTaiKhoanShop, maChucNang);
+
+                // Cập nhật checkbox CheckAll nếu cần
+                var allCheckboxes = $('input[name="chucNangCheckbox"]');
+                var allChecked = allCheckboxes.length === allCheckboxes.filter(':checked').length;
+                $('#checkAll').prop('checked', allChecked);
+            });
+        });
+    </script>
+}

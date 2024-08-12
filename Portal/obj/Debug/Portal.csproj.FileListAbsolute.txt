@@ -1,0 +1,14 @@
+C:\Project\FlashSale\Portal\bin\Debug\Portal.dll
+C:\Project\FlashSale\Portal\bin\Debug\Portal.pdb
+C:\Project\FlashSale\Portal\bin\Debug\Data.dll
+C:\Project\FlashSale\Portal\bin\Debug\EntityFramework.dll
+C:\Project\FlashSale\Portal\bin\Debug\EntityFramework.SqlServer.dll
+C:\Project\FlashSale\Portal\bin\Debug\Data.pdb
+C:\Project\FlashSale\Portal\bin\Debug\Data.dll.config
+C:\Project\FlashSale\Portal\bin\Debug\EntityFramework.xml
+C:\Project\FlashSale\Portal\bin\Debug\EntityFramework.SqlServer.xml
+C:\Project\FlashSale\Portal\obj\Debug\Portal.csproj.AssemblyReference.cache
+C:\Project\FlashSale\Portal\obj\Debug\Portal.csproj.CoreCompileInputs.cache
+C:\Project\FlashSale\Portal\obj\Debug\Portal.csproj.CopyComplete
+C:\Project\FlashSale\Portal\obj\Debug\Portal.dll
+C:\Project\FlashSale\Portal\obj\Debug\Portal.pdb

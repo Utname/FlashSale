@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="596616c1ae6d44aba4b05e3b5dee41bd" Name="Diagram1" ZoomLevel="79">
+        <EntityTypeShape EntityType="FlashSaleModel.NhomSanPham" Width="1.5" PointX="3.75" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FlashSaleModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FlashSaleModel.TaiKhoanShop" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="FlashSaleModel.ChucNang" Width="1.5" PointX="5.75" PointY="1.5" />
+        <EntityTypeShape EntityType="FlashSaleModel.PhanQuyen" Width="1.5" PointX="8" PointY="6.5" />
+        <AssociationConnector Association="FlashSaleModel.FK_PhanQuyen_ChucNang" />
+        <AssociationConnector Association="FlashSaleModel.FK_PhanQuyen_TaiKhoanShop" />
+        <EntityTypeShape EntityType="FlashSaleModel.ShopNhomSanPham" Width="1.5" PointX="3.375" PointY="10" />
+        <AssociationConnector Association="FlashSaleModel.FK_Shop_NhomSanPham_TaiKhoanShop" />
+        <EntityTypeShape EntityType="FlashSaleModel.DonHangChiTiet" Width="1.5" PointX="5.25" PointY="17.875" />
+        <EntityTypeShape EntityType="FlashSaleModel.Vat" Width="1.5" PointX="8.375" PointY="0.75" />
+        <EntityTypeShape EntityType="FlashSaleModel.DonHang" Width="1.5" PointX="3" PointY="4" />
+        <AssociationConnector Association="FlashSaleModel.FK_DonHang_TaiKhoanShop" />
+        <AssociationConnector Association="FlashSaleModel.FK_DonHangChiTiet_DonHang" />
+        <EntityTypeShape EntityType="FlashSaleModel.TypeProduct" Width="2" PointX="7.875" PointY="22.25" />
+        <AssociationConnector Association="FlashSaleModel.FK_TypeProducts_NhomSanPham" />
+        <EntityTypeShape EntityType="FlashSaleModel.ImageProduct" Width="1.5" PointX="8.25" PointY="11.125" />
+        <EntityTypeShape EntityType="FlashSaleModel.ReturnAndExchangePolicy" Width="1.5" PointX="8.75" PointY="16.625" />
+        <EntityTypeShape EntityType="FlashSaleModel.SanPham" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="FlashSaleModel.Warranty" Width="1.5" PointX="10.375" PointY="7" />
+        <EntityTypeShape EntityType="FlashSaleModel.ProductClassification" Width="1.5" PointX="12.625" PointY="11" />
+        <EntityTypeShape EntityType="FlashSaleModel.ProductCategory" Width="1.5" PointX="5.75" PointY="10" />
+        <AssociationConnector Association="FlashSaleModel.FK_ProductClassification_ProductCategory" />
+        <EntityTypeShape EntityType="FlashSaleModel.Product" Width="1.5" PointX="15.625" PointY="8.75" />
+        <AssociationConnector Association="FlashSaleModel.FK_ImageProduct_Product" />
+        <AssociationConnector Association="FlashSaleModel.FK_Product_NhomSanPham" />
+        <AssociationConnector Association="FlashSaleModel.FK_Product_ProductCategory" />
+        <AssociationConnector Association="FlashSaleModel.FK_Product_ReturnAndExchangePolicy" />
+        <AssociationConnector Association="FlashSaleModel.FK_Product_TaiKhoanShop" />
+        <AssociationConnector Association="FlashSaleModel.FK_Product_Warranty" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

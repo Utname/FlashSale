@@ -1,0 +1,220 @@
+﻿@model FlashSale.Areas.Admin.Model.DonHangModel
+
+@{
+    ViewBag.Title = "Insert";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Thêm đơn hàng</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    <div class="form-group row">
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Shop @Html.ValidationMessageFor(model => model.db.idShop, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+
+                                                <select name="db.idShop" class="form-control">
+                                                    @foreach (var nhomDonHang in new Data.mapTaiKhoanShopSystem().getListUse())
+                                                    {
+                                                        <option value="@nhomDonHang.id">@nhomDonHang.name</option>
+                                                    }
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Số điện thoại @Html.ValidationMessageFor(model => model.db.SoDienThoai, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.db.SoDienThoai, new { htmlAttributes = new { @class = "form-control" } })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Địa chỉ giao hàng @Html.ValidationMessageFor(model => model.db.DiaChiGiaoHang, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.db.DiaChiGiaoHang, new { htmlAttributes = new { @class = "form-control" } })
+
+                                            </div>
+                                        </div>
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Thời gian đặt hàng @Html.ValidationMessageFor(model => model.db.ThoiGianDatHang, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                <input type="datetime-local" name="db.ThoiGianDatHang" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            <label class="control-label col-md-12">
+                                                Tổng tiền sản phẩm
+                                                @Html.ValidationMessageFor(model => model.db.TongTienSanPham, "", new { @class = "text-danger" })
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.TongTienSanPhamView, new { htmlAttributes = new { @class = "form-control", name = "TongTienSanPhamView", style = " text-align: right;", type = "text", oninput = "formatNumber(this)" } })
+                                            </div>
+                                        </div>
+
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Triết khấu @Html.ValidationMessageFor(model => model.db.TrietKhau, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.TrietKhauView, new { htmlAttributes = new { @class = "form-control", name = "TrietKhauView", style = " text-align: right;", type = "text", oninput = "formatNumber(this)" } })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            <label class="control-label col-md-12">
+                                                Phí ship
+                                                @Html.ValidationMessageFor(model => model.db.PhiShip, "", new { @class = "text-danger" })
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.PhiShipView, new { htmlAttributes = new { @class = "form-control", name = "PhiShipView", style = " text-align: right;", type = "text", oninput = "formatNumber(this)" } })
+                                            </div>
+                                        </div>
+
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Vat @Html.ValidationMessageFor(model => model.db.idVat, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                <select name="db.idVat" class="form-control" onchange="calculateTax()">
+                                                    @foreach (var vat in new Data.mapVat().getListUse())
+                                                    {
+                                                        <option value="@vat.id">@vat.name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class=" col-md-6 col-12">
+                                            <label class="control-label col-md-12">Vat @Html.ValidationMessageFor(model => model.db.Vat, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.VatView, new { htmlAttributes = new { @class = "form-control", name = "VatView", style = " text-align: right;", type = "text", oninput = "formatNumber(this)", @readonly = "readonly" } })
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            <label class="control-label col-md-12">
+                                                Tổng thanh toán
+                                                @Html.ValidationMessageFor(model => model.db.TongThanhToan, "", new { @class = "text-danger" })
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.TongThanhToanView, new { htmlAttributes = new { @class = "form-control", style = " text-align: right;", type = "text", oninput = "formatNumber(this)", name = "TongThanhToanView", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            <label class="control-label col-md-12">Khách hàng ghi chú @Html.ValidationMessageFor(model => model.db.KhacHangGhiChu, "", new { @class = "text-danger" })</label>
+                                            <div class="col-md-12">
+                                                @Html.EditorFor(model => model.db.KhacHangGhiChu, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end">
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-12">
+                                                <button type="button" class="btn btn-default mr-1"> <a href="~/Admin/DonHang/Index" style="color:black">Đóng</a></button>
+                                                <input type="submit" value="Thêm" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        CKEDITOR.replace("NoiDung");
+
+        function replaceNum(num) {
+            num = parseFloat(num.replace(/,/g, ''))
+            return num;
+        }
+        function totalPayMoney() {
+            var tongTienSanPham = parseFloat(replaceNum($('#TongTienSanPhamView').val()));
+            if (isNaN(tongTienSanPham)) {
+                tongTienSanPham = 0;
+            }
+            var trietKhau = parseFloat(replaceNum($('#TrietKhauView').val()));
+            if (isNaN(trietKhau)) {
+                trietKhau = 0;
+            }
+            var phiShip = parseFloat(replaceNum($('#PhiShipView').val()));
+            if (isNaN(phiShip)) {
+                phiShip = 0;
+            }
+            var vat = parseFloat(replaceNum($('#VatView').val()));
+            if (isNaN(vat)) {
+                vat = 0;
+            }
+
+            var tongThanhToan = tongTienSanPham + trietKhau + phiShip + vat;
+            tongThanhToan = parseFloat(tongThanhToan).toLocaleString('en-US');
+            $('#TongThanhToanView').val(tongThanhToan);
+        }
+
+        function formatNumber(input) {
+            var regex = /[a-zA-Z]/;
+            if (regex.test(input.value)) {
+                return input.value = '0';
+            }
+            let value = input.value.replace(/,/g, ''); // Remove existing commas
+            if (value) {
+                input.value = parseFloat(value).toLocaleString('en-US'); // Format number with commas
+            } else {
+                input.value = '0';
+            }
+            totalPayMoney();
+           
+        }
+        function calculateTax() {
+            var vat = document.getElementsByName("db.idVat")[0];
+            var vatValue = vat.value;
+
+            var tongTienSanPham = parseFloat(replaceNum($('#TongTienSanPhamView').val()));
+            if (!isNaN(tongTienSanPham) && tongTienSanPham > 0) {
+                var taxAmount = (tongTienSanPham * parseInt(vatValue)) / 100;
+                taxAmount = parseFloat(taxAmount).toLocaleString('en-US'); 
+                $('#VatView').val(taxAmount);
+                totalPayMoney();
+            }
+        }
+       
+     
+
+    </script>
+
+}

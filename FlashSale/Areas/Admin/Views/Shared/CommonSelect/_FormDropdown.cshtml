@@ -1,0 +1,37 @@
+﻿
+@{
+    // Ép kiểu Model về Tuple nếu có thể
+    var tupleModel = Model as Tuple<string, string, IEnumerable<SelectListItem>, string, bool,string,string>;
+
+    if (tupleModel == null)
+    {
+        <div class="alert alert-danger">Model không phải là kiểu Tuple mong đợi.</div>
+    }
+    else
+    {
+        // Lấy các giá trị từ Tuple
+        var label = tupleModel.Item1; // Nhãn
+        var validationMessageName = tupleModel.Item2; // Tên của trường dùng cho ValidationMessage
+        var selectList = tupleModel.Item3;  // Danh sách các tùy chọn
+        var selectedValue = tupleModel.Item4;  // Giá trị được chọn
+        var isDisabled = tupleModel.Item5;  // Kiểm tra xem có disabled hay không
+        var idselectedValue = tupleModel.Item6;  // Giá trị được chọn'
+        var onchangeFunction = tupleModel.Item7;  // Giá trị được chọn
+
+
+            <label class="control-label col-md-12">
+                @label
+                @Html.ValidationMessage(validationMessageName, "", new { @class = "text-danger" })
+            </label>
+            <div class="col-12">
+                <select name="@validationMessageName" id="@idselectedValue" class="form-control" @(isDisabled ? "disabled" : "") onchange="@onchangeFunction">
+                    @foreach (var item in selectList)
+                    {
+                        <option value="@item.Value" @(item.Value == selectedValue ? "selected" : "")>
+                            @item.Text
+                        </option>
+                    }
+                </select>
+            </div>
+    }
+}

@@ -1,0 +1,14 @@
+﻿@model Tuple<string, bool, string, bool>
+
+<div class="form-check">
+    <input type="checkbox"
+           name="@Model.Item1"
+           id="@Model.Item1"
+           value="true"
+           @(Model.Item2 ? "checked" : "")
+           @(Model.Item4 ? "disabled" : "")
+           class="form-check-input" />
+    <label class="form-check-label" for="@Model.Item1">
+        @Model.Item3
+    </label>
+</div>

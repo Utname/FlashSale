@@ -1,0 +1,12 @@
+C:\Project\FlashSale\Data\bin\Debug\Data.dll.config
+C:\Project\FlashSale\Data\bin\Debug\Data.dll
+C:\Project\FlashSale\Data\bin\Debug\Data.pdb
+C:\Project\FlashSale\Data\bin\Debug\EntityFramework.dll
+C:\Project\FlashSale\Data\bin\Debug\EntityFramework.SqlServer.dll
+C:\Project\FlashSale\Data\bin\Debug\EntityFramework.xml
+C:\Project\FlashSale\Data\bin\Debug\EntityFramework.SqlServer.xml
+C:\Project\FlashSale\Data\obj\Debug\Data.csproj.AssemblyReference.cache
+C:\Project\FlashSale\Data\obj\Debug\Data.csproj.CoreCompileInputs.cache
+C:\Project\FlashSale\Data\obj\Debug\Data.csproj.CopyComplete
+C:\Project\FlashSale\Data\obj\Debug\Data.dll
+C:\Project\FlashSale\Data\obj\Debug\Data.pdb

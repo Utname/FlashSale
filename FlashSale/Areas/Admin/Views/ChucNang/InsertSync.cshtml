@@ -1,0 +1,110 @@
+﻿@model FlashSale.Areas.Admin.Model.FunctionModel
+
+@{
+    ViewBag.Title = "Insert";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3 ">Sync chức năng</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Mã", "Code", Model.Code, false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên", "Name", Model.Name, false))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Nhóm", "Group", Model.Group, false))
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>CheckAll</th>
+                                                    <th>Chọn tất cả</th>
+                                                    <th>
+                                                        <input type="checkbox" id="checkAll" @Html.Raw(Model.CheckAll ? "checked" : "") />
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã chức năng</th>
+                                                    <th>Tên chức năng</th>
+                                                    <th>Chọn</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listFunction)
+                                                {
+                                                    <tr>
+                                                        <td>@item.id</td>
+                                                        <td>@item.name</td>
+                                                        <td>
+                                                            <input type="checkbox" class="itemCheckbox" name="SelectedFunctionIds" value="@item.id" />
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-12">
+                                                <button type="button" class="btn btn-default mr-1">
+                                                    <a href="~/Admin/Vat/Index" style="color:black">Đóng</a>
+                                                </button>
+                                                <input type="submit" value="Thêm" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        document.getElementById('checkAll').addEventListener('click', function () {
+            var checkboxes = document.querySelectorAll('input[name="SelectedFunctionIds"]');
+            for (var checkbox of checkboxes) {
+                checkbox.checked = this.checked;
+            }
+        });
+
+        var itemCheckboxes = document.querySelectorAll('input[name="SelectedFunctionIds"]');
+        for (var checkbox of itemCheckboxes) {
+            checkbox.addEventListener('click', function () {
+                var allChecked = true;
+                for (var itemCheckbox of itemCheckboxes) {
+                    if (!itemCheckbox.checked) {
+                        allChecked = false;
+                        break;
+                    }
+                }
+                document.getElementById('checkAll').checked = allChecked;
+            });
+        }
+    </script>
+}

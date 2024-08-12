@@ -1,0 +1,30 @@
+﻿@{
+    var tupleModel = Model as Tuple<string, string, string, string, bool>;
+
+    if (tupleModel == null)
+    {
+        <div class="alert alert-danger">Model không phải là kiểu Tuple mong đợi.</div>
+    }
+    else
+    {
+        var label = tupleModel.Item1; // Nhãn của input
+        var validationMessageName = tupleModel.Item2; // Tên của trường dùng cho ValidationMessage
+        var fieldName = tupleModel.Item3; // Tên của trường input (cũng là giá trị mặc định được hiển thị)
+        var oninputFunction = tupleModel.Item4; // Hàm oninput (nếu có)
+        var isDisabled = tupleModel.Item5; // Kiểm tra xem có disabled hay không
+
+        <label class="control-label col-md-12">
+            @label
+            @Html.ValidationMessage(validationMessageName, "", new { @class = "text-danger" })
+        </label>
+        <div class="col-md-12">
+            <input type="text"
+                   name="@validationMessageName"
+                   class="form-control"
+                   style="text-align: right;"
+                   value="@fieldName" 
+            oninput="@oninputFunction"
+            @(isDisabled ? "readonly" : "") />
+        </div>
+    }
+}

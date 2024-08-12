@@ -1,0 +1,51 @@
+﻿.image-list {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.image-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 32%;
+    box-sizing: border-box;
+    margin-bottom: 30px; /* Khoảng cách giữa các ảnh */
+    background-color: #f9f9f9;
+}
+
+    .image-item img {
+        width: 100%; /* Chiếm toàn bộ chiều rộng của khối chứa */
+        height: auto; /* Chiều cao tự động để duy trì tỷ lệ khung hình */
+        aspect-ratio: 16 / 9; /* Tỷ lệ khung hình 16:9 */
+        object-fit: cover; /* Đảm bảo hình ảnh phủ đầy khối chứa */
+        margin-bottom: 10px;
+    }
+
+.image-details {
+    margin-bottom: 10px; /* Khoảng cách giữa các thông tin và các nút */
+}
+
+    .image-details div {
+        margin-bottom: 10px; /* Khoảng cách giữa các thông tin */
+        line-height: 1.5; /* Tăng khoảng cách giữa các hàng */
+    }
+
+    .image-details input[type="text"] {
+        width: 100%;
+    }
+
+.image-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px; /* Khoảng cách giữa các nút */
+    margin-top: 10px; /* Khoảng cách giữa các thông tin và các nút */
+}
+
+.save-changes {
+    margin-top: 20px;
+    text-align: center;
+}

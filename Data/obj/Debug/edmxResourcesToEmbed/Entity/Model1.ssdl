@@ -1,0 +1,527 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FlashSaleModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="ChucNang">
+    <Key>
+      <PropertyRef Name="MaChucNang" />
+    </Key>
+    <Property Name="MaChucNang" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="NhomChucNang" Type="nvarchar" MaxLength="500" />
+    <Property Name="TenChucNang" Type="nvarchar" MaxLength="500" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="DonHang">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="idShop" Type="uniqueidentifier" />
+    <Property Name="SoDienThoai" Type="nvarchar" MaxLength="50" />
+    <Property Name="DiaChiGiaoHang" Type="nvarchar" MaxLength="500" />
+    <Property Name="ThoiGianDatHang" Type="datetime" />
+    <Property Name="TrangThai" Type="int" />
+    <Property Name="TongTienSanPham" Type="money" />
+    <Property Name="TrietKhau" Type="money" />
+    <Property Name="PhiShip" Type="money" />
+    <Property Name="Vat" Type="money" />
+    <Property Name="TongThanhToan" Type="money" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="KhacHangGhiChu" Type="nvarchar" MaxLength="100" />
+    <Property Name="idVat" Type="int" />
+  </EntityType>
+  <EntityType Name="DonHangChiTiet">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="idDonHang" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="TenSanPham" Type="nvarchar" MaxLength="50" />
+    <Property Name="GiaBan" Type="money" />
+    <Property Name="GiaSale" Type="money" />
+    <Property Name="SoLuong" Type="float" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="idSanPham" Type="uniqueidentifier" />
+  </EntityType>
+  <EntityType Name="ImageProduct">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idProduct" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="FileName" Type="nvarchar" MaxLength="200" />
+    <Property Name="FileExtension" Type="nchar" MaxLength="20" />
+    <Property Name="FileSize" Type="bigint" />
+    <Property Name="FilePath" Type="nvarchar(max)" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="NhomSanPham">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TenNhom" Type="nvarchar" MaxLength="200" />
+    <Property Name="ThuTu" Type="int" />
+    <Property Name="idCapCha" Type="int" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="PhanQuyen">
+    <Key>
+      <PropertyRef Name="idTaiKhoanShop" />
+      <PropertyRef Name="MaChucNang" />
+    </Key>
+    <Property Name="idTaiKhoanShop" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="MaChucNang" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="GhiChu" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="Product">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="idType" Type="int" />
+    <Property Name="idGroup" Type="int" />
+    <Property Name="StartingPrice" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="EndingPrice" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="DiscountPercentage" Type="int" />
+    <Property Name="DiscountFrom" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="DiscountUpTo" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="idPolicy" Type="int" />
+    <Property Name="ShippingMethod" Type="int" />
+    <Property Name="ShippingFee" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="AverageRating" Type="float" />
+    <Property Name="NumberOfReviews" Type="int" />
+    <Property Name="NumberOfLikes" Type="int" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="Quantity" Type="bigint" />
+    <Property Name="RemainingQuantity" Type="bigint" />
+    <Property Name="SendFrom" Type="nvarchar" MaxLength="200" />
+    <Property Name="idProductCategory" Type="int" />
+    <Property Name="idProductClassification" Type="int" />
+    <Property Name="idReturnAndExchangePolicy" Type="int" />
+    <Property Name="idWanrranty" Type="int" />
+    <Property Name="idShop" Type="uniqueidentifier" />
+    <Property Name="StartTime" Type="datetime" />
+    <Property Name="EndTime" Type="datetime" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="ProductCategory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+  </EntityType>
+  <EntityType Name="ProductClassification">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="Image" Type="nvarchar" MaxLength="500" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="idProductCategory" Type="int" />
+  </EntityType>
+  <EntityType Name="ReturnAndExchangePolicy">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="Type" Type="int" />
+    <Property Name="RefundFee" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="SanPham">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="TenSanPham" Type="nvarchar" MaxLength="200" />
+    <Property Name="GiaNiemYet" Type="money" />
+    <Property Name="GiaSale" Type="money" />
+    <Property Name="ConHang" Type="bit" Nullable="false" />
+    <Property Name="GioBatDau" Type="datetime" />
+    <Property Name="GioKetThuc" Type="datetime" />
+    <Property Name="idShop" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="idLoaiSanPham" Type="int" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+    <Property Name="idNhomSanPham" Type="int" />
+    <Property Name="LuotHienThi" Type="int" />
+    <Property Name="LuotXem" Type="int" />
+  </EntityType>
+  <EntityType Name="ShopNhomSanPham">
+    <Key>
+      <PropertyRef Name="idShop" />
+      <PropertyRef Name="idNhomSanPham" />
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="idShop" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="idNhomSanPham" Type="int" Nullable="false" />
+    <Property Name="GhiChu" Type="nvarchar" MaxLength="50" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="TaiKhoanShop">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="TenShop" Type="nvarchar" MaxLength="200" Nullable="false" />
+    <Property Name="DiaChi" Type="nvarchar" MaxLength="200" />
+    <Property Name="SoDienThoai" Type="nvarchar" MaxLength="12" />
+    <Property Name="Email" Type="nvarchar" MaxLength="100" />
+    <Property Name="Facebook" Type="nvarchar" MaxLength="300" />
+    <Property Name="Username" Type="nvarchar" MaxLength="200" />
+    <Property Name="Password" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="AnhDaiDien" Type="nvarchar" MaxLength="200" />
+    <Property Name="AnhBia" Type="nvarchar" MaxLength="200" />
+    <Property Name="LuotThich" Type="int" />
+    <Property Name="NgayCapNhat" Type="datetime" />
+    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
+    <Property Name="NgayTao" Type="datetime" />
+    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="TypeProducts">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="idProductGroup" Type="int" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="Image" Type="nvarchar" MaxLength="200" />
+    <Property Name="Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="Vat">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="Note" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="PercentVat" Type="int" />
+  </EntityType>
+  <EntityType Name="Warranty">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="Note" Type="nvarchar" MaxLength="200" />
+  </EntityType>
+  <Association Name="FK_DonHang_TaiKhoanShop">
+    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DonHang" Type="Self.DonHang" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DonHang">
+        <PropertyRef Name="idShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DonHangChiTiet_DonHang">
+    <End Role="DonHang" Type="Self.DonHang" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="DonHangChiTiet" Type="Self.DonHangChiTiet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="DonHang">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="DonHangChiTiet">
+        <PropertyRef Name="idDonHang" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ImageProduct_Product">
+    <End Role="Product" Type="Self.Product" Multiplicity="1" />
+    <End Role="ImageProduct" Type="Self.ImageProduct" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Product">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ImageProduct">
+        <PropertyRef Name="idProduct" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PhanQuyen_ChucNang">
+    <End Role="ChucNang" Type="Self.ChucNang" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PhanQuyen" Type="Self.PhanQuyen" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ChucNang">
+        <PropertyRef Name="MaChucNang" />
+      </Principal>
+      <Dependent Role="PhanQuyen">
+        <PropertyRef Name="MaChucNang" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PhanQuyen_TaiKhoanShop">
+    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="PhanQuyen" Type="Self.PhanQuyen" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="PhanQuyen">
+        <PropertyRef Name="idTaiKhoanShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_NhomSanPham">
+    <End Role="NhomSanPham" Type="Self.NhomSanPham" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NhomSanPham">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idGroup" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_ProductCategory">
+    <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idProductCategory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_ReturnAndExchangePolicy">
+    <End Role="ReturnAndExchangePolicy" Type="Self.ReturnAndExchangePolicy" Multiplicity="0..1" />
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReturnAndExchangePolicy">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idReturnAndExchangePolicy" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_TaiKhoanShop">
+    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_Warranty">
+    <End Role="Warranty" Type="Self.Warranty" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Product" Type="Self.Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Warranty">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idWanrranty" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductClassification_ProductCategory">
+    <End Role="ProductCategory" Type="Self.ProductCategory" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ProductClassification" Type="Self.ProductClassification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProductClassification">
+        <PropertyRef Name="idProductCategory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Shop_NhomSanPham_TaiKhoanShop">
+    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ShopNhomSanPham" Type="Self.ShopNhomSanPham" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShopNhomSanPham">
+        <PropertyRef Name="idShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TypeProducts_NhomSanPham">
+    <End Role="NhomSanPham" Type="Self.NhomSanPham" Multiplicity="0..1" />
+    <End Role="TypeProducts" Type="Self.TypeProducts" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NhomSanPham">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TypeProducts">
+        <PropertyRef Name="idProductGroup" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="FlashSaleModelStoreContainer">
+    <EntitySet Name="ChucNang" EntityType="Self.ChucNang" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DonHang" EntityType="Self.DonHang" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="DonHangChiTiet" EntityType="Self.DonHangChiTiet" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ImageProduct" EntityType="Self.ImageProduct" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NhomSanPham" EntityType="Self.NhomSanPham" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PhanQuyen" EntityType="Self.PhanQuyen" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Product" EntityType="Self.Product" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductClassification" EntityType="Self.ProductClassification" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReturnAndExchangePolicy" EntityType="Self.ReturnAndExchangePolicy" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SanPham" EntityType="Self.SanPham" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ShopNhomSanPham" EntityType="Self.ShopNhomSanPham" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TaiKhoanShop" EntityType="Self.TaiKhoanShop" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TypeProducts" EntityType="Self.TypeProducts" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Vat" EntityType="Self.Vat" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Warranty" EntityType="Self.Warranty" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_DonHang_TaiKhoanShop" Association="Self.FK_DonHang_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
+      <End Role="DonHang" EntitySet="DonHang" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DonHangChiTiet_DonHang" Association="Self.FK_DonHangChiTiet_DonHang">
+      <End Role="DonHang" EntitySet="DonHang" />
+      <End Role="DonHangChiTiet" EntitySet="DonHangChiTiet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ImageProduct_Product" Association="Self.FK_ImageProduct_Product">
+      <End Role="Product" EntitySet="Product" />
+      <End Role="ImageProduct" EntitySet="ImageProduct" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PhanQuyen_ChucNang" Association="Self.FK_PhanQuyen_ChucNang">
+      <End Role="ChucNang" EntitySet="ChucNang" />
+      <End Role="PhanQuyen" EntitySet="PhanQuyen" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PhanQuyen_TaiKhoanShop" Association="Self.FK_PhanQuyen_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
+      <End Role="PhanQuyen" EntitySet="PhanQuyen" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_NhomSanPham" Association="Self.FK_Product_NhomSanPham">
+      <End Role="NhomSanPham" EntitySet="NhomSanPham" />
+      <End Role="Product" EntitySet="Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_ProductCategory" Association="Self.FK_Product_ProductCategory">
+      <End Role="ProductCategory" EntitySet="ProductCategory" />
+      <End Role="Product" EntitySet="Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_ReturnAndExchangePolicy" Association="Self.FK_Product_ReturnAndExchangePolicy">
+      <End Role="ReturnAndExchangePolicy" EntitySet="ReturnAndExchangePolicy" />
+      <End Role="Product" EntitySet="Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_TaiKhoanShop" Association="Self.FK_Product_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
+      <End Role="Product" EntitySet="Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_Warranty" Association="Self.FK_Product_Warranty">
+      <End Role="Warranty" EntitySet="Warranty" />
+      <End Role="Product" EntitySet="Product" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductClassification_ProductCategory" Association="Self.FK_ProductClassification_ProductCategory">
+      <End Role="ProductCategory" EntitySet="ProductCategory" />
+      <End Role="ProductClassification" EntitySet="ProductClassification" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Shop_NhomSanPham_TaiKhoanShop" Association="Self.FK_Shop_NhomSanPham_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
+      <End Role="ShopNhomSanPham" EntitySet="ShopNhomSanPham" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TypeProducts_NhomSanPham" Association="Self.FK_TypeProducts_NhomSanPham">
+      <End Role="NhomSanPham" EntitySet="NhomSanPham" />
+      <End Role="TypeProducts" EntitySet="TypeProducts" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

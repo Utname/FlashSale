@@ -1,0 +1,80 @@
+﻿@model FlashSale.Areas.Admin.Model.ReturnAndExchangePolicyModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Sửa chính sách hoàn trả</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.db.ID)
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên", "db.Name", Model.db.Name, false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Loại hoàn trả", "db.Type", new Data.mapReturnAndExchangePolicy().getListTypeReturnAndChangePolicy().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }), Model.db.Type.ToString(), false, "returnType", "toggleRefundFee()"))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" id="refundFeeContainer">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Phí hoàn trả", "RefundFeeView", Model.RefundFeeView, "formatNumberCommon(this)", false))
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-12">
+                                                <button type="button" class="btn btn-default mr-1"><a href="~/Admin/ReturnAndExchangePolicy/Index" style="color:black">Đóng</a></button>
+                                                <input type="submit" value="Sửa" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function formatNumberCommon(input) {
+            let value = input.value.replace(/,/g, ''); // Remove existing commas
+            if (value) {
+                input.value = parseFloat(value).toLocaleString('en-US'); // Format number with commas
+            } else {
+                input.value = '';
+            }
+        }
+
+        function toggleRefundFee() {
+            let selectElement = document.getElementById('returnType');
+            let refundFeeContainer = document.getElementById('refundFeeContainer');
+            if (selectElement.value == '2') {
+                refundFeeContainer.style.display = 'flex';
+            } else {
+                refundFeeContainer.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            toggleRefundFee();
+        });
+    </script>
+}

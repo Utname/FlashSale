@@ -1,0 +1,126 @@
+﻿@model IEnumerable<FlashSale.Areas.Admin.Model.NhomSanPhamModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var controller = "NhomSanPham";
+    int currentPage = ViewBag.CurrentPage;
+    int pageSize = ViewBag.PageSize;
+    int totalCount = ViewBag.TotalCount;
+    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title">Nhóm sản phẩm</h4>
+
+                    <div class="row ml-3 mb-md-0 mb-2">
+                        @using (Html.BeginForm("Import", "NhomSanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.Raw(ViewBag.Error)
+                            <input type="file" name="excelfile" />
+                            <input type="submit" value="Import" class="btn btn-success btn-xs mr-1 mt-md-0 mt-1">
+                        }
+                        <button onclick="DownloadExcel('@controller')" class="btn btn-outline-primary btn-xs mt-md-0 mt-1">Mẫu Import</button>
+                    </div>
+
+                    <form id="formFilters" method="get" action="@Url.Action("Index", "NhomSanPham")">
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Tìm kiếm (Tên nhóm | Id cấp cha)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Trạng thái</label>
+                                <div class="col-md-12">
+                                    <select class="form-control form-control-lg" name="statusDel">
+                                        @foreach (var item in new Data.mapNhomSanPham().GetListStatusDel())
+                                        {
+                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-warning mb-3 mr-1">
+                                <a href="~/Admin/NhomSanPham/Export" style="color:white">Xuất Excel</a>
+                            </button>
+                            <button type="button" class="btn btn-success mb-3 mr-1">
+                                <a href="~/Admin/NhomSanPham/Insert" style="color:white">Thêm</a>
+                            </button>
+                            <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter">Tìm kiếm</button>
+                        </div>
+                    </form>
+
+                    <div class="col-12" style="overflow:hidden; overflow-x:auto">
+                        <table id="example" class="display table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead class="text-uppercase bg-primary text-white">
+                                <tr>
+                                    <th width="80"></th>
+                                    <th width="50">STT</th>
+                                    <th width="100">Id Cấp cha</th>
+                                    <th>Tên Nhóm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="dropdown col-lg-6 col-md-4 col-sm-6">
+                                                <button class="btn btn-rounded btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    Chức năng
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="~/Admin/NhomSanPham/Details?id=@item.db.ID">Xem</a>
+                                                    <a class="dropdown-item" href="~/Admin/NhomSanPham/Edit?id=@item.db.ID">Sửa</a>
+                                                    @if (item.db.StatusDel == 1)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel(@item.db.ID, 2, '@controller')">Ngưng sử dụng</a>
+                                                    }
+                                                    else if (item.db.StatusDel == 2)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel(@item.db.ID, 1, '@controller')">Sử dụng</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td align="center">@(++i)</td>
+                                        <td align="center">@Html.DisplayFor(modelItem => item.db.idCapCha)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.TenNhom)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
+                    {
+                        CurrentPage = currentPage,
+                        TotalPages = totalPages,
+                        TotalCount = totalCount,
+                        PageSize = pageSize,
+                        PageRange = 5, // Default range
+                        Search = ViewBag.search,
+                        StatusDel = ViewBag.statusDel.ToString()
+                    })
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+            // Your custom scripts here
+    </script>
+}

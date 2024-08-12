@@ -1,0 +1,155 @@
+﻿@model IEnumerable<FlashSale.Areas.Admin.Model.SanPhamModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var controller = "SanPham";
+    int currentPage = ViewBag.CurrentPage;
+    int pageSize = ViewBag.PageSize;
+    int totalCount = ViewBag.TotalCount;
+    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title">Sản phẩm</h4>
+
+                    <div class="row ml-3 mb-md-0 mb-2">
+                        @using (Html.BeginForm("Import", "SanPham", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            @Html.Raw(ViewBag.Error)
+                            <input type="file" name="excelfile" />
+                            <input type="submit" value="Import" class="btn btn-success btn-xs mr-1 mt-md-0 mt-1">
+                        }
+                        <button onclick="DownloadExcel('@controller')" class="btn btn-outline-primary btn-xs mt-md-0 mt-1">Mẫu Import</button>
+                    </div>
+
+                    <form id="formFilters" method="get" action="@Url.Action("Index", "SanPham")">
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-12">Nhóm sản phẩm</label>
+                                <div class="col-12">
+                                    <select class="form-control form-control-lg" name="idNhomSanPham">
+                                        <option value="-1">Tất cả</option>
+                                        @foreach (var item in new Data.mapNhomSanPham().getListUseFilter())
+                                        {
+                                            <option value="@item.id" @(item.id == ViewBag.idNhomSanPham ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Trạng thái</label>
+                                <div class="col-md-12">
+                                    <select class="form-control form-control-lg" name="statusDel">
+                                        @foreach (var item in new Data.mapTypeProduct().GetListStatusDel())
+                                        {
+                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Tìm kiếm (Tên sản phẩm)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-warning mb-3 mr-1">
+                                <a href="~/Admin/SanPham/Export" style="color:white">Xuất Excel</a>
+                            </button>
+                            <button type="button" class="btn btn-success mb-3 mr-1">
+                                <a href="~/Admin/SanPham/Insert" style="color:white">Thêm</a>
+                            </button>
+                            <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter">Tìm kiếm</button>
+                        </div>
+                    </form>
+
+                    <div class="col-12" style="overflow:hidden; overflow-x:auto">
+                        <table id="example" class="display table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead class="text-uppercase bg-primary text-white">
+                                <tr>
+                                    <th width="80"></th>
+                                    <th width="50">STT</th>
+                                    <th>Nhóm sản phẩm</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá niêm yết</th>
+                                    <th>Giá sale</th>
+                                    <th>Giờ bắt đầu</th>
+                                    <th>Giờ kết thúc</th>
+                                    <th>Ngày cập nhật</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="dropdown col-lg-6 col-md-4 col-sm-6">
+                                                <button class="btn btn-rounded btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    Chức năng
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="~/Admin/SanPham/Details?id=@item.db.ID">Xem</a>
+                                                    <a class="dropdown-item" href="~/Admin/SanPham/Edit?id=@item.db.ID">Sửa</a>
+                                                    <a class="dropdown-item" href="~/Admin/SanPham/UploadImage?id=@item.db.ID">Thêm hình ảnh</a>
+                                                    @if (item.db.StatusDel == 1)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 2, '@controller')">Ngưng sử dụng</a>
+                                                    }
+                                                    else if (item.db.StatusDel == 2)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 1, '@controller')">Sử dụng</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td align="center">@(++i)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TenNhomSanPham)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.TenSanPham)</td>
+                                        <td align="right">@Html.Raw(String.Format("{0:N0}", item.db.GiaNiemYet))</td>
+                                        <td align="right">@Html.Raw(String.Format("{0:N0}", item.db.GiaSale))</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.GioBatDau, "{0:yyyy-MM-dd}")</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.GioKetThuc, "{0:yyyy-MM-dd}")</td>
+                                        <td>
+                                            @if (item.TenNguoiCapNhat != null)
+                                            {<p>@Html.DisplayFor(modelItem => item.TenNguoiCapNhat)</p>}
+                                            <p>@Html.DisplayFor(modelItem => item.db.NgayCapNhat, "{0:yyyy-MM-dd}")</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
+                    {
+                        CurrentPage = currentPage,
+                        TotalPages = totalPages,
+                        TotalCount = totalCount,
+                        PageSize = pageSize,
+                        PageRange = 5, // Default range
+                        Search = ViewBag.search,
+                        StatusDel = ViewBag.statusDel.ToString(),
+                        IdNhomSanPham = ViewBag.idNhomSanPham
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+            // Custom scripts here
+    </script>
+}

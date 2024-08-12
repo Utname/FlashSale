@@ -1,0 +1,121 @@
+﻿@model IEnumerable<FlashSale.Areas.Admin.Model.ImageViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h2>Image List</h2>
+
+    <div class="form-group">
+        <label for="files">Select Images</label>
+        <input type="file" name="files" id="files" multiple class="form-control" accept="image/*" />
+    </div>
+
+    <div class="image-list">
+        @foreach (var item in Model)
+        {
+            <div id="image-@item.Id" class="image-item" data-id="@item.Id">
+                <img src="@Url.Content(item.FilePath)" />
+                <div class="image-details">
+                    <div><strong>STT:</strong> @item.Id</div>
+                    <div><input type="text" name="fileName" value="@item.FileName" class="form-control" /></div>
+                    <div><strong>Extension:</strong> @item.FileExtension</div>
+                    <div><strong>Size:</strong> @item.FileSize bytes</div>
+                </div>
+                <div class="image-actions">
+                    <a href="@Url.Content("~/Areas/Admin/Content/FileUpload/Images/" + item.FileName)" download="@item.FileName" class="btn btn-success btn-sm">Download</a>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage(@item.Id)">Delete</button>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="save-changes">
+        <button type="button" class="btn btn-primary" onclick="saveImages()">Save Changes</button>
+    </div>
+</div>
+@section scripts{
+    <script>
+       function removeImage(id) {
+        $('#image-' + id).remove();
+    }
+
+    function saveImages(idProduct) {
+        var updatedImages = [];
+        $('.image-item').each(function () {
+            var id = $(this).data('id');
+            var fileName = $(this).find('input[name="fileName"]').val();
+            var idProduct = $(this).find('input[name="idProduct"]').val();
+            updatedImages.push({ Id: id, FileName: fileName, IdProduct: idProduct });
+        });
+
+        $.ajax({
+            url: '@Url.Action("Save", "Images")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedImages),
+            success: function (result) {
+                window.location.href = '@Url.Action("Index", "Images")';
+            }
+        });
+    }
+
+    function handleFiles(files) {
+        var formData = new FormData();
+        $.each(files, function (i, file) {
+            formData.append('files', file);
+        });
+
+        $.ajax({
+            url: '@Url.Action("Upload", "Images")',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                // Handle the response if needed
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#files').on('change', function () {
+            handleFiles(this.files);
+            var fileList = this.files;
+            for (let i = 0; i < fileList.length; i++) {
+                let file = fileList[i];
+                let fileReader = new FileReader();
+
+                fileReader.onload = function (e) {
+                    let id = Date.now() + i;
+                    let fileUrl = e.target.result;
+                    let fileName = file.name;
+                    let fileExtension = fileName.split('.').pop();
+                    let fileSize = file.size;
+                  
+
+                    let imageItemHtml = `
+                        <div id="image-${id}" class="image-item" data-id="${id}">
+                            <img src="${fileUrl}" />
+                            <div class="image-details">
+                                <div><strong>STT:</strong> ${id}</div>
+                                <div><input type="text" name="fileName" value="${fileName}" class="form-control" /></div>
+                                <div><strong>Extension:</strong> .${fileExtension}</div>
+                                <div><strong>Size:</strong> ${fileSize} bytes</div>
+                            </div>
+                            <div class="image-actions">
+                                <a href="/Areas/Admin/Content/FileUpload/Images/${fileName}" download="${fileName}" class="btn btn-success btn-sm">Download</a>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeImage(${id})">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                    $('.image-list').append(imageItemHtml);
+                };
+
+                fileReader.readAsDataURL(file);
+            }
+        });
+    });
+    </script>
+}

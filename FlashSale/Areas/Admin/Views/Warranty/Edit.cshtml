@@ -1,0 +1,54 @@
+﻿@model FlashSale.Areas.Admin.Model.WarrantyModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Sửa bảo hành</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    @Html.HiddenFor(model => model.db.ID)
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên", "db.Name", Model.db.Name, false))
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            @Html.Partial("CommonInput/_FormTexteareInput", Tuple.Create("Ghi chú", "db.Note", Model.db.Note, false))
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-end">
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-12">
+                                                <button type="button" class="btn btn-default mr-1"> <a href="~/Admin/Warranty/Index" style="color:black">Đóng</a></button>
+                                                <input type="submit" value="Sửa" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

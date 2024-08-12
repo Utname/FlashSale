@@ -1,0 +1,111 @@
+﻿@model IEnumerable<Data.Entity.ChucNang>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var controller = "ChucNang";
+    int currentPage = ViewBag.CurrentPage;
+    int pageSize = ViewBag.PageSize;
+    int totalCount = ViewBag.TotalCount;
+    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Chức năng</h4>
+                    @using (Html.BeginForm("Index", "ChucNang", FormMethod.Get, new { id = "formFilters" }))
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Tìm kiếm (Mã chức năng | Tên chức năng)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Trạng thái</label>
+                                <div class="col-md-12">
+                                    <select class="form-control form-control-lg" name="statusDel">
+                                        @foreach (var item in new Data.mapCommon().GetListStatusDel())
+                                        {
+                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <a href="~/Admin/ChucNang/Insert" class="btn btn-success mb-3 mr-1">Thêm</a>
+                            <a href="~/Admin/ChucNang/InsertSync" class="btn btn-info mb-3 mr-1">Thêm Sync</a>
+                            <button type="submit" class="btn btn-primary mb-3 mr-1">Tìm kiếm</button>
+                        </div>
+                    }
+
+                    <div class="col-12" style="overflow:hidden; overflow-x:auto">
+                        <table id="example" class="display table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead class="text-uppercase bg-primary text-white">
+                                <tr>
+                                    <th width="80"></th>
+                                    <th width="50">STT</th>
+                                    <th>Mã chức năng</th>
+                                    <th>Tên chức năng</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="dropdown col-lg-6 col-md-4 col-sm-6">
+                                                <button class="btn btn-rounded btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">Chức năng</button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="~/Admin/ChucNang/Details?id=@item.MaChucNang">Xem</a>
+                                                    <a class="dropdown-item" href="~/Admin/ChucNang/Edit?id=@item.MaChucNang">Sửa</a>
+                                                    @if (item.StatusDel == 1)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.MaChucNang', 2, '@controller')">Ngưng sử dụng</a>
+                                                    }
+                                                    else if (item.StatusDel == 2)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.MaChucNang', 1, '@controller')">Sử dụng</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td align="center">@(++i)</td>
+                                        <td align="center">@Html.DisplayFor(modelItem => item.MaChucNang)</td>
+                                        <td align="center">@Html.DisplayFor(modelItem => item.TenChucNang)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.NhomChucNang)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
+                    {
+                        CurrentPage = currentPage,
+                        TotalPages = totalPages,
+                        TotalCount = totalCount,
+                        PageSize = pageSize,
+                        PageRange = 5, // Default range
+                        Search = ViewBag.search,
+                        StatusDel = ViewBag.statusDel.ToString()
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+
+    </script>
+}

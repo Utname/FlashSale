@@ -1,0 +1,53 @@
+﻿@model FlashSale.Areas.Admin.Model.ProductClassificationModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Xem phân loại sản phẩm</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.db.ID)
+                                <div class="form-group row">
+                                    <div class="col-md-6 col-12">
+                                        @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên", "db.Name", Model.db.Name, true))
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        @Html.Partial("CommonSelect/_FormDropdown",
+                                           Tuple.Create("Danh mục sản phẩm", "db.idProductCategory", new Data.mapProductCategory().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                            Model.db.idProductCategory.ToString(), true, "productCategory", ""))
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <label class="control-label col-md-12">Hình ảnh</label>
+                                    <div class="col-md-12">
+                                        <img src="@Url.Content(Model.db.Image)" style=" aspect-ratio: 16/9;" />
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-12">
+                                            <button type="button" class="btn btn-default mr-1"> <a href="~/Admin/ProductClassification/Index" style="color:black">Đóng</a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

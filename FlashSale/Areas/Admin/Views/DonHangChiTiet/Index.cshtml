@@ -1,15 +1,15 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.DonHangChiTietModel>
+﻿@model FlashSale.Areas.Admin.Model.DonHangChiTietViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "DonHangChiTiet";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
+
+
+
 
 <div class="main-content-inner">
     <div class="row">
@@ -22,7 +22,7 @@
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-md-12">Tìm kiếm(Tên sản phẩm)</label>
                                 <div class="col-md-12">
-                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
@@ -31,7 +31,7 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapCommon().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -56,7 +56,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.DonHangChiTiet)
                                 {
                                     <tr>
                                         <td>
@@ -98,13 +98,13 @@
 
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
                     {
-                        CurrentPage = currentPage,
+                        CurrentPage = Model.CurrentPage,
                         TotalPages = totalPages,
-                        TotalCount = totalCount,
-                        PageSize = pageSize,
+                        TotalCount = Model.TotalCount,
+                        PageSize = Model.PageSize,
                         PageRange = 5, // Default range
-                        Search = ViewBag.search,
-                        StatusDel = ViewBag.statusDel.ToString()
+                        Search = Model.Search,
+                        StatusDel =Model.StatusDel
                     })
                 </div>
             </div>
@@ -114,6 +114,6 @@
 
 @section scripts {
     <script>
-            // Your custom scripts here
+                // Your custom scripts here
     </script>
 }

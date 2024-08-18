@@ -1,15 +1,15 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.ProductModel>
+﻿@model FlashSale.Areas.Admin.Model.ProductViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "Product";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
+
+
+
 
 <div class="main-content-inner">
     <div class="row">
@@ -22,7 +22,7 @@
                     <div class="row ml-3 mb-md-0 mb-2">
                         @using (Html.BeginForm("Import", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
                         {
-                            @Html.Raw(ViewBag.Error)
+                            @Html.Raw(Model.Error)
                             <input type="file" name="excelfile" />
                             <input type="submit" value="Import" class="btn btn-success btn-xs mr-1 mt-md-0 mt-1">
                         }
@@ -38,7 +38,7 @@
                                         <option value="-1">Tất cả</option>
                                         @foreach (var item in new Data.mapNhomSanPham().getListUseFilter())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.idGroup ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.IdGroup ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -49,7 +49,7 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapTypeProduct().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -59,13 +59,13 @@
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-md-12">Tìm kiếm (Tên sản phẩm)</label>
                                 <div class="col-md-12">
-                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-warning mb-3 mr-1">
-                                <a href="~/Admin/Product/Export" style="color:white">Xuất Excel</a>
+                            <button type="button" class="btn btn-warning mb-3 mr-1" onclick="exportExcel()">
+                                <span style="color:white"> Xuất Excel</span>
                             </button>
                             <button type="button" class="btn btn-success mb-3 mr-1">
                                 <a href="~/Admin/Product/Insert" style="color:white">Thêm</a>
@@ -89,7 +89,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.Products)
                                 {
                                     <tr>
                                         <td>
@@ -125,7 +125,7 @@
                                             @if (!String.IsNullOrEmpty(item.ShippingMethodName))
                                             {<p><span style="font-weight:bold">Phương thức ship:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ShippingMethodName)</span></p>}
                                         </td>
-                                        <td align="right">
+                                        <td>
                                             <p><span style="font-weight:bold">Giá từ:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.StartingPrice))</span></p>
                                             @if (item.db.EndingPrice > 0)
                                             {<p><span style="font-weight:bold">Giá đến:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.EndingPrice))</span></p>}
@@ -138,7 +138,7 @@
                                             {<p><span style="font-weight:bold">Phí ship:&nbsp;</span><span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.ShippingFee))</span></p>}
                                         </td>
 
-                                        <td align="right">
+                                        <td>
                                             <p><span style="font-weight:bold">Số lượng:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.Quantity))</span></p>
                                             <p><span style="font-weight:bold">Số lượng còn lại:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.RemainingQuantity))</span></p>
                                         </td>
@@ -147,10 +147,18 @@
                                             {<p><span style="font-weight:bold">Danh mục sản phẩm:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ProductCategoryName)</span></p>}
                                             @if (!String.IsNullOrEmpty(item.ProductClassificationName))
                                             {<p><span style="font-weight:bold">Phân loại sản phẩm:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ProductClassificationName)</span></p>}
+                                            @if (!String.IsNullOrEmpty(item.ProductClassificationName))
+                                            {<p><span style="font-weight:bold">Phân loại sản phẩm:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ProductClassificationName)</span></p>}
                                             @if (!String.IsNullOrEmpty(item.WanrrantyName))
                                             {<p><span style="font-weight:bold">Bảo hành:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.WanrrantyName)</span></p>}
                                             @if (!String.IsNullOrEmpty(item.ReturnAndExchangePolicyName))
-                                            {<p><span style="font-weight:bold">Chính sách đổi trả:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ReturnAndExchangePolicyName)</span></p>}
+                                            {
+                                                <p>
+                                                    <span style="font-weight:bold">Chính sách đổi trả:&nbsp;</span>
+                                                    <span>@Html.DisplayFor(modelItem => item.ReturnAndExchangePolicyName)</span>&nbsp;
+                                                    <span>@Html.Raw(String.Format("{0:N0}", item.ReturnAndExchangePolicyFee))</span>
+                                                </p>
+                                            }
                                             @if (item.db.idReturnAndExchangePolicy == 2)
                                             {<p><span style="font-weight:bold">Phí hoàn trả:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.RefundFee)</span></p>}
 
@@ -166,25 +174,38 @@
                         </table>
                     </div>
 
+                    <!-- pagination here -->
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
-                   {
-                       CurrentPage = currentPage,
-                       TotalPages = totalPages,
-                       TotalCount = totalCount,
-                       PageSize = pageSize,
-                       PageRange = 5, // Default range
-                       Search = ViewBag.search,
-                       StatusDel = ViewBag.statusDel.ToString(),
-                       idGroup = ViewBag.idGroup
-                   })
+                    {
+                        CurrentPage = Model.CurrentPage,
+                        TotalPages = totalPages,
+                        TotalCount = Model.TotalCount,
+                        PageSize = Model.PageSize,
+                        PageRange = 5, // Default range
+                        Search = Model.Search,
+                        StatusDel = Model.StatusDel,
+                        IdGroup = Model.IdGroup // Assuming 'IdGroup' is a property in your Model
+                    })
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
 @section scripts {
     <script>
-                        // Custom scripts here
+        function exportExcel() {
+            var form = document.getElementById('formFilters');
+            var formData = new FormData(form);
+            var search = formData.get('search');
+            var statusDel = formData.get('statusDel');
+            var idGroup = formData.get('idGroup');
+            var url = '@Url.Action("Export", "Product")' +
+                        '?search=' + encodeURIComponent(search) +
+                        '&statusDel=' + encodeURIComponent(statusDel) +
+                        '&idGroup=' + encodeURIComponent(idGroup);
+            window.location.href = url;
+        }
     </script>
 }

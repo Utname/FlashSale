@@ -13,16 +13,29 @@ namespace Data
 
     public class mapDonHangChiTiet : mapCommon
     {
-        public List<DonHangChiTietModel> getAllList(string search, int statusDel)
+       
+
+        public DonHangChiTietViewModel getAllList(DonHangChiTietViewModel model)
         {
-            var result = db.DonHangChiTiets.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.TenSanPham.ToLower().Contains(search) || String.IsNullOrEmpty(search)
-                ).Select(q=> new DonHangChiTietModel
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.DonHangChiTiets.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.TenSanPham.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Select(q => new DonHangChiTietModel
                 {
                     db = q,
-                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d=>d.ID.ToString() == q.NguoiCapNhat).Select(d=>d.Username).FirstOrDefault()
-                }).OrderByDescending(q => q.db.NgayCapNhat).ToList();
-            return result;
+                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.NguoiCapNhat).Select(d => d.Username).FirstOrDefault()
+                }).OrderByDescending(q => q.db.NgayCapNhat).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.DonHangChiTiets.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.TenSanPham.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.DonHangChiTiet = resultNew;
+            return model;
         }
 
         public int insert(DonHangChiTietModel model)

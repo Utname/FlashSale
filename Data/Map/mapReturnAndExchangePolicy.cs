@@ -13,18 +13,32 @@ namespace Data
 
     public class mapReturnAndExchangePolicy : mapCommon
     {
-        public List<ReturnAndExchangePolicyModel> getAllList(string search, int statusDel,int? Type)
+
+        public ReturnAndExchangePolicyViewModel getAllList(ReturnAndExchangePolicyViewModel model)
         {
-            var result = db.ReturnAndExchangePolicies.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.Name.ToLower().Contains(search) || q.Name.ToLower().Contains(search) || String.IsNullOrEmpty(search)
-                ).Where(q=>q.Type == Type || Type == -1).Select(q => new ReturnAndExchangePolicyModel
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.Type = model.Type ?? -1;
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.ReturnAndExchangePolicies.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Where(q => q.Type == model.Type || model.Type == -1).Select(q => new ReturnAndExchangePolicyModel
                 {
                     UpdateByName = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.UpdateBy).Select(d => d.Username).FirstOrDefault(),
                     TypePolicyName = q.Type == 1 ? "Đổi trả miễn phí" : "Đổi trả có phí",
                     db = q,
-                }).OrderByDescending(q => q.db.UpdateDate).ToList();
-            return result;
+                }).OrderByDescending(q => q.db.UpdateDate).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.ReturnAndExchangePolicies.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Where(q => q.Type == model.Type || model.Type == -1).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.ReturnAndExchangePolicy = resultNew;
+            return model;
         }
+
 
 
 
@@ -51,12 +65,12 @@ namespace Data
             return list;
         }
 
-        public List<CommonModelRef> getListUse()
+        public List<CommonModel> getListUse()
         {
-            var list = new List<CommonModelRef>();
-            var result = db.ReturnAndExchangePolicies.Where(q => q.StatusDel == 1).Select(q => new CommonModelRef
+            var list = new List<CommonModel>();
+            var result = db.ReturnAndExchangePolicies.Where(q => q.StatusDel == 1).Select(q => new CommonModel
             {
-                id = q.Name,
+                id = q.ID,
                 name = q.Name
             }).ToList();
             list.AddRange(result);
@@ -104,10 +118,10 @@ namespace Data
 
         public ReturnAndExchangePolicyModel details(int id)
         {
-            var result =  db.ReturnAndExchangePolicies.Where(q => q.ID == id).Select(q => new ReturnAndExchangePolicyModel
+            var result = db.ReturnAndExchangePolicies.Where(q => q.ID == id).Select(q => new ReturnAndExchangePolicyModel
             {
                 UpdateByName = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.UpdateBy).Select(d => d.Username).FirstOrDefault(),
-               
+
                 db = q,
             }).SingleOrDefault();
             result.RefundFeeView = ((decimal)result.db.RefundFee).ToString("#,##0");

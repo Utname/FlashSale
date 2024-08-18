@@ -1,16 +1,14 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.ReturnAndExchangePolicyModel>
+﻿@model FlashSale.Areas.Admin.Model.ReturnAndExchangePolicyViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "ReturnAndExchangePolicy";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int Type = ViewBag.Type;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
+
+
 
 <div class="main-content-inner">
     <div class="row">
@@ -28,7 +26,7 @@
                                     <select class="form-control form-control-lg" name="Type">
                                         @foreach (var item in new Data.mapReturnAndExchangePolicy().getListTypeReturnAndChangePolicyFilter())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.idNhomSanPham ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.Type ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -39,7 +37,7 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapReturnAndExchangePolicy().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -49,7 +47,7 @@
                             <div class="col-12">
                                 <label class="control-label col-md-12">Tìm kiếm(Tên)</label>
                                 <div class="col-md-12">
-                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
                                 </div>
                             </div>
                         </div>
@@ -72,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.ReturnAndExchangePolicy)
                                 {
                                     <tr>
                                         <td>
@@ -119,15 +117,14 @@
 
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
                    {
-                       CurrentPage = currentPage,
+                       CurrentPage = Model.CurrentPage,
                        TotalPages = totalPages,
-                       TotalCount = totalCount,
-                       PageSize = pageSize,
+                       TotalCount = Model.TotalCount,
+                       PageSize = Model.PageSize,
                        PageRange = 5, // Default range
-                       Search = ViewBag.search,
-                       StatusDel = ViewBag.statusDel.ToString(),
-                       IdNhomSanPham = ViewBag.idNhomSanPham,
-                       Type = ViewBag.Type
+                       Search = Model.Search,
+                       StatusDel = Model.StatusDel,
+                       Type = Model.Type
                    })
                 </div>
             </div>
@@ -137,6 +134,6 @@
 
 @section scripts {
     <script>
-                                // Custom scripts here
+                                    // Custom scripts here
     </script>
 }

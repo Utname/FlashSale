@@ -27,28 +27,11 @@ namespace FlashSale.Areas.Admin.Controllers
         mapShopNhomSanPham map = new mapShopNhomSanPham();
 
         [AuthorizationCheck(ChucNang = "ShopNhomSanPham_Index")]
-        public ActionResult Index(string idShop, int? idNhomSanPham, string statusDel, int page = 1)
+        public ActionResult Index(ShopNhomSanPhamViewModel model)
         {
-            idShop = idShop ?? "-1";
-            idNhomSanPham = idNhomSanPham ?? -1;
-            statusDel = statusDel ?? "1";
-
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-
-            var allItems = map.getAllList(idShop, idNhomSanPham, int.Parse(statusDel));
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-
-            ViewBag.idShop = idShop;
-            ViewBag.idNhomSanPham = idNhomSanPham;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-
-            return View(result);
+            model = map.getAllList(model);
+            return View(model);
         }
-
 
         [AuthorizationCheck(ChucNang = "ShopNhomSanPham_Insert")]
         public ActionResult Insert()
@@ -173,8 +156,12 @@ namespace FlashSale.Areas.Admin.Controllers
                 map.insertExcel(ShopNhomSanPham.db);
             }
             application.Quit();
-            var result = map.getAllList("-1",-1, 1);
-            return View("Index", result);
+            var modelFilter = new ShopNhomSanPhamViewModel();
+            modelFilter.StatusDel = 1;
+            modelFilter.IdGroup = -1;
+            modelFilter.PageSize = 10; // Kích thước trang
+            modelFilter = map.getAllList(modelFilter);
+            return View("Index", modelFilter);
         }
 
         [AuthorizationCheck(ChucNang = "ShopNhomSanPham_DownloadExcel")]
@@ -190,14 +177,14 @@ namespace FlashSale.Areas.Admin.Controllers
 
 
         [AuthorizationCheck(ChucNang = "ShopNhomSanPham_Export")]
-        public ActionResult Export()
+        public ActionResult Export(ShopNhomSanPhamViewModel model)
         {
             try
             {
                 // Set the LicenseContext during application startup
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // or LicenseContext.Commercial
 
-                var listShopNhomSanPham = map.getAllList("-1",-1, 1);
+                var modelFilter = map.getAllList(model);
 
                 // Tạo một file Excel mới với EPPlus
                 using (var package = new ExcelPackage())
@@ -222,7 +209,7 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đổ dữ liệu từ danh sách vào Excel
                     int row = 2;
-                    foreach (var ShopNhomSanPham in listShopNhomSanPham)
+                    foreach (var ShopNhomSanPham in modelFilter.ShopNhomSanPham)
                     {
                         var tenShop = map.db.TaiKhoanShops.Where(q => q.ID == ShopNhomSanPham.db.idShop).Where(q => q.StatusDel == 1).Select(q => q.TenShop).FirstOrDefault();
                         var tenNhomSanPham = map.db.NhomSanPhams.Where(q => q.ID == ShopNhomSanPham.db.idNhomSanPham).Where(q => q.StatusDel == 1).Select(q => q.TenNhom).FirstOrDefault();

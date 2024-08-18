@@ -15,17 +15,40 @@ namespace Data
     public class mapTaiKhoanShopSystem : mapCommon
     {
         mapCommon map = new mapCommon();
-        public List<TaiKhoanShopModel> getAllList(string search, int statusDel)
+        public TaiKhoanShopViewModel getAllList(TaiKhoanShopViewModel model)
         {
-            var result = db.TaiKhoanShops.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.Email.ToLower().Contains(search) || q.Username.ToLower().Contains(search) || q.TenShop.ToLower().Contains(search) || String.IsNullOrEmpty(search)
-                ).Select(q=> new TaiKhoanShopModel
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var resultNew = new List<TaiKhoanShopModel>();
+            var result = db.TaiKhoanShops.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Email.ToLower().Contains(model.Search) || q.Username.ToLower().Contains(model.Search) || q.TenShop.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Select(q => new TaiKhoanShopModel
                 {
                     db = q,
-                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d=>d.ID == q.ID).Select(d=>d.Username).FirstOrDefault()
-                }).OrderByDescending(q => q.db.NgayCapNhat).ToList();
-            return result;
+                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID == q.ID).Select(d => d.Username).FirstOrDefault()
+                }).OrderByDescending(q => q.db.NgayCapNhat);
+            if(model.TypeAction == 1)
+            {
+                var data = result.Skip(skip).Take(model.PageSize).ToList();
+                resultNew = data;
+            }
+            else
+            {
+                var data = result.ToList();
+                resultNew = data;
+            }
+
+
+            model.TotalCount = db.TaiKhoanShops.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Email.ToLower().Contains(model.Search) || q.Username.ToLower().Contains(model.Search) || q.TenShop.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Count();
+            model.CurrentPage = model.Page;
+            model.TaiKhoanShop = resultNew;
+            return model;
         }
+
 
         public int insert(TaiKhoanShopModel model)
         {

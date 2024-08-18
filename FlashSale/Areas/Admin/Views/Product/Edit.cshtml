@@ -1,0 +1,416 @@
+﻿@model FlashSale.Areas.Admin.Model.ProductModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Sửa sản phẩm</h3>
+                            <br>
+
+
+                            <form enctype="multipart/form-data" method="post">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.db.ID)
+
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown",
+                                           Tuple.Create("Nhóm sản phẩm", "db.idGroup", new Data.mapProduct().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.idGroup.ToString(), false, "groupProduct", ""))
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Loại sản phẩm", "db.idType",
+                                           new Data.mapTypeProduct().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.idType.ToString(), false, "typeProduct", ""))
+                                        </div>
+
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên sản phẩm", "db.Name", Model.db.Name, false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số lượng", "QuantityView", Model.QuantityView ?? "", "formatNumberCommon(this)", false))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giá từ", "StartingPriceView", Model.StartingPriceView ?? "", "formatNumberCommon(this)", false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+
+
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giá đến", "EndingPriceView", Model.EndingPriceView ?? "", "formatNumberCommon(this)", false))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giá đến", "DiscountPercentageView", Model.DiscountPercentageView ?? "", "calculatedDisCount()", false))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giảm giá từ", "DiscountFromView", Model.DiscountFromView ?? "", "formatNumberCommon(this)", false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Giảm giá đến", "DiscountUpToView", Model.DiscountUpToView ?? "", "formatNumberCommon(this)", false))
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormDateTimeInput", Tuple.Create("Giờ bắt đầu", "db.StartTime", Model.db.StartTime, false))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormDateTimeInput", Tuple.Create("Giờ kết thúc", "db.EndTime", Model.db.EndTime, false))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown",
+                                                Tuple.Create(
+                                                    "Loại giao hàng",
+                                                    "db.ShippingMethod",
+                                                    new Data.mapProduct().getListShippingMethod().Select(x => new SelectListItem
+                                                    {
+                                                        Value = x.id.ToString(),
+                                                        Text = x.name
+                                                    }),
+                                                    Model.db.ShippingMethod.ToString(),
+                                                    false,
+                                                    "returnType",
+                                                    "toggleShippingFee()"
+                                                )
+                                            )
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <div id="shippingFeeContainer" style="display: @(Model.db.ShippingMethod == null || Model.db.ShippingMethod == 1 ? "none" : "flex");width:100%">
+                                            <div class="col-12">
+                                                @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Phí ship", "ShippingFeeView", Model.ShippingFeeView ?? "", "formatNumberCommon(this)", false))
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*<div class="form-group row">
+                                            <div class="col-md-6 col-12">
+                                                @Html.Partial("CommonSelect/_FormDropdown",
+                                               Tuple.Create("Danh mục sản phẩm", "db.idProductCategory", new Data.mapProductCategory().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                               Model.db.idGroup.ToString(), false, "productCategory", ""))
+                                            </div>
+
+                                            <div class="col-md-6 col-12">
+                                                @Html.Partial("CommonSelect/_FormDropdownMultiple", Tuple.Create(
+                                                    "Phân loại sản phẩm",                      // Item1
+                                                    "db.idProductClassification",              // Item2
+                                                    new Data.mapProductClassification().getListUseByGroup(Model.db.idGroup.ToString()).Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }), // Item3
+                                                    Model.db.idProductClassification ?? "", // Item4
+                                                    false,                                      // Item5
+                                                    "",                                         // Item6
+                                                    "selectedClassification"                    // Item7
+                                                ))
+                                                <input type="hidden" id="selectedIds" value="@Model.db.idProductClassification ?? " "">
+                                                <input type="hidden" id="selectedNames" value="">
+                                            </div>
+
+
+                                        </div>*@
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            <!-- Product Category Dropdown -->
+                                            @Html.Partial("CommonSelect/_FormDropdown",
+                                                Tuple.Create("Danh mục sản phẩm", "db.idProductCategory",
+                                                new Data.mapProductCategory().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                                Model.db.idProductCategory.ToString(), false, "productCategory", ""))
+                                        </div>
+
+                                        <div class="col-md-6 col-12" id="productClassificationContainer">
+                                            <!-- Initial content for product classifications will be loaded here -->
+                                            <div id="productClassificationContent">
+                                                @Html.Partial("CommonSelect/_FormDropdownMultiple", Tuple.Create(
+                                                    "Phân loại sản phẩm",
+                                                    "db.idProductClassification",
+                                                    Enumerable.Empty<SelectListItem>(),  // Initially empty
+                                                    Model.db.idProductClassification ?? "",
+                                                    false,
+                                                    "",
+                                                    "selectedClassification"
+                                                ))
+                                                <input type="hidden" id="selectedIds" value="@Model.db.idProductClassification ?? " "">
+                                                <input type="hidden" id="selectedNames" value="">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Chính sách đổi trả", "db.idReturnAndExchangePolicy",
+                                           new Data.mapReturnAndExchangePolicy().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.idReturnAndExchangePolicy.ToString(), false, "", ""))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Bảo hành", "db.idWanrranty",
+                                           new Data.mapWarranty().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.idWanrranty.ToString(), false, "", ""))
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Shop", "db.idShop",
+                                           new Data.mapTaiKhoanShopSystem().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.idShop.ToString(), false, "", ""))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Gửi từ", "db.SendFrom", Model.db.SendFrom, false))
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-md-12">
+                                            Mô tả
+                                            @Html.ValidationMessage("db.Description", "", new { @class = "text-danger" })
+                                        </label>
+                                        <div class="col-md-12">
+                                            <textarea name="db.Description" class="form-control">@Model.db.Description</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="d-flex justify-content-end">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-12">
+                                            <button type="button" class="btn btn-default mr-1">
+                                                <a href="~/Admin/Product/Index" style="color:black">Đóng</a>
+                                            </button>
+                                            <input type="submit" value="Sửa" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+     CKEDITOR.replace("db.Description");
+
+$(document).ready(function () {
+    var selectedCategoryId = '@Model.db.idProductCategory.ToString()';
+    var selectedClassifications = '@Model.db.idProductClassification';
+
+    // Nếu có selectedCategoryId và selectedClassifications, thì gọi AJAX để tải dữ liệu
+    if (selectedCategoryId && selectedClassifications) {
+        loadProductClassifications(selectedCategoryId, selectedClassifications);
+    }
+
+    // Khi chọn danh mục sản phẩm, tải phân loại sản phẩm tương ứng
+    $('#productCategory').change(function () {
+        selectedCategoryId = $(this).val();
+        loadProductClassifications(selectedCategoryId, null);
+    });
+
+    function loadProductClassifications(categoryId, selectedIds) {
+        var productClassificationContent = $('#productClassificationContent');
+
+        // Clear previous content and hide dropdown initially
+        productClassificationContent.empty();
+        $('#productClassificationContainer .custom-select-menu').removeClass('show');
+
+        $.ajax({
+            url: '@Url.Action("GetProductClassificationsView", "ProductClassification")',
+            type: 'GET',
+            data: {
+                categoryId: categoryId,
+                selectedIds: selectedIds // Truyền các ID đã chọn vào đây
+            },
+            success: function (response) {
+                productClassificationContent.html(response);
+                initializeDropdown(selectedIds);
+            },
+            error: function () {
+                alert('Đã xảy ra lỗi khi tải dữ liệu.');
+            }
+        });
+    }
+
+    function initializeDropdown(selectedIds) {
+        var productClassificationContent = $('#productClassificationContent');
+        var selectMenu = productClassificationContent.find('.custom-select-menu');
+        var inputDisplay = productClassificationContent.find('.custom-select-input-display');
+        var hiddenInput = productClassificationContent.find('#selectedIds');
+        var selectedNamesInput = productClassificationContent.find('#selectedNames');
+
+        var selectedNames = []; // Tạo mảng để lưu trữ tên của các phân loại đã chọn
+
+        // Nếu có selectedIds, kiểm tra và đánh dấu các checkbox tương ứng
+        if (selectedIds) {
+            var selectedIdsArray = selectedIds.split(",");
+            var checkboxes = productClassificationContent.find('.custom-select-input');
+            checkboxes.each(function () {
+                if (selectedIdsArray.includes($(this).val())) {
+                    $(this).prop('checked', true);
+                    // Thêm tên của các mục đã chọn vào mảng selectedNames
+                    var label = $(this).closest('.custom-select-option').find('.custom-select-label').text().trim();
+                    selectedNames.push(label);
+                }
+            });
+
+            // Cập nhật selectedNamesInput và inputDisplay
+            selectedNamesInput.val(selectedNames.join(", "));
+            inputDisplay.val(selectedNames.join(", "));
+        }
+
+        inputDisplay.on('click', function () {
+            selectMenu.toggleClass('show');
+        });
+
+        $(document).on('click', function (event) {
+            if (!productClassificationContent.is(event.target) && productClassificationContent.has(event.target).length === 0) {
+                selectMenu.removeClass('show');
+            }
+        });
+
+        var checkboxes = productClassificationContent.find('.custom-select-input');
+        checkboxes.on('change', function () {
+            selectedNames = [];
+            var selectedIdsArray = [];
+
+            productClassificationContent.find('.custom-select-input:checked').each(function () {
+                var label = $(this).closest('.custom-select-option').find('.custom-select-label').text().trim();
+                selectedNames.push(label);
+                selectedIdsArray.push($(this).val());
+            });
+
+            // Update hidden input field with selected IDs
+            hiddenInput.val(selectedIdsArray.join(","));
+            inputDisplay.val(selectedNames.join(", ")); // Display selected names in input, separated by comma and space
+
+            // Update the hidden input to store selected names
+            selectedNamesInput.val(selectedNames.join(", "));
+        });
+    }
+});
+
+
+
+
+
+
+    function calculatedDisCount() {
+
+        var startingPrice = parseFloat(replaceNum((document.querySelector('input[name="StartingPriceView"]').value))) || 0;
+        var endingPrice = parseFloat(replaceNum((document.querySelector('input[name="EndingPriceView"]').value))) || 0;
+        var discountPercentage = parseInt(replaceNum((document.querySelector('input[name="DiscountPercentageView"]').value))) || 0;
+
+        if (startingPrice > 0 && discountPercentage > 0) {
+            var discountFrom = (startingPrice * discountPercentage) / 100;
+            document.querySelector('input[name="DiscountFromView"]').value = discountFrom.toLocaleString('en-US');
+        }
+
+
+        if (endingPrice > 0 && discountPercentage > 0) {
+            var discountFrom = (endingPrice * discountPercentage) / 100;
+            document.querySelector('input[name="DiscountUpToView"]').value = discountFrom.toLocaleString('en-US');
+        }
+    }
+
+
+
+    function toggleShippingFee() {
+        let selectElement = document.getElementById('returnType');
+        let shippingFeeContainer = document.getElementById('shippingFeeContainer');
+
+        // Check if the selectElement value is null or '1'
+        if (selectElement.value == '2') {
+            shippingFeeContainer.style.display = 'flex';
+        } else {
+            shippingFeeContainer.style.display = 'none';
+        }
+    }
+
+    // Ensure that the function name is correctly used in DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleShippingFee();
+    });
+
+        $(document).ready(function () {
+            $('#productCategory').change(function () {
+            var categoryId = $(this).val();
+            $.ajax({
+                url: '@Url.Action("getListUseByCategory", "ProductClassification")',
+                type: 'GET',
+                data: { categoryId: categoryId },
+                success: function (data) {
+                    var productClassificationtDropdown = $('#productClassification');
+                    productClassificationtDropdown.empty(); // Clear existing options
+                    $.each(data, function (i, item) {
+                        productClassificationtDropdown.append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching product types:", status, error);
+                }
+            });
+        });
+        });
+
+        $(document).ready(function () {
+            $('#groupProduct').change(function () {
+            var groupId = $(this).val();
+            $.ajax({
+                url: '@Url.Action("getListUseByGroup", "TypeProduct")',
+                type: 'GET',
+                data: { groupId: groupId },
+                success: function (data) {
+                    var typeProductDropdown = $('#typeProduct');
+                    typeProductDropdown.empty(); // Clear existing options
+                    $.each(data, function (i, item) {
+                        typeProductDropdown.append($('<option>', {
+                            value: item.id,
+                            text: item.name
+                        }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching product types:", status, error);
+                }
+            });
+        });
+    });
+
+    </script>
+
+}

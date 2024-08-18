@@ -10,18 +10,39 @@ using System.Threading.Tasks;
 
 namespace Data
 {
-    
+
     public class mapNhomSanPham : mapCommon
     {
-        public List<NhomSanPhamModel> getAllList(string search,int statusDel)
+        public NhomSanPhamViewModel getAllList(NhomSanPhamViewModel model)
         {
-            var result = db.NhomSanPhams.Where(q=>q.StatusDel == statusDel)
-                .Where(q=>q.TenNhom.ToLower().Contains(search) || search.Contains(q.idCapCha+"") || String.IsNullOrEmpty(search)
-                ).Select(q=> new NhomSanPhamModel {
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var resultNew = new List<NhomSanPhamModel>();
+            var result = db.NhomSanPhams.Where(q => q.StatusDel == model.StatusDel)
+             .Where(q => q.TenNhom.ToLower().Contains(model.Search) || model.Search.Contains(q.idCapCha + "") || String.IsNullOrEmpty(model.Search)
+             ).Select(q => new NhomSanPhamModel
+             {
+                 db = q,
+             }).OrderByDescending(q => q.db.NgayCapNhat);
+            if (model.TypeAction == 1)
+            {
+                var data = result.Skip(skip).Take(model.PageSize).ToList();
+                resultNew = data;
+            }
+            else
+            {
+                var data = result.ToList();
+                resultNew = data;
+            }
 
-                    db = q,
-                }).OrderByDescending(q => q.db.NgayCapNhat).ToList();
-            return result;
+            model.TotalCount = db.NhomSanPhams.Where(q => q.StatusDel == model.StatusDel)
+                  .Where(q => q.TenNhom.ToLower().Contains(model.Search) || model.Search.Contains(q.idCapCha + "") || String.IsNullOrEmpty(model.Search)
+                  ).Count();
+            model.CurrentPage = model.Page;
+            model.NhomSanPham = resultNew;
+            return model;
         }
 
         public int insert(NhomSanPhamModel model)
@@ -68,12 +89,12 @@ namespace Data
         public int edit(NhomSanPhamModel model)
         {
             var item = db.NhomSanPhams.Find(model.db.ID);
-            if(item != null)
+            if (item != null)
             {
                 item.ThuTu = model.db.ThuTu;
                 item.idCapCha = model.db.idCapCha;
                 item.TenNhom = model.db.TenNhom;
-                item.NgayCapNhat = DateTime.Now;    
+                item.NgayCapNhat = DateTime.Now;
                 db.SaveChanges();
                 return 1;
             }
@@ -82,14 +103,14 @@ namespace Data
 
         public NhomSanPhamModel details(int id)
         {
-            return db.NhomSanPhams.Where(q=>q.ID == id).Select(q => new NhomSanPhamModel
+            return db.NhomSanPhams.Where(q => q.ID == id).Select(q => new NhomSanPhamModel
             {
 
                 db = q,
             }).SingleOrDefault();
         }
 
-        public int updateStatusDel(int id,int statusDel)
+        public int updateStatusDel(int id, int statusDel)
         {
             var item = db.NhomSanPhams.Find(id);
             if (item != null)

@@ -18,6 +18,7 @@ using System.Drawing;
 using Data.Helpers.Common;
 using FlashSale.App_Start;
 using FlashSale.Areas.Admin.Model;
+using System.Text;
 
 namespace FlashSale.Areas.Admin.Controllers
 {
@@ -27,22 +28,12 @@ namespace FlashSale.Areas.Admin.Controllers
         mapNhomSanPham map = new mapNhomSanPham();
 
         [AuthorizationCheck(ChucNang = "NhomSanPham_Index")]
-        public ActionResult Index(string search, string statusDel, int page = 1)
+
+        public ActionResult Index(NhomSanPhamViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-
-            var allItems = map.getAllList(search, int.Parse(statusDel));
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-
-            return View(result);
+            model.TypeAction = 1;
+            model = map.getAllList(model);
+            return View(model);
         }
 
 
@@ -130,41 +121,171 @@ namespace FlashSale.Areas.Admin.Controllers
         {
             if (excelfile == null || excelfile.ContentLength == 0)
             {
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select an excel file";
+                return RedirectToAction("Index");
             }
+
             if (!excelfile.FileName.EndsWith("xls") && !excelfile.FileName.EndsWith("xlsx"))
             {
-
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select a valid excel file";
+                return RedirectToAction("Index");
             }
 
-            string path = Server.MapPath("~/Areas/Admin/Content/FileUpload/Excel/" + excelfile.FileName);
+            string path = Server.MapPath(map.pathFileUploadExcel + excelfile.FileName);
             if (System.IO.File.Exists(path))
-                System.IO.File.Delete(path);
-            excelfile.SaveAs(path);
-            Excel.Application application = new Excel.Application();
-            Excel.Workbook workbook = application.Workbooks.Open(path);
-            Excel.Worksheet worksheet = workbook.ActiveSheet;
-            Excel.Range range = worksheet.UsedRange;
-            List<NhomSanPham> listNhomSanPham = new List<NhomSanPham>();
-            for (int row = 2; row <= range.Rows.Count; row++)
             {
-                NhomSanPham nhomSanPham = new NhomSanPham();
-                nhomSanPham.TenNhom = ((Excel.Range)range.Cells[row, 1]).Text;
-                nhomSanPham.idCapCha = int.Parse(((Excel.Range)range.Cells[row, 2]).Text);
-                nhomSanPham.ThuTu = int.Parse(((Excel.Range)range.Cells[row, 3]).Text);
-                nhomSanPham.StatusDel = 1;
-                nhomSanPham.NgayTao = DateTime.Now;
-                nhomSanPham.NgayCapNhat = DateTime.Now;
-                listNhomSanPham.Add(nhomSanPham);
-                map.insertExcel(nhomSanPham);
+                if (System.IO.File.Exists(path))
+                {
+                    try
+                    {
+                        // Đảm bảo file không còn bị khóa
+                        using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                        {
+                            fileStream.Close(); // Đóng file để giải phóng quyền truy cập
+                        }
+
+                        System.IO.File.Delete(path);
+                    }
+                    catch (IOException ex)
+                    {
+                        // Ghi log lỗi xóa file
+                        // Thực hiện các bước cần thiết để xử lý lỗi và tiếp tục
+                        ViewBag.Error = "Unable to delete the existing file. Please ensure the file is not open and try again.";
+                    }
+                }
             }
-            application.Quit();
-            var result = map.getAllList("", 1);
-            return View("Index", result);
+            excelfile.SaveAs(path);
+
+            Excel.Application application = null;
+            Excel.Workbook workbook = null;
+            Excel.Worksheet worksheet = null;
+            Excel.Range range = null;
+
+            var errorLogStream = new MemoryStream();
+            var hasError = false;
+
+            try
+            {
+                application = new Excel.Application();
+                workbook = application.Workbooks.Open(path);
+                worksheet = workbook.ActiveSheet;
+                range = worksheet.UsedRange;
+
+                List<NhomSanPhamModel> listNhomProduct = new List<NhomSanPhamModel>();
+
+                using (var writer = new StreamWriter(errorLogStream, Encoding.UTF8, 1024, true))
+                {
+                    for (int row = 2; row <= range.Rows.Count; row++)
+                    {
+                        NhomSanPhamModel nhomSanPham = new NhomSanPhamModel();
+                        nhomSanPham.db.TenNhom = ((Excel.Range)range.Cells[row, 1]).Text;
+                        nhomSanPham.db.idCapCha = int.Parse(((Excel.Range)range.Cells[row, 2]).Text);
+                        nhomSanPham.db.ThuTu = int.Parse(((Excel.Range)range.Cells[row, 3]).Text);
+                        writer.WriteLine($"{row} -----------------------------------------------------------------------");
+
+                        // Kiểm tra lỗi và ghi vào MemoryStream nếu có
+                       
+                        if (String.IsNullOrEmpty(nhomSanPham.db.TenNhom))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {nhomSanPham.db.TenNhom}:Vui lòng nhập tên nhóm.");
+                        }
+
+
+                        if (nhomSanPham.db.idCapCha == null)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}:Vui lòng nhập id cấp cha.");
+                        }
+                        else if(nhomSanPham.db.idCapCha < 0)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {nhomSanPham.db.idCapCha}: id cấp cha không đúng.");
+                        }
+
+
+
+                        if (hasError == true)
+                        {
+                            writer.WriteLine($"-----------------------------------------------------------------------");
+                        }
+
+                        listNhomProduct.Add(nhomSanPham);
+                    }
+                }
+
+                if (hasError)
+                {
+                    errorLogStream.Position = 0;
+                    return File(errorLogStream, "text/plain", "ErrorLog.txt");
+                }
+                else
+                {
+                    // Lưu dữ liệu vào cơ sở dữ liệu
+                    foreach (var nhom in listNhomProduct)
+                    {
+
+                      
+                        var userId = map.GetUserId();
+                        var resultFIndGroup = map.db.NhomSanPhams.Where(q => q.TenNhom == nhom.db.TenNhom).FirstOrDefault();
+                        if (resultFIndGroup == null)
+                        {
+                            nhom.db.StatusDel = 1;
+                            nhom.db.NgayTao = DateTime.Now;
+                            nhom.db.NgayCapNhat = DateTime.Now;
+                            nhom.db.NguoiCapNhat = map.GetUserId();
+                            nhom.db.NguoiTao = map.GetUserId();
+                            map.insertExcel(nhom.db);
+                        }
+                        else
+                        {
+                            nhom.db.NgayCapNhat = DateTime.Now;
+                            nhom.db.NguoiCapNhat = map.GetUserId();
+                            nhom.db.ID = resultFIndGroup.ID;
+                            map.edit(nhom);
+                        }
+
+                    }
+                }
+            }
+            finally
+            {
+                if (workbook != null)
+                {
+                    workbook.Close(false, Type.Missing, Type.Missing);
+                    Marshal.ReleaseComObject(workbook);
+                }
+
+                if (application != null)
+                {
+                    application.Quit();
+                    Marshal.ReleaseComObject(application);
+                }
+
+                if (range != null)
+                {
+                    Marshal.ReleaseComObject(range);
+                }
+
+                if (worksheet != null)
+                {
+                    Marshal.ReleaseComObject(worksheet);
+                }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+
+            var modelFilter = new NhomSanPhamViewModel();
+            modelFilter.StatusDel = 1;
+            modelFilter.PageSize = 10; // Kích thước trang
+            modelFilter = map.getAllList(modelFilter);
+            return View("Index", modelFilter);
         }
+
+
 
         [AuthorizationCheck(ChucNang = "NhomSanPham_DownloadExcel")]
         public ActionResult DownloadExcel()
@@ -179,14 +300,14 @@ namespace FlashSale.Areas.Admin.Controllers
 
 
         [AuthorizationCheck(ChucNang = "NhomSanPham_Export")]
-        public ActionResult Export()
+        public ActionResult Export(NhomSanPhamViewModel model)
         {
             try
             {
                 // Set the LicenseContext during application startup
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // or LicenseContext.Commercial
-
-                var listNhomSanPham = map.getAllList("", 1);
+                model.TypeAction = 2;
+                var modelFilter = map.getAllList(model);
 
                 // Tạo một file Excel mới với EPPlus
                 using (var package = new ExcelPackage())
@@ -211,7 +332,7 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đổ dữ liệu từ danh sách vào Excel
                     int row = 2;
-                    foreach (var nhomSanPham in listNhomSanPham)
+                    foreach (var nhomSanPham in modelFilter.NhomSanPham)
                     {
                         worksheet.Cells[row, 1].Value = nhomSanPham.db.TenNhom;
                         worksheet.Cells[row, 2].Value = nhomSanPham.db.idCapCha;

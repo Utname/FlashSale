@@ -14,11 +14,12 @@ namespace FlashSale.Areas.Admin.Model
         public int PageSize { get; set; }
         public int PageRange { get; set; }
         public string Search { get; set; }
-        public string StatusDel { get; set; }
+        public int? StatusDel { get; set; }
         public string IdShop { get; set; }
-        public DateTime? TimeOrderTo { get; set; }
-        public DateTime? TimeOrderCome { get; set; }
+        public string TimeOrderTo { get; set; }
+        public string TimeOrderCome { get; set; }
         public int? IdNhomSanPham { get; set; }
+        public int? IdGroup { get; set; }
         public int? idGroup { get; set; }
         public int? Type { get; set; }
     }

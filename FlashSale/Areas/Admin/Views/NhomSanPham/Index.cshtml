@@ -1,15 +1,14 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.NhomSanPhamModel>
+﻿
+@model FlashSale.Areas.Admin.Model.NhomSanPhamViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "NhomSanPham";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
+
 
 <div class="main-content-inner">
     <div class="row">
@@ -34,7 +33,7 @@
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-md-12">Tìm kiếm (Tên nhóm | Id cấp cha)</label>
                                 <div class="col-md-12">
-                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
@@ -43,15 +42,15 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapNhomSanPham().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-warning mb-3 mr-1">
-                                <a href="~/Admin/NhomSanPham/Export" style="color:white">Xuất Excel</a>
+                            <button type="button" class="btn btn-warning mb-3 mr-1" onclick="exportExcel()">
+                                <span style="color:white"> Xuất Excel</span>
                             </button>
                             <button type="button" class="btn btn-success mb-3 mr-1">
                                 <a href="~/Admin/NhomSanPham/Insert" style="color:white">Thêm</a>
@@ -71,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.NhomSanPham)
                                 {
                                     <tr>
                                         <td>
@@ -104,13 +103,13 @@
 
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
                     {
-                        CurrentPage = currentPage,
+                        CurrentPage = Model.CurrentPage,
                         TotalPages = totalPages,
-                        TotalCount = totalCount,
-                        PageSize = pageSize,
+                        TotalCount = Model.TotalCount,
+                        PageSize = Model.PageSize,
                         PageRange = 5, // Default range
-                        Search = ViewBag.search,
-                        StatusDel = ViewBag.statusDel.ToString()
+                        Search = Model.Search,
+                        StatusDel = Model.StatusDel
                     })
 
                 </div>
@@ -121,6 +120,17 @@
 
 @section scripts {
     <script>
-            // Your custom scripts here
+             function exportExcel() {
+            var form = document.getElementById('formFilters');
+            var formData = new FormData(form);
+            var search = formData.get('search');
+            var statusDel = formData.get('statusDel');
+            var idGroup = formData.get('idGroup');
+            var url = '@Url.Action("Export", "NhomSanPham")' +
+                        '?search=' + encodeURIComponent(search) +
+                        '&statusDel=' + encodeURIComponent(statusDel)
+                       ;
+            window.location.href = url;
+        }         // Your custom scripts here
     </script>
 }

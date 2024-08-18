@@ -26,6 +26,30 @@ namespace Data
         }
 
 
+        public WarrantyViewModel getAllList(WarrantyViewModel model)
+        {
+            model.StatusDel = model.StatusDel ?? 1;
+
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.Warranties.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Select(q => new WarrantyModel
+                {
+                    UpdateByName = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.UpdateBy).Select(d => d.Username).FirstOrDefault(),
+                    db = q,
+                }).OrderByDescending(q => q.db.UpdateDate).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.Warranties.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.Warranty = resultNew;
+            return model;
+        }
+
 
         public int insert(WarrantyModel model)
         {
@@ -50,12 +74,12 @@ namespace Data
             return list;
         }
 
-        public List<CommonModelRef> getListUse()
+        public List<CommonModel> getListUse()
         {
-            var list = new List<CommonModelRef>();
-            var result = db.Warranties.Where(q => q.StatusDel == 1).Select(q => new CommonModelRef
+            var list = new List<CommonModel>();
+            var result = db.Warranties.Where(q => q.StatusDel == 1).Select(q => new CommonModel
             {
-                id = q.Name,
+                id = q.ID,
                 name = q.Name
             }).ToList();
             list.AddRange(result);

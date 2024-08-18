@@ -113,7 +113,7 @@
     <Property Name="RemainingQuantity" Type="bigint" />
     <Property Name="SendFrom" Type="nvarchar" MaxLength="200" />
     <Property Name="idProductCategory" Type="int" />
-    <Property Name="idProductClassification" Type="int" />
+    <Property Name="idProductClassification" Type="nvarchar" MaxLength="200" />
     <Property Name="idReturnAndExchangePolicy" Type="int" />
     <Property Name="idWanrranty" Type="int" />
     <Property Name="idShop" Type="uniqueidentifier" />

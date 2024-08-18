@@ -13,17 +13,31 @@ namespace Data
 
     public class mapTypeProduct : mapCommon
     {
-        public List<TypeProductModel> getAllList(string search, int statusDel,int? idNhomSanPham)
+       
+        public TypeProductViewModel getAllList(TypeProductViewModel model)
         {
-            var result = db.TypeProducts.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.Code.ToLower().Contains(search) || q.Name.ToLower().Contains(search) || String.IsNullOrEmpty(search)
-                ).Where(q=>q.idProductGroup == idNhomSanPham || idNhomSanPham == -1).Select(q => new TypeProductModel
+            model.StatusDel = model.StatusDel ?? 1;
+            model.IdGroup = model.IdGroup ?? 1;
+
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.TypeProducts.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Code.ToLower().Contains(model.Search) || q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Where(q => q.idProductGroup == model.IdGroup || model.IdGroup == -1).Select(q => new TypeProductModel
                 {
                     UpdateByName = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.UpdateBy).Select(d => d.Username).FirstOrDefault(),
                     NameProductGroup = db.NhomSanPhams.Where(d => d.ID == q.idProductGroup).Select(d => d.TenNhom).FirstOrDefault(),
                     db = q,
-                }).OrderByDescending(q => q.db.UpdateDate).ToList();
-            return result;
+                }).OrderByDescending(q => q.db.UpdateDate).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.TypeProducts.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Code.ToLower().Contains(model.Search) || q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Where(q => q.idProductGroup == model.IdGroup || model.IdGroup == -1).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.TypeProduct = resultNew;
+            return model;
         }
 
 
@@ -51,13 +65,13 @@ namespace Data
             return list;
         }
 
-        public List<CommonModelRef> getListUse()
+        public List<CommonModel> getListUse()
         {
-            var list = new List<CommonModelRef>();
-            var result = db.TypeProducts.Where(q => q.StatusDel == 1).Select(q => new CommonModelRef
+            var list = new List<CommonModel>();
+            var result = db.TypeProducts.Where(q => q.StatusDel == 1).Select(q => new CommonModel
             {
-                id = q.Name,
-                name = q.Code
+                id = q.ID,
+                name = q.Name
             }).ToList();
             list.AddRange(result);
             return list;

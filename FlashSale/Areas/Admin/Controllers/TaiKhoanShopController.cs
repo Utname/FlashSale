@@ -21,6 +21,7 @@ using System.Text.RegularExpressions;
 using FlashSale.App_Start;
 using FlashSale.Areas.Admin.Model;
 using System.Net;
+using System.Text;
 
 namespace FlashSale.Areas.Admin.Controllers
 {
@@ -30,22 +31,11 @@ namespace FlashSale.Areas.Admin.Controllers
         mapTaiKhoanShopSystem map = new mapTaiKhoanShopSystem();
 
         [AuthorizationCheck(ChucNang = "TaiKhoanShop_Index")]
-        public ActionResult Index(string search, string statusDel, int page = 1)
+        public ActionResult Index(TaiKhoanShopViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-
-            var allItems = map.getAllList(search, int.Parse(statusDel));
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-
-            return View(result);
+            model.TypeAction = 1;
+            model = map.getAllList(model);
+            return View(model);
         }
 
 
@@ -329,29 +319,53 @@ namespace FlashSale.Areas.Admin.Controllers
 
         [HttpPost]
         [AuthorizationCheck(ChucNang = "TaiKhoanShop_Import")]
+
         public ActionResult Import(HttpPostedFileBase excelfile)
         {
             if (excelfile == null || excelfile.ContentLength == 0)
             {
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select an excel file";
+                return RedirectToAction("Index");
             }
 
             if (!excelfile.FileName.EndsWith("xls") && !excelfile.FileName.EndsWith("xlsx"))
             {
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select a valid excel file";
+                return RedirectToAction("Index");
             }
 
             string path = Server.MapPath(map.pathFileUploadExcel + excelfile.FileName);
             if (System.IO.File.Exists(path))
-                System.IO.File.Delete(path);
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    try
+                    {
+                        // Đảm bảo file không còn bị khóa
+                        using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                        {
+                            fileStream.Close(); // Đóng file để giải phóng quyền truy cập
+                        }
+
+                        System.IO.File.Delete(path);
+                    }
+                    catch (IOException ex)
+                    {
+                        // Ghi log lỗi xóa file
+                        // Thực hiện các bước cần thiết để xử lý lỗi và tiếp tục
+                        ViewBag.Error = "Unable to delete the existing file. Please ensure the file is not open and try again.";
+                    }
+                }
+            }
             excelfile.SaveAs(path);
 
             Excel.Application application = null;
             Excel.Workbook workbook = null;
             Excel.Worksheet worksheet = null;
             Excel.Range range = null;
+
+            var errorLogStream = new MemoryStream();
+            var hasError = false;
 
             try
             {
@@ -360,28 +374,115 @@ namespace FlashSale.Areas.Admin.Controllers
                 worksheet = workbook.ActiveSheet;
                 range = worksheet.UsedRange;
 
-                List<TaiKhoanShop> listNhomSanPham = new List<TaiKhoanShop>();
-                for (int row = 2; row <= range.Rows.Count; row++)
+                List<TaiKhoanShopModel> listTaiKhoan = new List<TaiKhoanShopModel>();
+
+                using (var writer = new StreamWriter(errorLogStream, Encoding.UTF8, 1024, true))
                 {
-                    TaiKhoanShop taiKhoanShop = new TaiKhoanShop();
-                    taiKhoanShop.TenShop = ((Excel.Range)range.Cells[row, 1]).Text;
-                    taiKhoanShop.Username = ((Excel.Range)range.Cells[row, 2]).Text;
-                    taiKhoanShop.Email = ((Excel.Range)range.Cells[row, 3]).Text;
-                    taiKhoanShop.SoDienThoai = ((Excel.Range)range.Cells[row, 4]).Text;
-                    taiKhoanShop.DiaChi = ((Excel.Range)range.Cells[row, 5]).Text;
-                    taiKhoanShop.Facebook = ((Excel.Range)range.Cells[row, 6]).Text;
-                    taiKhoanShop.StatusDel = 1;
-                    taiKhoanShop.ID = Guid.NewGuid();
-                    taiKhoanShop.NgayTao = DateTime.Now;
-                    taiKhoanShop.NgayCapNhat = DateTime.Now;
-                    listNhomSanPham.Add(taiKhoanShop);
-                    map.insertExcel(taiKhoanShop);
+                    for (int row = 2; row <= range.Rows.Count; row++)
+                    {
+                        TaiKhoanShopModel taiKhoanShop = new TaiKhoanShopModel();
+                        taiKhoanShop.db.TenShop = ((Excel.Range)range.Cells[row, 1]).Text;
+                        taiKhoanShop.db.Username = ((Excel.Range)range.Cells[row, 2]).Text;
+                        taiKhoanShop.db.Email = ((Excel.Range)range.Cells[row, 3]).Text;
+                        taiKhoanShop.db.SoDienThoai = ((Excel.Range)range.Cells[row, 4]).Text;
+                        taiKhoanShop.db.DiaChi = ((Excel.Range)range.Cells[row, 5]).Text;
+                        taiKhoanShop.db.Facebook = ((Excel.Range)range.Cells[row, 6]).Text;
+                        writer.WriteLine($"{row} -----------------------------------------------------------------------");
+
+                        // Kiểm tra lỗi và ghi vào MemoryStream nếu có
+
+                        if (string.IsNullOrWhiteSpace(taiKhoanShop.db.TenShop))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}: Vui lòng nhập tên shop.");
+                           
+                        }
+
+                        if (string.IsNullOrWhiteSpace(taiKhoanShop.db.Email))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}: Vui lòng nhập email");
+                        }
+
+                        else
+                        {
+                            if (map.IsValidEmail(taiKhoanShop.db.Email) == false)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {taiKhoanShop.db.Email}: Email chưa đúng");
+                            }
+                            //else
+                            //{
+                            //    var countSanPham = map.db.TaiKhoanShops.Where(q => q.Email == taiKhoanShop.db.Email).Count();
+                            //    if (countSanPham > 0)
+                            //    {
+                            //        hasError = true;
+                            //        writer.WriteLine($"Dòng {row} - {taiKhoanShop.db.Email}: Email chưa đúng");
+                            //    }
+
+                            //}
+                        }
+                        if (string.IsNullOrWhiteSpace(taiKhoanShop.db.Username))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}: Vui lòng nhập họ tên");
+                            
+                        }
+
+                        if (!string.IsNullOrEmpty(taiKhoanShop.db.SoDienThoai))
+                        {
+                            if (!Regex.IsMatch(taiKhoanShop.db.SoDienThoai, map.phonePattern))
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {taiKhoanShop.db.SoDienThoai}: Số điện thoại chưa đúng");
+                               
+                            }
+                        }
+
+                        if (hasError == true)
+                        {
+                            writer.WriteLine($"-----------------------------------------------------------------------");
+                        }
+
+                        listTaiKhoan.Add(taiKhoanShop);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error: " + ex.Message;
-                return Redirect("Index");
+
+                if (hasError)
+                {
+                    errorLogStream.Position = 0;
+                    return File(errorLogStream, "text/plain", "ErrorLog.txt");
+                }
+                else
+                {
+                    // Lưu dữ liệu vào cơ sở dữ liệu
+                    foreach (var taiKhoan in listTaiKhoan)
+                    {
+
+
+                        var userId = map.GetUserId();
+                        var findTaiKhoan = map.db.TaiKhoanShops.Where(q => q.Email == taiKhoan.db.Email).SingleOrDefault();
+                       
+                        if (findTaiKhoan == null)
+                        {
+                            taiKhoan.db.ID = Guid.NewGuid();
+                            taiKhoan.db.StatusDel = 1;
+                            taiKhoan.db.NgayTao = DateTime.Now;
+                            taiKhoan.db.NgayCapNhat = DateTime.Now;
+                            taiKhoan.db.NguoiCapNhat = map.GetUserId();
+                            taiKhoan.db.NguoiTao = map.GetUserId();
+                            map.insertExcel(taiKhoan.db);
+                        }
+                        else
+                        {
+                            taiKhoan.db.NgayCapNhat = DateTime.Now;
+                            taiKhoan.db.NguoiCapNhat = map.GetUserId();
+                            taiKhoan.db.ID = findTaiKhoan.ID;
+                            map.edit(taiKhoan);
+                        }
+
+                    }
+                }
             }
             finally
             {
@@ -390,6 +491,7 @@ namespace FlashSale.Areas.Admin.Controllers
                     workbook.Close(false, Type.Missing, Type.Missing);
                     Marshal.ReleaseComObject(workbook);
                 }
+
                 if (application != null)
                 {
                     application.Quit();
@@ -400,20 +502,30 @@ namespace FlashSale.Areas.Admin.Controllers
                 {
                     Marshal.ReleaseComObject(range);
                 }
+
                 if (worksheet != null)
                 {
                     Marshal.ReleaseComObject(worksheet);
                 }
 
-                // Ensure all COM objects are properly released
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
-            var result = map.getAllList("", 1);
-            return View("Index", result);
+
+            var modelFilter = new TaiKhoanShopViewModel();
+            modelFilter.StatusDel = 1;
+            modelFilter.PageSize = 10; // Kích thước trang
+            modelFilter = map.getAllList(modelFilter);
+            return View("Index", modelFilter);
         }
+
+
+
+
+
+      
         [AuthorizationCheck(ChucNang = "TaiKhoanShop_DownloadExcel")]
         public ActionResult DownloadExcel()
         {
@@ -427,14 +539,14 @@ namespace FlashSale.Areas.Admin.Controllers
 
 
         [AuthorizationCheck(ChucNang = "TaiKhoanShop_Export")]
-        public ActionResult Export()
+        public ActionResult Export(TaiKhoanShopViewModel model)
         {
             try
             {
                 // Set the LicenseContext during application startup
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // or LicenseContext.Commercial
-
-                var listNhomSanPham = map.getAllList("", 1);
+                model.TypeAction = 2;
+                var modelFilter = map.getAllList(model);
 
                 // Tạo một file Excel mới với EPPlus
                 using (var package = new ExcelPackage())
@@ -463,7 +575,7 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đổ dữ liệu từ danh sách vào Excel
                     int row = 2;
-                    foreach (var TaiKhoanShop in listNhomSanPham)
+                    foreach (var TaiKhoanShop in modelFilter.TaiKhoanShop)
                     {
                         worksheet.Cells[row, 1].Value = TaiKhoanShop.db.TenShop;
                         worksheet.Cells[row, 2].Value = TaiKhoanShop.db.Username;

@@ -21,6 +21,9 @@ using System.Text.RegularExpressions;
 using FlashSale.App_Start;
 using FlashSale.Areas.Admin.Model;
 using CKFinder.Settings;
+using System.Text;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Security.Cryptography;
 
 namespace FlashSale.Areas.Admin.Controllers
 {
@@ -31,21 +34,11 @@ namespace FlashSale.Areas.Admin.Controllers
         private static List<ImageProduct> images = new List<ImageProduct>();
 
         [AuthorizationCheck(ChucNang = "Product_Index")]
-        public ActionResult Index(string search, string statusDel, int? idGroup, int page = 1)
+        public ActionResult Index(ProductViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            idGroup = idGroup ?? -1;
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-            var allItems = map.getAllList(search, int.Parse(statusDel), idGroup);
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.idGroup = idGroup;
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-            return View(result);
+            model.TypeAction = 1;
+            model = map.getAllList(model);
+            return View(model);
         }
 
 
@@ -61,7 +54,7 @@ namespace FlashSale.Areas.Admin.Controllers
             var model = new ImageProductModel();
             model.images = images;
             model.idProduct = id;
-            model.NameProduct = map.db.Products.Where(q => q.ID.ToString() == id).Select(q=>q.Name).FirstOrDefault();
+            model.NameProduct = map.db.Products.Where(q => q.ID.ToString() == id).Select(q => q.Name).FirstOrDefault();
             return model;
         }
 
@@ -105,8 +98,8 @@ namespace FlashSale.Areas.Admin.Controllers
                 if (file != null && file.ContentLength > 0)
                 {
                     var fileName = Path.GetFileName(file.FileName);
-                    var path = Path.Combine(Server.MapPath( map.imagePath), fileName);
-                    
+                    var path = Path.Combine(Server.MapPath(map.imagePath), fileName);
+
                     file.SaveAs(path);
 
                     // Lưu thông tin hình ảnh vào cơ sở dữ liệu
@@ -142,9 +135,13 @@ namespace FlashSale.Areas.Admin.Controllers
                 map.insert(model);
                 return Redirect("Index");
             }
+
             return View(model);
 
         }
+
+
+
 
         string getFilePath(HttpPostedFileBase fileUpload)
         {
@@ -219,19 +216,24 @@ namespace FlashSale.Areas.Admin.Controllers
             }
 
 
-            if (model.db.Quantity == null || model.db.Quantity == 0)
-            {
-                ModelState.AddModelError("db.Quantity", Data.Helpers.Common.Constants.required);
-            }
 
+
+            if (String.IsNullOrEmpty(model.QuantityView))
+            {
+                ModelState.AddModelError("QuantityView", Data.Helpers.Common.Constants.required);
+            }
+            else if (decimal.Parse(model.QuantityView.Replace(",", "")) <= 0)
+            {
+                ModelState.AddModelError("QuantityView", "Số lượng phải lớn hơn 0");
+            }
 
             if (String.IsNullOrEmpty(model.StartingPriceView))
             {
-                ModelState.AddModelError("db.StartingPrice", Data.Helpers.Common.Constants.required);
+                ModelState.AddModelError("StartingPriceView", Data.Helpers.Common.Constants.required);
             }
             else if (decimal.Parse(model.StartingPriceView.Replace(",", "")) <= 0)
             {
-                ModelState.AddModelError("db.StartingPrice", "Giá từ phải lớn hơn 0");
+                ModelState.AddModelError("StartingPriceView", "Giá từ phải lớn hơn 0");
             }
 
 
@@ -239,16 +241,17 @@ namespace FlashSale.Areas.Admin.Controllers
             {
                 if (decimal.Parse(model.EndingPriceView.Replace(",", "")) <= 0)
                 {
-                    ModelState.AddModelError("db.EndingPrice", "Giá đến phải lớn hơn 0");
+                    ModelState.AddModelError("EndingPriceView", "Giá đến phải lớn hơn 0");
                 }
                 else if (decimal.Parse(model.StartingPriceView.Replace(",", "")) > decimal.Parse(model.EndingPriceView.Replace(",", "")))
                 {
-                    ModelState.AddModelError("db.StartingPriceView", "Giá từ phải nhỏ hơn hoặc bằng giá đến");
+                    ModelState.AddModelError("StartingPriceView", "Giá từ phải nhỏ hơn hoặc bằng giá đến");
                 }
             }
-           
 
-            if((model.db.StartTime != null && model.db.EndTime != null)){
+
+            if ((model.db.StartTime != null && model.db.EndTime != null))
+            {
 
                 if (model.db.StartTime >= model.db.EndTime)
                 {
@@ -256,7 +259,7 @@ namespace FlashSale.Areas.Admin.Controllers
                 }
             }
 
-            
+
 
             return ModelState.IsValid ? 1 : 0;
         }
@@ -271,7 +274,7 @@ namespace FlashSale.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(ProductModel model)
         {
-           
+
             int check = CheckValidation(model, 2);
             if (check == 1)
             {
@@ -297,34 +300,59 @@ namespace FlashSale.Areas.Admin.Controllers
             return View(map.details(id));
         }
 
-       
+
+
 
 
         [HttpPost]
         [AuthorizationCheck(ChucNang = "Product_Import")]
+
         public ActionResult Import(HttpPostedFileBase excelfile)
         {
             if (excelfile == null || excelfile.ContentLength == 0)
             {
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select an excel file";
+                return RedirectToAction("Index");
             }
 
             if (!excelfile.FileName.EndsWith("xls") && !excelfile.FileName.EndsWith("xlsx"))
             {
-                ViewBag.Error = "Please select a excel file";
-                return Redirect("Index");
+                ViewBag.Error = "Please select a valid excel file";
+                return RedirectToAction("Index");
             }
 
             string path = Server.MapPath(map.pathFileUploadExcel + excelfile.FileName);
             if (System.IO.File.Exists(path))
-                System.IO.File.Delete(path);
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    try
+                    {
+                        // Đảm bảo file không còn bị khóa
+                        using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                        {
+                            fileStream.Close(); // Đóng file để giải phóng quyền truy cập
+                        }
+
+                        System.IO.File.Delete(path);
+                    }
+                    catch (IOException ex)
+                    {
+                        // Ghi log lỗi xóa file
+                        // Thực hiện các bước cần thiết để xử lý lỗi và tiếp tục
+                        ViewBag.Error = "Unable to delete the existing file. Please ensure the file is not open and try again.";
+                    }
+                }
+            }
             excelfile.SaveAs(path);
 
             Excel.Application application = null;
             Excel.Workbook workbook = null;
             Excel.Worksheet worksheet = null;
             Excel.Range range = null;
+
+            var errorLogStream = new MemoryStream();
+            var hasError = false;
 
             try
             {
@@ -334,31 +362,294 @@ namespace FlashSale.Areas.Admin.Controllers
                 range = worksheet.UsedRange;
 
                 List<ProductModel> listNhomProduct = new List<ProductModel>();
-                for (int row = 2; row <= range.Rows.Count; row++)
+
+                using (var writer = new StreamWriter(errorLogStream, Encoding.UTF8, 1024, true))
                 {
-                    ProductModel Product = new ProductModel();
-                    Product.db.Name = ((Excel.Range)range.Cells[row, 1]).Text;
-                    Product.db.StartingPrice =  decimal.Parse(((Excel.Range)range.Cells[row, 2]).Text);
-                    Product.db.EndingPrice = decimal.Parse(((Excel.Range)range.Cells[row, 3]).Text);
-                    Product.db.StartTime = DateTime.Parse(((Excel.Range)range.Cells[row, 4]).Text);
-                    Product.db.EndTime = DateTime.Parse(((Excel.Range)range.Cells[row, 5]).Text);
-                    Product.GroupProductName = ((Excel.Range)range.Cells[row, 6]).Text;
-                    var idNhomProduct = map.db.NhomSanPhams.Where(q => q.TenNhom == Product.GroupProductName).Select(q => q.ID).FirstOrDefault();
-                    Product.db.StatusDel = 1;
-                    Product.db.idGroup = idNhomProduct;
-                    Product.db.ID = Guid.NewGuid();
-                    Product.db.CreateDate = DateTime.Now;
-                    Product.db.UpdateDate = DateTime.Now;
-                    Product.db.CreateBy = map.GetUserId();
-                    Product.db.UpdateBy = map.GetUserId();
-                    listNhomProduct.Add(Product);
-                    map.insertExcel(Product.db);
+                    for (int row = 2; row <= range.Rows.Count; row++)
+                    {
+                        ProductModel Product = new ProductModel();
+                        // Xử lý dữ liệu
+                        Product.db.Name = ((Excel.Range)range.Cells[row, 1]).Text;
+                        Product.ShopName = ((Excel.Range)range.Cells[row, 2]).Text;
+                        Product.GroupProductName = ((Excel.Range)range.Cells[row, 3]).Text;
+                        Product.TypeProductName = ((Excel.Range)range.Cells[row, 4]).Text;
+                        Product.ShippingMethodName = ((Excel.Range)range.Cells[row, 5]).Text;
+                        Product.ShippingFeeView = ((Excel.Range)range.Cells[row, 6]).Text;
+                        Product.StartingPriceView = ((Excel.Range)range.Cells[row, 7]).Text;
+                        Product.EndingPriceView = ((Excel.Range)range.Cells[row, 8]).Text;
+                        Product.DiscountPercentageView = ((Excel.Range)range.Cells[row, 9]).Text;
+                        Product.QuantityView = ((Excel.Range)range.Cells[row, 10]).Text;
+                        Product.ProductCategoryName = ((Excel.Range)range.Cells[row, 11]).Text;
+                        Product.ProductClassificationName = ((Excel.Range)range.Cells[row, 12]).Text;
+                        Product.WanrrantyName = ((Excel.Range)range.Cells[row, 13]).Text;
+                        Product.ReturnAndExchangePolicyName = ((Excel.Range)range.Cells[row, 14]).Text;
+                        Product.db.StartTime = DateTime.Parse(((Excel.Range)range.Cells[row, 15]).Text);
+                        Product.db.EndTime = DateTime.Parse(((Excel.Range)range.Cells[row, 16]).Text);
+                       
+                        writer.WriteLine($"{row} -----------------------------------------------------------------------");
+                       
+                        // Kiểm tra lỗi và ghi vào MemoryStream nếu có
+                        var idShop = map.db.TaiKhoanShops.Where(q => q.TenShop.ToLower() == Product.ShopName.ToLower()).Select(q => q.ID).FirstOrDefault();
+                        if (idShop == null)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.ShopName} : Shop không tồn tại.");
+                        }
+                        else
+                        {
+                            Product.db.idShop = idShop;
+                        }
+                       
+
+                        var idGroup = map.db.NhomSanPhams.Where(q => q.TenNhom.ToLower() == Product.GroupProductName.ToLower()).Select(q => q.ID).FirstOrDefault();
+                        if (idGroup == 0)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.GroupProductName}: Nhóm sản phẩm không tồn tại.");
+                        }
+                        else
+                        {
+                            Product.db.idGroup = idGroup;
+                        }
+
+                        var idType = map.db.TypeProducts.Where(q => q.Name.ToLower() == Product.TypeProductName.Trim().ToLower()).Select(q => q.ID).FirstOrDefault();
+                        if (idType == 0)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.TypeProductName}: Loại sản phẩm không tồn tại.");
+                        }
+                        else
+                        {
+                            Product.db.idType = idType;
+                        }
+
+                        if (String.IsNullOrEmpty(Product.ShippingMethodName))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}:Vui lòng nhập phương thức thanh toán.");
+                        }
+                        else if (Product.ShippingMethodName.ToLower() != "miễn phí" && Product.ShippingMethodName.ToLower() != "có phí")
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.ShippingMethodName}:Phương thức thanh toán không đúng.");
+                        }
+                        else if (Product.ShippingMethodName.ToLower() == "có phí")
+                        {
+                            if (String.IsNullOrEmpty(Product.ShippingFeeView))
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row}:Vui lòng nhập số tiền vận chuyển.");
+                            }
+
+                            else if (decimal.Parse(Product.ShippingFeeView.Replace(",", "")) <= 0)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.ShippingFeeView}:Số tiền vận chuyển chưa đúng.");
+                            }
+                            else
+                            {
+                                Product.db.ShippingMethod = 2;
+                            }
+                        }
+                        else
+                        {
+                            Product.db.ShippingMethod = 1;
+                        }
+
+                        if (String.IsNullOrEmpty(Product.StartingPriceView))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}:Vui lòng nhập đơn giá.");
+                        }
+
+                        else if (decimal.Parse(Product.StartingPriceView.Replace(",", "")) <= 0)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.StartingPriceView}:Đơn giá từ phải lơn hơn 0.");
+                        }
+                        else
+                        {
+                            Product.db.StartingPrice = String.IsNullOrEmpty(Product.StartingPriceView) ? 0 : decimal.Parse(Product.StartingPriceView.Replace(",", ""));
+                        }
+
+
+                        if (!String.IsNullOrEmpty(Product.EndingPriceView))
+                        {
+                            if (decimal.Parse(Product.EndingPriceView.Replace(",", "")) <= 0)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row}:Đơn giá đến phải lơn hơn 0.");
+                            }
+
+                            else if (decimal.Parse(Product.EndingPriceView.Replace(",", "")) <= decimal.Parse(Product.StartingPriceView.Replace(",", "")))
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row}:Đơn giá đến ({Product.EndingPriceView}) phải lơn hơn  đơn giá từ ({Product.StartingPriceView}).");
+                            }
+                            else
+                            {
+                                Product.db.EndingPrice = String.IsNullOrEmpty(Product.EndingPriceView) ? 0 : decimal.Parse(Product.EndingPriceView.Replace(",", ""));
+                            }
+                        }
+                       
+
+
+                        if (!String.IsNullOrEmpty(Product.DiscountPercentageView))
+                        {
+                            if (decimal.Parse(Product.DiscountPercentageView.Replace(",", "")) <= 0 && decimal.Parse(Product.DiscountPercentageView.Replace(",", "")) > 100)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.DiscountPercentageView}:Phần trăm giảm giá phải lớn hơn 0 và phải nhở hơn bằng 100.");
+                            }
+                            else
+                            {
+                                Product.db.DiscountPercentage = String.IsNullOrEmpty(Product.DiscountPercentageView) ? 0 : int.Parse(Product.DiscountPercentageView.Replace(",", ""));
+                            }
+                        }
+
+
+                        if (String.IsNullOrEmpty(Product.QuantityView))
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row}:Vui lòng nhập số lượng sản phẩm.");
+                        }
+
+                        else if (decimal.Parse(Product.QuantityView.Replace(",", "")) <= 0)
+                        {
+                            hasError = true;
+                            writer.WriteLine($"Dòng {row} - {Product.QuantityView}:Sơ lượng sản phẩm phải lớn hơn 0.");
+                        }
+                        else
+                        {
+                            Product.db.Quantity = String.IsNullOrEmpty(Product.QuantityView) ? 0 : int.Parse(Product.QuantityView.Replace(",", ""));
+                        }
+
+                        if (Product.ProductCategoryName != null)
+                        {
+                            var productCategory= map.db.ProductCategories.Where(q => q.Name.ToLower() == Product.ProductCategoryName.ToLower()).FirstOrDefault();
+                            if (productCategory == null)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.ProductCategoryName}: Không tìm thấy danh mục sản phẩm.");
+                            }
+                            else
+                            {
+                                Product.db.idProductCategory = productCategory.ID;
+                            }
+
+                            if (String.IsNullOrEmpty(Product.ProductCategoryName))
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.ProductCategoryName}: Vui lòng nhập phân loại sản phẩm.");
+                            }
+                            else
+                            {
+                                var listProdictClassification = Product.ProductClassificationName.Split(',').ToList();
+                                var idProductClassification = "";
+                                foreach (var item in listProdictClassification)
+                                {
+                                    var productClassficationId = map.db.ProductClassifications.Where(q => q.Name.ToLower() == item.ToLower()).Where(q=>q.idProductCategory == productCategory.ID).Select(q => q.ID).FirstOrDefault();
+                                    if (productClassficationId == 0)
+                                    {
+                                        hasError = true;
+                                        writer.WriteLine($"Dòng {row} - {item}: Không tìm thấy phân loại sản phẩm.");
+                                    }
+                                    else
+                                    {
+                                        idProductClassification += productClassficationId + ",";
+                                    }
+                                }
+                                Product.db.idProductClassification = idProductClassification;
+                            }
+
+                        }
+
+                        if (!String.IsNullOrEmpty(Product.WanrrantyName))
+                        {
+                            var idWarranty = map.db.Warranties.Where(q => q.Name.ToLower() == Product.WanrrantyName.ToLower()).Select(q => q.ID).FirstOrDefault();
+                            if (idWarranty == 0)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.WanrrantyName}: Không tìm thấy bảo phành.");
+                            }
+                            else
+                            {
+                                Product.db.idWanrranty = idWarranty;
+                            }
+                        }
+
+
+                        if (!String.IsNullOrEmpty(Product.ReturnAndExchangePolicyName))
+                        {
+                            var idReturnAndChangePolicy = map.db.ReturnAndExchangePolicies.Where(q => Product.ReturnAndExchangePolicyName.ToLower().Contains(q.Name.ToLower())).Select(q => q.ID).FirstOrDefault();
+                            if (idReturnAndChangePolicy == 0)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row} - {Product.ReturnAndExchangePolicyName}: Không tìm thấy chính sách đổi trả.");
+                            }
+                            else
+                            {
+                                Product.db.idReturnAndExchangePolicy = idReturnAndChangePolicy;
+                            }
+                        }
+
+                        if ((Product.db.StartTime != null && Product.db.EndTime != null))
+                        {
+
+                            if (Product.db.StartTime > Product.db.EndTime)
+                            {
+                                hasError = true;
+                                writer.WriteLine($"Dòng {row}: Ngày bắt đầu ({Product.db.StartTime})  không được lớn hơn ngày kết thúc ({Product.db.EndTime})");
+                            }
+                        }
+
+                        if(hasError == true)
+                        {
+                            writer.WriteLine($"-----------------------------------------------------------------------");
+                        }
+
+                        listNhomProduct.Add(Product);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = "Error: " + ex.Message;
-                return Redirect("Index");
+
+                if (hasError)
+                {
+                    errorLogStream.Position = 0;
+                    return File(errorLogStream, "text/plain", "ErrorLog.txt");
+                }
+                else
+                {
+                    // Lưu dữ liệu vào cơ sở dữ liệu
+                    foreach (var product in listNhomProduct)
+                    {
+                        product.db.DiscountPercentage = String.IsNullOrEmpty(product.DiscountPercentageView) ? 0 : int.Parse(product.DiscountPercentageView.Replace(",", ""));
+                        if (product.db.DiscountPercentage != 0)
+                        {
+                            product.db.DiscountFrom = (product.db.StartingPrice * product.db.DiscountPercentage) / 100;
+                            product.db.DiscountUpTo = (product.db.EndingPrice * product.db.DiscountPercentage) / 100;
+                        }
+                        product.db.UpdateDate = DateTime.Now;
+                        product.db.UpdateBy = map.GetUserId();
+
+                        product.db.RemainingQuantity = product.db.Quantity;
+                        var userId = map.GetUserId();
+                        var resultFIndProduct = map.db.Products.Where(q => q.Name == product.db.Name).Where(q => q.idShop == product.db.idShop).FirstOrDefault();
+                        if (resultFIndProduct == null)
+                        {
+                            product.db.StatusDel = 1;
+                            product.db.ID = Guid.NewGuid();
+                            product.db.CreateDate = DateTime.Now;
+                            product.db.CreateBy = map.GetUserId();
+                            map.insertExcel(product.db);
+                        }
+                        else
+                        {
+                            product.db.ID = resultFIndProduct.ID;
+                            map.editExcel(product);
+                        }
+                       
+                    }
+                }
             }
             finally
             {
@@ -367,6 +658,7 @@ namespace FlashSale.Areas.Admin.Controllers
                     workbook.Close(false, Type.Missing, Type.Missing);
                     Marshal.ReleaseComObject(workbook);
                 }
+
                 if (application != null)
                 {
                     application.Quit();
@@ -377,20 +669,29 @@ namespace FlashSale.Areas.Admin.Controllers
                 {
                     Marshal.ReleaseComObject(range);
                 }
+
                 if (worksheet != null)
                 {
                     Marshal.ReleaseComObject(worksheet);
                 }
 
-                // Ensure all COM objects are properly released
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
-            var result = map.getAllList("", 1,-1);
-            return View("Index", result);
+
+            var modelFilter = new ProductViewModel();
+            modelFilter.StatusDel =1;
+            modelFilter.IdGroup =  -1;
+            modelFilter.PageSize = 10; // Kích thước trang
+            modelFilter = map.getAllList(modelFilter);
+            return View("Index", modelFilter);
         }
+
+
+
+
         [AuthorizationCheck(ChucNang = "Product_DownloadExcel")]
         public ActionResult DownloadExcel()
         {
@@ -404,14 +705,16 @@ namespace FlashSale.Areas.Admin.Controllers
 
 
         [AuthorizationCheck(ChucNang = "Product_Export")]
-        public ActionResult Export()
+        [HttpGet]
+        public ActionResult Export(ProductViewModel model)
         {
             try
             {
                 // Set the LicenseContext during application startup
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // or LicenseContext.Commercial
+                model.TypeAction = 1;
 
-                var listNhomProduct = map.getAllList("", 1,-1);
+                var modelFilter = map.getAllList(model);
 
                 // Tạo một file Excel mới với EPPlus
                 using (var package = new ExcelPackage())
@@ -420,18 +723,25 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đặt tiêu đề cột và dữ liệu
                     worksheet.Cells[1, 1].Value = "Tên sản phẩm";
-                    worksheet.Cells[1, 2].Value = "Giá từ";
-                    worksheet.Cells[1, 3].Value = "Giá đến";
-                    worksheet.Cells[1, 4].Value = "Giờ bắt đầu";
-                    worksheet.Cells[1, 5].Value = "Giờ kết thúc";
-                    worksheet.Cells[1, 6].Value = "Nhóm sản phẩm";
-                    worksheet.Cells[1, 7].Value = "Ngày cập nhật";
-                    worksheet.Cells[1, 8].Value = "Người cập nhật";
-
-
-
+                    worksheet.Cells[1, 2].Value = "Tên shop";
+                    worksheet.Cells[1, 3].Value = "Nhóm sản phẩm";
+                    worksheet.Cells[1, 4].Value = "Loại sản phẩm";
+                    worksheet.Cells[1, 5].Value = "Phương thức ship";
+                    worksheet.Cells[1, 6].Value = "Giá";
+                    worksheet.Cells[1, 7].Value = "Phẩm trăm giảm giá";
+                    worksheet.Cells[1, 8].Value = "Giảm giá";
+                    worksheet.Cells[1, 9].Value = "Số lượng";
+                    worksheet.Cells[1, 10].Value = "Số lượng còn lại";
+                    worksheet.Cells[1, 11].Value = "Danh mục sản phẩm";
+                    worksheet.Cells[1, 12].Value = "Phân loại sản phẩm";
+                    worksheet.Cells[1, 13].Value = "Bảo hành";
+                    worksheet.Cells[1, 14].Value = "Chính sách đổi trả";
+                    worksheet.Cells[1, 15].Value = "Thời gian bắt đầu giảm giá";
+                    worksheet.Cells[1, 16].Value = "Thời gian kết thúc giảm giá";
+                    worksheet.Cells[1, 17].Value = "Ngày cập nhật";
+                    worksheet.Cells[1, 18].Value = "Người cập nhật";
                     // Đặt màu nền và màu chữ cho dòng 1
-                    using (ExcelRange range = worksheet.Cells["A1:H1"])
+                    using (ExcelRange range = worksheet.Cells["A1:R1"])
                     {
                         range.Style.Font.Color.SetColor(Color.White); // Màu chữ là màu trắng
                         range.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -442,23 +752,39 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đổ dữ liệu từ danh sách vào Excel
                     int row = 2;
-                    foreach (var Product in listNhomProduct)
+                    foreach (var Product in modelFilter.Products)
                     {
-                        var tenNhomProduct = map.db.NhomSanPhams.Where(q => q.ID == Product.db.idGroup).Where(q => q.StatusDel == 1).Select(q => q.TenNhom).FirstOrDefault();
-                        var nguoiCapNhat = map.db.TaiKhoanShops.Where(q => q.ID == Product.db.idShop).Where(q => q.StatusDel == 1).Select(q => q.Username).FirstOrDefault();
-
                         worksheet.Cells[row, 1].Value = Product.db.Name;
-                        worksheet.Cells[row, 2].Value = Product.db.StartingPrice;
-                        worksheet.Cells[row, 3].Value = Product.db.EndingPrice;
-                        worksheet.Cells[row, 4].Value = Product.db.StartTime.ToString();
-                        worksheet.Cells[row, 5].Value = Product.db.EndTime.ToString();
-                        worksheet.Cells[row, 6].Value = tenNhomProduct;
-                        worksheet.Cells[row, 7].Value = Product.db.CreateDate != null ? Product.db.CreateDate.ToString() : DateTime.Now.ToString("MM/dd/yyyy");
-                        worksheet.Cells[row, 8].Value = nguoiCapNhat;
+                        worksheet.Cells[row, 2].Value = Product.ShopName;
+                        worksheet.Cells[row, 3].Value = Product.GroupProductName;
+                        worksheet.Cells[row, 4].Value = Product.TypeProductName;
+                        worksheet.Cells[row, 5].Value = Product.ShippingMethodName;
+                        worksheet.Cells[row, 6].Value =
+                          Product.db.StartingPrice == null ? "0" : ((decimal)Product.db.StartingPrice).ToString("#,##0")
+                            + " - "
+                            + Product.db.EndingPrice == null ? "0" : ((decimal)Product.db.EndingPrice).ToString("#,##0");
+                        worksheet.Cells[row, 7].Value =
+                            Product.db.DiscountPercentage == null ? "0" : ((int)Product.db.DiscountPercentage).ToString("#,##0");
+                        worksheet.Cells[row, 8].Value =
+                            Product.db.DiscountFrom == null ? "0" : ((decimal)Product.db.DiscountFrom).ToString("#,##0")
+                            + " - " +
+                            Product.db.DiscountUpTo == null ? "0" : ((decimal)Product.db.DiscountUpTo).ToString("#,##0");
+                        worksheet.Cells[row, 9].Value =
+                            Product.db.Quantity == null ? "0" : ((int)Product.db.Quantity).ToString("#,##0");
+                        worksheet.Cells[row, 10].Value =
+                            Product.db.RemainingQuantity == null ? "0" : ((int)Product.db.RemainingQuantity).ToString("#,##0");
+                        worksheet.Cells[row, 11].Value = Product.ProductCategoryName;
+                        worksheet.Cells[row, 12].Value = Product.ProductClassificationName;
+                        worksheet.Cells[row, 13].Value = Product.WanrrantyName;
+                        worksheet.Cells[row, 14].Value = Product.ReturnAndExchangePolicyName + " - " + ((int)Product.RefundFee).ToString("#,##0");
+                        worksheet.Cells[row, 15].Value = Product.db.StartTime != null ? Product.db.StartTime.ToString() : DateTime.Now.ToString("MM/dd/yyyy");
+                        worksheet.Cells[row, 16].Value = Product.db.EndTime != null ? Product.db.EndTime.ToString() : DateTime.Now.ToString("MM/dd/yyyy");
+                        worksheet.Cells[row, 17].Value = Product.db.CreateDate != null ? Product.db.CreateDate.ToString() : DateTime.Now.ToString("MM/dd/yyyy");
+                        worksheet.Cells[row, 18].Value = Product.UpdateByName;
                         row++;
                     }
 
-                    using (ExcelRange range = worksheet.Cells[1, 1, worksheet.Dimension.End.Row, 8])
+                    using (ExcelRange range = worksheet.Cells[1, 1, worksheet.Dimension.End.Row, 18])
                     {
                         // Thiết lập border cho các cạnh
                         range.Style.Border.Top.Style = ExcelBorderStyle.Thin;

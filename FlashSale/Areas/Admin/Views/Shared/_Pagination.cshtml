@@ -1,4 +1,6 @@
-﻿@model FlashSale.Areas.Admin.Model.PaginationModel
+﻿@using System.Reflection
+
+@model FlashSale.Areas.Admin.Model.PaginationModel
 
 @{
     int currentPage = Model.CurrentPage;
@@ -6,14 +8,19 @@
     int totalCount = Model.TotalCount;
     int pageSize = Model.PageSize;
     int pageRange = Model.PageRange;
-    string search = Model.Search;
-    string statusDel = Model.StatusDel;
-    string idShop = Model.IdShop;
-    DateTime? timeOrderCome = Model.TimeOrderCome;
-    DateTime? timeOrderTo = Model.TimeOrderTo;
-    int? idNhomSanPham = Model.IdNhomSanPham;
-    int? type = Model.Type;
-    int? idGroup = Model.idGroup;
+
+    // Create a route values dictionary from the model using reflection
+    var routeValues = new RouteValueDictionary();
+
+    // Add the properties of PaginationModel to routeValues
+    foreach (PropertyInfo property in typeof(FlashSale.Areas.Admin.Model.PaginationModel).GetProperties())
+    {
+        var value = property.GetValue(Model);
+        if (value != null)
+        {
+            routeValues[property.Name] = value;
+        }
+    }
 }
 
 <nav aria-label="Page navigation" style="display:flex; justify-content:space-between; margin-left:12px;margin-right:12px">
@@ -28,7 +35,7 @@
         @if (currentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, search = search, statusDel = statusDel, idShop = idShop, timeOrderCome = timeOrderCome, timeOrderTo = timeOrderTo, idNhomSanPham = idNhomSanPham, type = type ,idGroup = idGroup})" aria-label="Previous">
+                <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, routeValues })" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -37,7 +44,7 @@
         @if (currentPage > pageRange + 1)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = 1, search = search, statusDel = statusDel, idShop = idShop, timeOrderCome = timeOrderCome, timeOrderTo = timeOrderTo, idNhomSanPham = idNhomSanPham, type = type,idGroup = idGroup })">1</a>
+                <a class="page-link" href="@Url.Action("Index", new { page = 1, routeValues })">1</a>
             </li>
             if (currentPage > pageRange + 2)
             {
@@ -48,7 +55,7 @@
         @for (int pageNumber = Math.Max(1, currentPage - pageRange); pageNumber <= Math.Min(totalPages, currentPage + pageRange); pageNumber++)
         {
             <li class="page-item @(pageNumber == currentPage ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = pageNumber, search = search, statusDel = statusDel, idShop = idShop, timeOrderCome = timeOrderCome, timeOrderTo = timeOrderTo , idNhomSanPham = idNhomSanPham, type = type,idGroup = idGroup})">@pageNumber</a>
+                <a class="page-link" href="@Url.Action("Index", new { page = pageNumber, routeValues })">@pageNumber</a>
             </li>
         }
 
@@ -59,14 +66,14 @@
                 <li class="page-item disabled"><span class="page-link">...</span></li>
             }
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = totalPages, search = search, statusDel = statusDel, idShop = idShop, timeOrderCome = timeOrderCome, timeOrderTo = timeOrderTo, idNhomSanPham = idNhomSanPham, type = type,idGroup = idGroup })">@totalPages</a>
+                <a class="page-link" href="@Url.Action("Index", new { page = totalPages, routeValues })">@totalPages</a>
             </li>
         }
 
         @if (currentPage < totalPages)
         {
             <li class="page-item">
-                <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, search = search, statusDel = statusDel, idShop = idShop, timeOrderCome = timeOrderCome, timeOrderTo = timeOrderTo , idNhomSanPham = idNhomSanPham, type = type,idGroup = idGroup})" aria-label="Next">
+                <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, routeValues })" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

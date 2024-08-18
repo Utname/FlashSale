@@ -118,7 +118,7 @@
           <Property Name="RemainingQuantity" Type="bigint" />
           <Property Name="SendFrom" Type="nvarchar" MaxLength="200" />
           <Property Name="idProductCategory" Type="int" />
-          <Property Name="idProductClassification" Type="int" />
+          <Property Name="idProductClassification" Type="nvarchar" MaxLength="200" />
           <Property Name="idReturnAndExchangePolicy" Type="int" />
           <Property Name="idWanrranty" Type="int" />
           <Property Name="idShop" Type="uniqueidentifier" />
@@ -985,7 +985,7 @@
           <Property Name="RemainingQuantity" Type="Int64" />
           <Property Name="SendFrom" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="idProductCategory" Type="Int32" />
-          <Property Name="idProductClassification" Type="Int32" />
+          <Property Name="idProductClassification" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="idReturnAndExchangePolicy" Type="Int32" />
           <Property Name="idWanrranty" Type="Int32" />
           <Property Name="idShop" Type="Guid" />

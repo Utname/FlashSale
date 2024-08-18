@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using FlashSale.Areas.Admin.Model;
 using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,28 @@ namespace Data
     
     public class mapChucNang : mapCommon
     {
-        public List<ChucNang> getAllList(string search,int statusDel)
+      
+        public FunctionViewModel getAllList(FunctionViewModel model)
         {
-            var result = db.ChucNangs.Where(q=>q.StatusDel == statusDel)
-                .Where(q=>q.TenChucNang.ToLower().Contains(search) || q.MaChucNang.ToLower().Contains(search) || String.IsNullOrEmpty(search)
-                ).ToList();
-            return result;
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" :  model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.ChucNangs.Where(q=>q.StatusDel == model.StatusDel)
+                .Where(q=>q.TenChucNang.ToLower().Contains(model.Search) || q.MaChucNang.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).OrderByDescending(q => q.NgayCapNhat).Skip(skip).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.ChucNangs.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.TenChucNang.ToLower().Contains(model.Search) || q.MaChucNang.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Count();
+
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.ChucNangs = resultNew;
+            return model;
         }
+
+
 
         public int insert(ChucNang model)
         {

@@ -1,0 +1,55 @@
+﻿@{
+    // Cast Model to Tuple if possible
+    var tupleModel = Model as Tuple<string, string, IEnumerable<SelectListItem>, string, bool, string, string>;
+
+    if (tupleModel == null)
+    {
+        <div class="alert alert-danger">Model không phải là kiểu Tuple mong đợi.</div>
+    }
+    else
+    {
+        // Get values from Tuple
+        var label = tupleModel.Item1;
+        var validationMessageName = tupleModel.Item2;
+        var selectList = tupleModel.Item3;
+        var selectedValues = string.IsNullOrEmpty(tupleModel.Item4) ? new string[] { } : tupleModel.Item4.Split(',');
+        var isDisabled = tupleModel.Item5;
+        var idselectedValue = tupleModel.Item6;
+        var selectName = tupleModel.Item7;
+
+        var selectedNames = selectList
+            .Where(item => selectedValues.Contains(item.Value))
+            .Select(item => item.Text)
+            .ToList();
+
+        <label class="control-label col-md-12">
+            @label
+            @Html.ValidationMessage(validationMessageName, "", new { @class = "text-danger" })
+        </label>
+        <div class="col-12">
+            <div class="custom-select-wrapper">
+                <input class="custom-select-input-display" type="text" readonly="readonly" placeholder="Chọn một hoặc nhiều phân loại" />
+                <div class="custom-select-menu" aria-labelledby="dropdownMenuButton">
+                    @foreach (var item in selectList)
+                    {
+                        <div class="custom-select-option">
+                            <input type="checkbox"
+                                   name="@selectName"
+                                   value="@item.Value"
+                                   id="checkbox_@item.Value"
+                                   class="custom-select-input"
+                                   @(selectedValues.Contains(item.Value) ? "checked" : "")
+                                   @(isDisabled ? "disabled" : "") />
+                            <label class="custom-select-label" for="checkbox_@item.Value">
+                                @item.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" id="selectedIds" name="db.idProductClassification" value="@string.Join(",", selectedValues)" />
+        <input type="hidden" id="selectedNames" value="@string.Join(", ", selectedNames)" />
+    }
+}

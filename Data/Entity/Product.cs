@@ -40,7 +40,7 @@ namespace Data.Entity
         public Nullable<long> RemainingQuantity { get; set; }
         public string SendFrom { get; set; }
         public Nullable<int> idProductCategory { get; set; }
-        public Nullable<int> idProductClassification { get; set; }
+        public string idProductClassification { get; set; }
         public Nullable<int> idReturnAndExchangePolicy { get; set; }
         public Nullable<int> idWanrranty { get; set; }
         public Nullable<System.Guid> idShop { get; set; }

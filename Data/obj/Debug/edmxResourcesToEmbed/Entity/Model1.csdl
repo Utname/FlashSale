@@ -452,7 +452,7 @@
     <Property Name="RemainingQuantity" Type="Int64" />
     <Property Name="SendFrom" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="idProductCategory" Type="Int32" />
-    <Property Name="idProductClassification" Type="Int32" />
+    <Property Name="idProductClassification" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="idReturnAndExchangePolicy" Type="Int32" />
     <Property Name="idWanrranty" Type="Int32" />
     <Property Name="idShop" Type="Guid" />

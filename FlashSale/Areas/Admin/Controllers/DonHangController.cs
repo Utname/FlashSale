@@ -29,50 +29,11 @@ namespace FlashSale.Areas.Admin.Controllers
         mapDonHang map = new mapDonHang();
 
         [AuthorizationCheck(ChucNang = "DonHang_Index")]
-        public ActionResult Index(string search, string statusDel, string idShop, DateTime? timeOrderTo, DateTime? timeOrderCome, int page = 1)
+        public ActionResult Index(DonHangViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            idShop = idShop ?? "-1";
-
-            // Cấu hình phân trang
-            int pageSize = 10;
-            int skip = (page - 1) * pageSize;
-
-            // Lấy dữ liệu và lọc theo điều kiện
-            var result = map.getAllList(search, int.Parse(statusDel), idShop);
-
-            if (timeOrderTo != null && timeOrderCome == null)
-            {
-                result = result.Where(q => q.db.ThoiGianDatHang >= timeOrderTo).ToList();
-            }
-            else if (timeOrderTo == null && timeOrderCome != null)
-            {
-                result = result.Where(q => q.db.ThoiGianDatHang <= timeOrderCome).ToList();
-            }
-            else if (timeOrderTo != null && timeOrderCome != null)
-            {
-                result = result.Where(q => q.db.ThoiGianDatHang >= timeOrderTo && q.db.ThoiGianDatHang <= timeOrderCome).ToList();
-            }
-
-            // Phân trang
-            var totalCount = result.Count();
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-            var pagedResult = result.Skip(skip).Take(pageSize).ToList();
-
-            // Cập nhật ViewBag
-            ViewBag.search = search;
-            ViewBag.idShop = idShop;
-            if (timeOrderTo != null)
-                ViewBag.timeOrderTo = timeOrderTo?.ToString("yyyy-MM-ddTHH:mm");
-            if (timeOrderCome != null)
-                ViewBag.timeOrderCome = timeOrderCome?.ToString("yyyy-MM-ddTHH:mm");
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
-            ViewBag.TotalPages = totalPages;
-
-            return View(pagedResult);
+            model.TypeAction = 1;
+            model = map.getAllList(model);
+            return View(model);
         }
 
 
@@ -234,14 +195,15 @@ namespace FlashSale.Areas.Admin.Controllers
        
 
         [AuthorizationCheck(ChucNang = "DonHang_Export")]
-        public ActionResult Export()
+        public ActionResult Export(DonHangViewModel model)
         {
             try
             {
                 // Set the LicenseContext during application startup
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // or LicenseContext.Commercial
+                model.TypeAction = 2;
 
-                var listNhomDonHang = map.getAllList("", 1,"-1");
+                var modelFilter = map.getAllList(model);
 
                 // Tạo một file Excel mới với EPPlus
                 using (var package = new ExcelPackage())
@@ -273,7 +235,7 @@ namespace FlashSale.Areas.Admin.Controllers
 
                     // Đổ dữ liệu từ danh sách vào Excel
                     int row = 2;
-                    foreach (var DonHang in listNhomDonHang)
+                    foreach (var DonHang in modelFilter.DonHang)
                     {
                         var tenShop = map.db.TaiKhoanShops.Where(q => q.ID == DonHang.db.idShop).Where(q => q.StatusDel == 1).Select(q => q.TenShop).FirstOrDefault();
                         var nguoiCapNhat = map.db.TaiKhoanShops.Where(q => q.ID.ToString() == DonHang.db.NguoiCapNhat).Where(q => q.StatusDel == 1).Select(q => q.Username).FirstOrDefault();
@@ -290,6 +252,7 @@ namespace FlashSale.Areas.Admin.Controllers
                         worksheet.Cells[row, 10].Value = DonHang.db.TongThanhToan;
                         worksheet.Cells[row, 11].Value = DonHang.db.KhacHangGhiChu;
                         worksheet.Cells[row, 12].Value = DonHang.db.NgayCapNhat != null ? DonHang.db.NgayCapNhat.ToString() : DateTime.Now.ToString("MM/dd/yyyy");
+                        row++;
                     }
 
                     using (ExcelRange range = worksheet.Cells[1, 1, worksheet.Dimension.End.Row, 12])

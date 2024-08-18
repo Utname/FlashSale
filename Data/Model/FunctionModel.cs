@@ -19,5 +19,18 @@ namespace FlashSale.Areas.Admin.Model
         public List<int> SelectedFunctionIds { get; set; } // Add this property to capture selected IDs
     }
 
-  
+
+    public class FunctionViewModel
+    {
+        public string Error { get; set; }
+        public string Search { get; set; }
+        public int? StatusDel { get; set; }
+        public int Page { get; set; } = 1;
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        public IEnumerable<ChucNang> ChucNangs { get; set; }
+    }
+
+
 }

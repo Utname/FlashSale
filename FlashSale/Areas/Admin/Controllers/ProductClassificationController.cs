@@ -27,21 +27,14 @@ namespace FlashSale.Areas.Admin.Controllers
         mapProductClassification map = new mapProductClassification();
 
         [AuthorizationCheck(ChucNang = "ProductClassification_Index")]
-        public ActionResult Index(string search, string statusDel, int? idGroup, int page = 1)
+
+        public ActionResult Index(ProductClassificationViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-            idGroup = idGroup ?? -1;
-            var allItems = map.getAllList(search, int.Parse(statusDel),idGroup);
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-            return View(result);
+            model = map.getAllList(model);
+            return View(model);
         }
+
+      
 
 
         [AuthorizationCheck(ChucNang = "ProductClassification_Insert")]
@@ -74,6 +67,32 @@ namespace FlashSale.Areas.Admin.Controllers
             }
             return View(model);
 
+        }
+
+        public ActionResult GetProductClassificationsView(string categoryId,string idClassficationProdct)
+        {
+            var classifications = new Data.mapProductClassification()
+                .getListUseByGroup(categoryId)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.id.ToString(),
+                    Text = x.name
+                })
+                .ToList();
+
+            IEnumerable<SelectListItem> selectListToReturn = classifications.Any() ? classifications : Enumerable.Empty<SelectListItem>();
+
+            var model = Tuple.Create(
+                "Phân loại sản phẩm",
+                "db.idProductClassification",
+                selectListToReturn,
+                "",
+                false,
+                "",
+                "selectedClassification"
+            );
+
+            return PartialView("CommonSelect/_FormDropdownMultiple", model);
         }
 
         string getFilePath(HttpPostedFileBase fileUpload)
@@ -119,6 +138,18 @@ namespace FlashSale.Areas.Admin.Controllers
             }
             return duongDanLuuFile;
         }
+
+        public JsonResult getListUseByCategory(int? categoryId)
+        {
+
+            var result = map.db.ProductClassifications.Where(q => q.StatusDel == 1).Where(q => q.idProductCategory == categoryId).Select(q => new CommonModel
+            {
+                id = q.ID,
+                name = q.Name
+            }).ToList();
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
 
         int CheckValidation(ProductClassificationModel model)
         {

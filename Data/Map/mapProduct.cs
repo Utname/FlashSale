@@ -13,29 +13,72 @@ namespace Data
 
     public class mapProduct : mapCommon
     {
-        public List<ProductModel> getAllList(string search, int statusDel,int? idGroup)
+
+        public ProductViewModel getAllList(ProductViewModel model)
         {
-            var result = db.Products.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.Name.ToLower().Contains(search) || String.IsNullOrEmpty(search))
-                .Where(q=>q.idGroup == idGroup || idGroup == -1)
-                .Select(q=> new ProductModel
+            model.StatusDel = model.StatusDel ?? 1;
+            model.IdGroup = model.IdGroup ?? -1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var resultNew = new List<ProductModel>();
+            var result = db.Products.Where(q => q.StatusDel == model.StatusDel)
+              .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search))
+              .Where(q => q.idGroup == model.IdGroup || model.IdGroup == -1)
+              .Select(q => new ProductModel
+              {
+                  db = q,
+                  GroupProductName = db.NhomSanPhams.Where(d => d.ID == q.idGroup).Where(d => d.StatusDel == 1).Select(d => d.TenNhom).FirstOrDefault(),
+                  TypeProductName = db.TypeProducts.Where(d => d.ID == q.idType).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
+                  ProductCategoryName = db.ProductCategories.Where(d => d.ID == q.idProductCategory).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
+                  ShippingMethodName = q.ShippingMethod == 1 ? "Miễn phí" : "Có phí",
+                  RefundFee = db.ReturnAndExchangePolicies.Where(d => d.ID == q.idReturnAndExchangePolicy).Where(d => d.StatusDel == 1).Select(d => d.RefundFee).FirstOrDefault() ?? 0,
+                  WanrrantyName = db.Warranties.Where(d => d.ID == q.idWanrranty).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
+                  ShopName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Where(d => d.StatusDel == 1).Select(d => d.TenShop).FirstOrDefault(),
+                  UpdateByName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.Username).FirstOrDefault()
+              }).OrderByDescending(q => q.db.UpdateDate);
+            if (model.TypeAction == 1)
+            {
+                var data = result.Skip(skip).Take(model.PageSize).ToList();
+                resultNew = data;
+            }
+            else
+            {
+                var data = result.ToList();
+                resultNew = data;
+            }
+
+
+            model.TotalCount = db.Products.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search))
+                .Where(q => q.idGroup == model.IdGroup || model.IdGroup == -1).Count();
+
+
+
+            model.CurrentPage = model.Page;
+            resultNew.ForEach(q =>
+            {
+                var typeReturnAndChangePolice = "";
+                if (!String.IsNullOrEmpty(q.db.idProductClassification))
                 {
-                    db = q,
-                    GroupProductName = db.NhomSanPhams.Where(d=>d.ID == q.idGroup).Where(d=>d.StatusDel == 1).Select(d=>d.TenNhom).FirstOrDefault(),
-                    TypeProductName = db.TypeProducts.Where(d => d.ID == q.idType).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                    ProductCategoryName = db.ProductCategories.Where(d => d.ID == q.idProductCategory).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                    ProductClassificationName = db.ProductClassifications.Where(d => d.ID == q.idProductClassification).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                    ShippingMethodName = q.ShippingMethod == 1 ? "Miễn phí" : "Có phí",
-                    ReturnAndExchangePolicyName = db.ReturnAndExchangePolicies.Where(d => d.ID == q.idReturnAndExchangePolicy).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                    RefundFee = db.ReturnAndExchangePolicies.Where(d => d.ID == q.idReturnAndExchangePolicy).Where(d => d.StatusDel == 1).Select(d => d.RefundFee).FirstOrDefault()??0,
-                    WanrrantyName = db.Warranties.Where(d => d.ID == q.idWanrranty).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                    ShopName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Where(d => d.StatusDel == 1).Select(d => d.TenShop).FirstOrDefault(),
-                    UpdateByName = db.TaiKhoanShops.Where(d=>d.ID == q.idShop).Select(d=>d.Username).FirstOrDefault()
-                }).OrderByDescending(q => q.db.UpdateDate).ToList();
-            return result;
+                    var listClassficationName = db.ProductClassifications.Where(d => q.db.idProductClassification.Contains(d.ID + "")).Where(d => d.StatusDel == 1).Select(d => d.Name).ToList();
+                    q.ProductClassificationName = String.Join(",", listClassficationName);
+                }
+                var returnAndExchangePolicie = db.ReturnAndExchangePolicies.Where(d => d.ID == q.db.idReturnAndExchangePolicy).Where(d => d.StatusDel == 1).FirstOrDefault();
+                if (returnAndExchangePolicie.Type == 1)
+                {
+                    typeReturnAndChangePolice = "Đổi trả miễn phí";
+                }
+                else
+                {
+                    typeReturnAndChangePolice = "Đổi trả có phí - ";
+                    q.ReturnAndExchangePolicyFee = returnAndExchangePolicie.RefundFee;
+                }
+                q.ReturnAndExchangePolicyName = returnAndExchangePolicie.Name + typeReturnAndChangePolice;
+            });
+            model.Products = resultNew;
+            return model;
         }
-
-
 
         public List<CommonModel> getListUse()
         {
@@ -50,7 +93,7 @@ namespace Data
         public void SaveImageInfo(ImageProduct image)
         {
             // Lưu thông tin hình ảnh vào cơ sở dữ liệu
-            image.NguoiCapNhat =GetUserId();
+            image.NguoiCapNhat = GetUserId();
             image.NgayCapNhat = DateTime.Now;
             db.ImageProducts.Add(image);
             db.SaveChanges();
@@ -59,9 +102,9 @@ namespace Data
         public void UpdateImageInfo(List<ImageProduct> updatedImages)
         {
             var idProduct = updatedImages.Select(q => q.idProduct).FirstOrDefault();
-            var listIdImage = updatedImages.Where(q=>q.ID != 0).Select(q=>q.ID);
+            var listIdImage = updatedImages.Where(q => q.ID != 0).Select(q => q.ID);
 
-            if(listIdImage.Count() > 0)
+            if (listIdImage.Count() > 0)
             {
                 var listImageToRomove = db.ImageProducts.Where(q => !listIdImage.Contains(q.ID)).ToList();
                 db.ImageProducts.RemoveRange(listImageToRomove);
@@ -83,24 +126,35 @@ namespace Data
                 {
                     SaveImageInfo(image);
                 }
-               
+
             }
+        }
+
+        public List<CommonModel> getListShippingMethod()
+        {
+            var result = new List<CommonModel>()
+            {
+                new CommonModel(){id = 1,name="Miên phí ship"},
+                new CommonModel(){id = 2,name="Có phí"}
+            };
+            return result;
         }
 
         public int insert(ProductModel model)
         {
-            model.db.StartingPrice = decimal.Parse(model.StartingPriceView.Replace(",", ""));
-            model.db.EndingPrice = decimal.Parse(model.EndingPriceView.Replace(",", ""));
-            model.db.DiscountFrom = decimal.Parse(model.DiscountFromView.Replace(",", ""));
-            model.db.DiscountUpTo = decimal.Parse(model.DiscountUpToView.Replace(",", ""));
-            model.db.ShippingFee = decimal.Parse(model.ShippingFeeView.Replace(",", ""));
-            model.db.Quantity = int.Parse(model.QuantityView.Replace(",", ""));
-            model.db.RemainingQuantity = int.Parse(model.RemainingQuantityView.Replace(",", ""));
+            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : decimal.Parse(model.StartingPriceView.Replace(",", ""));
+            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : int.Parse(model.DiscountPercentageView.Replace(",", ""));
+            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : decimal.Parse(model.EndingPriceView.Replace(",", ""));
+            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : decimal.Parse(model.DiscountFromView.Replace(",", ""));
+            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : decimal.Parse(model.DiscountUpToView.Replace(",", ""));
+            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : decimal.Parse(model.ShippingFeeView.Replace(",", ""));
+            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : int.Parse(model.QuantityView.Replace(",", ""));
+            model.db.RemainingQuantity = model.db.Quantity;
 
             model.db.ID = Guid.NewGuid();
             model.db.CreateDate = DateTime.Now;
             model.db.CreateBy = GetUserId();
-            model.db.UpdateBy =GetUserId();
+            model.db.UpdateBy = GetUserId();
             model.db.StatusDel = 1;
             model.db.UpdateDate = DateTime.Now;
             db.Products.Add(model.db);
@@ -117,13 +171,13 @@ namespace Data
 
         public int edit(ProductModel model)
         {
-            model.db.StartingPrice = decimal.Parse(model.StartingPriceView.Replace(",", ""));
-            model.db.EndingPrice = decimal.Parse(model.EndingPriceView.Replace(",", ""));
-            model.db.DiscountFrom = decimal.Parse(model.DiscountFromView.Replace(",", ""));
-            model.db.DiscountUpTo = decimal.Parse(model.DiscountUpToView.Replace(",", ""));
-            model.db.ShippingFee = decimal.Parse(model.ShippingFeeView.Replace(",", ""));
-            model.db.Quantity = int.Parse(model.QuantityView.Replace(",", ""));
-            model.db.RemainingQuantity = int.Parse(model.RemainingQuantityView.Replace(",", ""));
+            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : decimal.Parse(model.StartingPriceView.Replace(",", ""));
+            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : int.Parse(model.DiscountPercentageView.Replace(",", ""));
+            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : decimal.Parse(model.EndingPriceView.Replace(",", ""));
+            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : decimal.Parse(model.DiscountFromView.Replace(",", ""));
+            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : decimal.Parse(model.DiscountUpToView.Replace(",", ""));
+            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : decimal.Parse(model.ShippingFeeView.Replace(",", ""));
+            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : int.Parse(model.QuantityView.Replace(",", ""));
             model.db.UpdateDate = DateTime.Now;
             model.db.UpdateBy = GetUserId();
             var item = db.Products.Where(q => q.ID == model.db.ID).SingleOrDefault();
@@ -142,7 +196,7 @@ namespace Data
                 item.ShippingFee = model.db.ShippingFee;
                 item.Description = model.db.Description;
                 item.Quantity = model.db.Quantity;
-                item.RemainingQuantity = model.db.RemainingQuantity;
+                item.RemainingQuantity = model.db.Quantity;
                 item.SendFrom = model.db.SendFrom;
                 item.idProductCategory = model.db.idProductCategory;
                 item.idProductClassification = model.db.idProductClassification;
@@ -150,7 +204,43 @@ namespace Data
                 item.idShop = model.db.idShop;
                 item.StartTime = model.db.StartTime;
                 item.EndTime = model.db.EndTime;
-                item.UpdateBy =GetUserId();
+                item.UpdateBy = GetUserId();
+                item.UpdateDate = DateTime.Now;
+                db.SaveChanges();
+                return 1;
+            }
+            return 0;
+        }
+
+
+
+        public int editExcel(ProductModel model)
+        {
+            var item = db.Products.Where(q => q.ID == model.db.ID).SingleOrDefault();
+            if (item != null)
+            {
+                item.Name = model.db.Name;
+                item.idType = model.db.idType;
+                item.idGroup = model.db.idGroup;
+                item.StartingPrice = model.db.StartingPrice;
+                item.EndingPrice = model.db.EndingPrice;
+                item.DiscountPercentage = model.db.DiscountPercentage;
+                item.DiscountFrom = model.db.DiscountFrom;
+                item.DiscountUpTo = model.db.DiscountUpTo;
+                item.idPolicy = model.db.idPolicy;
+                item.ShippingMethod = model.db.ShippingMethod;
+                item.ShippingFee = model.db.ShippingFee;
+                item.Description = model.db.Description;
+                item.Quantity = model.db.Quantity;
+                item.RemainingQuantity = model.db.Quantity;
+                item.SendFrom = model.db.SendFrom;
+                item.idProductCategory = model.db.idProductCategory;
+                item.idProductClassification = model.db.idProductClassification;
+                item.idReturnAndExchangePolicy = model.db.idReturnAndExchangePolicy;
+                item.idShop = model.db.idShop;
+                item.StartTime = model.db.StartTime;
+                item.EndTime = model.db.EndTime;
+                item.UpdateBy = GetUserId();
                 item.UpdateDate = DateTime.Now;
                 db.SaveChanges();
                 return 1;
@@ -160,12 +250,13 @@ namespace Data
 
         public ProductModel details(string id)
         {
-            var result = db.Products.Where(q => q.ID.ToString() == id).Select(q=> new ProductModel { 
+            var result = db.Products.Where(q => q.ID.ToString() == id).Select(q => new ProductModel
+            {
                 db = q,
                 GroupProductName = db.NhomSanPhams.Where(d => d.ID == q.idGroup).Where(d => d.StatusDel == 1).Select(d => d.TenNhom).FirstOrDefault(),
                 TypeProductName = db.TypeProducts.Where(d => d.ID == q.idType).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
                 ProductCategoryName = db.ProductCategories.Where(d => d.ID == q.idProductCategory).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
-                ProductClassificationName = db.ProductClassifications.Where(d => d.ID == q.idProductClassification).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
+                // ProductClassificationName = db.ProductClassifications.Where(d => d.ID == q.idProductClassification).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
                 ShippingMethodName = q.ShippingMethod == 1 ? "Miễn phí" : "Có phí",
                 ReturnAndExchangePolicyName = db.ReturnAndExchangePolicies.Where(d => d.ID == q.idReturnAndExchangePolicy).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
                 WanrrantyName = db.Warranties.Where(d => d.ID == q.idWanrranty).Where(d => d.StatusDel == 1).Select(d => d.Name).FirstOrDefault(),
@@ -173,13 +264,15 @@ namespace Data
                 UpdateByName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.Username).FirstOrDefault()
 
             }).SingleOrDefault();
-            result.StartingPriceView = ((decimal)result.db.StartingPrice).ToString("#,##0");
-            result.EndingPriceView = ((decimal)result.db.EndingPrice).ToString("#,##0");
-            result.DiscountFromView = ((decimal)result.db.DiscountFrom).ToString("#,##0");
-            result.DiscountUpToView = ((decimal)result.db.DiscountUpTo).ToString("#,##0");
-            result.ShippingFeeView = ((decimal)result.db.ShippingFee).ToString("#,##0");
-            result.QuantityView = ((decimal)result.db.Quantity).ToString("#,##0");
-            result.RemainingQuantityView = ((decimal)result.db.RemainingQuantity).ToString("#,##0");
+            result.StartingPriceView = result.db.StartingPrice == null ? "0" : ((decimal)result.db.StartingPrice).ToString("#,##0");
+            result.EndingPriceView = result.db.EndingPrice == null ? "0" : ((decimal)result.db.EndingPrice).ToString("#,##0");
+            result.DiscountFromView = result.db.DiscountFrom == null ? "0" : ((decimal)result.db.DiscountFrom).ToString("#,##0");
+            result.DiscountUpToView = result.db.DiscountUpTo == null ? "0" : result.db.StartingPrice == null ? "0" : ((decimal)result.db.DiscountUpTo).ToString("#,##0");
+            result.ShippingFeeView = result.db.ShippingFee == null ? "0" : ((decimal)result.db.ShippingFee).ToString("#,##0");
+            result.QuantityView = result.db.Quantity == null ? "0" : ((decimal)result.db.Quantity).ToString("#,##0");
+            result.DiscountPercentageView = result.db.DiscountPercentage == null ? "0" : ((decimal)result.db.DiscountPercentage).ToString("#,##0");
+
+            //result.RemainingQuantityView = ((decimal)result.db.RemainingQuantity).ToString("#,##0");
             return result;
         }
 

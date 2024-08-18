@@ -12,18 +12,36 @@ namespace Data
     
     public class mapShopNhomSanPham : mapCommon
     {
-        public List<ShopNhomSanPhamModel> getAllList(string idShop, int? idNhomSanPham, int statusDel)
+       
+
+
+        public ShopNhomSanPhamViewModel getAllList(ShopNhomSanPhamViewModel model)
         {
-            var result = db.ShopNhomSanPhams.Where(q=>q.StatusDel == statusDel)
-             .Where(q => q.idShop.ToString() == idShop || idShop == "-1")
-             .Where(q => q.idNhomSanPham == idNhomSanPham || idNhomSanPham ==-1)
-               .Select(q=> new ShopNhomSanPhamModel {
-                    db = q,
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.IdGroup = model.IdGroup ?? -1;
+            model.IdShop = model.IdShop ?? "-1";
+
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.ShopNhomSanPhams.Where(q => q.StatusDel == model.StatusDel)
+             .Where(q => q.idShop.ToString() == model.IdShop || model.IdShop == "-1")
+             .Where(q => q.idNhomSanPham == model.IdGroup || model.IdGroup == -1)
+               .Select(q => new ShopNhomSanPhamModel
+               {
+                   db = q,
                    TenNhomSanPham = db.NhomSanPhams.Where(d => d.ID == q.idNhomSanPham).Select(d => d.TenNhom).FirstOrDefault(),
                    TenShop = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.TenShop).FirstOrDefault(),
                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.NguoiCapNhat).Select(d => d.Username).FirstOrDefault()
-               }).OrderByDescending(q => q.db.NgayCapNhat).ToList();
-            return result;
+               }).OrderByDescending(q => q.db.NgayCapNhat).Take(model.PageSize).ToList();
+
+            model.TotalCount = db.ShopNhomSanPhams.Where(q => q.StatusDel == model.StatusDel)
+             .Where(q => q.idShop.ToString() == model.IdShop || model.IdShop == "-1")
+             .Where(q => q.idNhomSanPham == model.IdGroup || model.IdGroup == -1).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.ShopNhomSanPham = resultNew;
+            return model;
         }
 
         public int insert(ShopNhomSanPhamModel model)

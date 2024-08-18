@@ -80,3 +80,41 @@
         </div>
     </div>
 </div>
+@section scripts {
+    <script>
+        function formatNumberCommon(input) {
+            let value = input.value.replace(/,/g, ''); // Remove existing commas
+            if (value) {
+                input.value = parseFloat(value).toLocaleString('en-US'); // Format number with commas
+            } else {
+                input.value = '';
+            }
+        }
+
+      
+
+         $(document).ready(function () {
+            $('#nhomSanPham').change(function () {
+                var groupId = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("getListUseByGroup", "TypeProduct")',
+                    type: 'GET',
+                    data: { groupId: groupId },
+                    success: function (data) {
+                        var loaiSanPhamDropdown = $('#loaiSanPham');
+                        loaiSanPhamDropdown.empty(); // Clear existing options
+                        $.each(data, function (i, item) {
+                            loaiSanPhamDropdown.append($('<option>', {
+                                value: item.id,
+                                text: item.name
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching product types:", status, error);
+                    }
+                });
+            });
+        });
+    </script>
+}

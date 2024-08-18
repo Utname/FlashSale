@@ -8,26 +8,96 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Data
 {
 
     public class mapDonHang : mapCommon
     {
-        public List<DonHangModel> getAllList(string search, int statusDel, string idShop)
+       
+        public DonHangViewModel getAllList(DonHangViewModel model)
         {
-            var result = db.DonHangs.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.SoDienThoai.ToLower().Contains(search) || q.DiaChiGiaoHang.ToLower().Contains(search) || String.IsNullOrEmpty(search))
-                .Where(q => q.idShop.ToString() == idShop || idShop == "-1")
+            model.StatusDel = model.StatusDel ??1;
+            model.IdShop = model.IdShop ?? "-1";
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var resultNew = new List<DonHangModel>();
+            var result = db.DonHangs.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.SoDienThoai.ToLower().Contains(model.Search) || q.DiaChiGiaoHang.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search))
+                .Where(q => q.idShop.ToString() == model.IdShop || model.IdShop == "-1")
                 .Select(q => new DonHangModel
                 {
                     db = q,
                     TenShop = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.TenShop).FirstOrDefault(),
                     TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.NguoiCapNhat).Select(d => d.Username).FirstOrDefault()
-                }).OrderByDescending(q => q.db.NgayCapNhat).ToList();
-            return result;
-        }
+                }).OrderByDescending(q => q.db.NgayCapNhat);
 
+            if(model.TypeAction == 1)
+            {
+                if (model.TimeOrderTo != null && model.TimeOrderCome == null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang >= DateTime.Parse(model.TimeOrderTo)).Skip(skip).Take(model.PageSize).ToList();
+                }
+                else if (model.TimeOrderTo == null && model.TimeOrderCome != null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang <= DateTime.Parse(model.TimeOrderCome)).Skip(skip).Take(model.PageSize).ToList();
+                }
+                else if (model.TimeOrderTo != null && model.TimeOrderCome != null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang >= DateTime.Parse(model.TimeOrderTo) && q.db.ThoiGianDatHang <= DateTime.Parse(model.TimeOrderCome)).Skip(skip).Take(model.PageSize).ToList();
+                }
+                else
+                {
+                    resultNew = result.Skip(skip).Take(model.PageSize).ToList();
+                }
+            }
+            else
+            {
+                if (model.TimeOrderTo != null && model.TimeOrderCome == null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang >= DateTime.Parse(model.TimeOrderTo)).ToList();
+                }
+                else if (model.TimeOrderTo == null && model.TimeOrderCome != null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang <= DateTime.Parse(model.TimeOrderCome)).ToList();
+                }
+                else if (model.TimeOrderTo != null && model.TimeOrderCome != null)
+                {
+                    resultNew = result.Where(q => q.db.ThoiGianDatHang >= DateTime.Parse(model.TimeOrderTo) && q.db.ThoiGianDatHang <= DateTime.Parse(model.TimeOrderCome)).ToList();
+                }
+                else
+                {
+                    resultNew = result.ToList();
+                }
+            }
+            model.TotalCount = db.DonHangs.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.SoDienThoai.ToLower().Contains(model.Search) || q.DiaChiGiaoHang.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search))
+                .Where(q => q.idShop.ToString() == model.IdShop || model.IdShop == "-1")
+                .Select(q => new DonHangModel
+                {
+                    db = q,
+                    TenShop = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.TenShop).FirstOrDefault(),
+                    TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.NguoiCapNhat).Select(d => d.Username).FirstOrDefault()
+                }).Count();
+
+
+            if (model.TimeOrderTo != null) {
+                var timeOrderTo = DateTime.Parse(model.TimeOrderTo);
+                model.TimeOrderTo = timeOrderTo.ToString("yyyy-MM-ddTHH:mm");
+
+            }
+            if (model.TimeOrderCome != null)
+            {
+                var timeOrderCome = DateTime.Parse(model.TimeOrderCome);
+                model.TimeOrderCome = timeOrderCome.ToString("yyyy-MM-ddTHH:mm");
+            }
+
+            model.CurrentPage = model.Page;
+            model.DonHang = resultNew;
+            return model;
+        }
 
 
         public int insert(DonHangModel model)

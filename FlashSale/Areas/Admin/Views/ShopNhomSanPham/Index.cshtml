@@ -1,15 +1,15 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.ShopNhomSanPhamModel>
+﻿
+
+@model FlashSale.Areas.Admin.Model.ShopNhomSanPhamViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "ShopNhomSanPham";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
+
 
 <div class="main-content-inner">
     <div class="row">
@@ -37,7 +37,7 @@
                                     <select class="form-control form-control-lg" name="idShop">
                                         @foreach (var item in new Data.mapTaiKhoanShopSystem().getListUseFilter())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.idShop ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.IdShop ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -48,7 +48,7 @@
                                     <select class="form-control form-control-lg" name="idNhomSanPham">
                                         @foreach (var item in new Data.mapNhomSanPham().getListUseFilter())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.idNhomSanPham ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.IdGroup ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -61,7 +61,7 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapShopNhomSanPham().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -91,7 +91,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.ShopNhomSanPham)
                                 {
                                     <tr>
                                         <td>
@@ -129,16 +129,16 @@
                     </div>
 
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
-                    {
-                        CurrentPage = currentPage,
-                        TotalPages = totalPages,
-                        TotalCount = totalCount,
-                        PageSize = pageSize,
-                        PageRange = 5, // Default range
-                        IdShop = ViewBag.idShop,
-                        IdNhomSanPham = ViewBag.idNhomSanPham,
-                        StatusDel = ViewBag.statusDel.ToString()
-                    })
+               {
+                   CurrentPage = Model.CurrentPage,
+                   TotalPages = totalPages,
+                   TotalCount = Model.TotalCount,
+                   PageSize = Model.PageSize,
+                   PageRange = 5, // Default range
+                   IdShop = Model.IdShop,
+                   IdGroup = Model.IdGroup,
+                   StatusDel = Model.StatusDel
+               })
                 </div>
             </div>
         </div>
@@ -147,6 +147,6 @@
 
 @section scripts {
     <script>
-            // Custom scripts here
+                // Custom scripts here
     </script>
 }

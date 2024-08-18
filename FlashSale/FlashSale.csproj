@@ -124,6 +124,7 @@
   <ItemGroup>
     <Content Include="Areas\Admin\Content\assets\css\bootstrap.min.css" />
     <Content Include="Areas\Admin\Content\assets\css\common.css" />
+    <Content Include="Areas\Admin\Content\assets\css\common2.css" />
     <Content Include="Areas\Admin\Content\assets\css\default-css.css" />
     <Content Include="Areas\Admin\Content\assets\css\font-awesome.min.css" />
     <Content Include="Areas\Admin\Content\assets\css\metisMenu.css" />
@@ -173,6 +174,7 @@
     <Content Include="Areas\Admin\Content\assets\images\team\team-author5.jpg" />
     <Content Include="Areas\Admin\Content\assets\js\bar-chart.js" />
     <Content Include="Areas\Admin\Content\assets\js\bootstrap.min.js" />
+    <Content Include="Areas\Admin\Content\assets\js\CommonJS2.js" />
     <Content Include="Areas\Admin\Content\assets\js\jquery.slicknav.min.js" />
     <Content Include="Areas\Admin\Content\assets\js\jquery.slimscroll.min.js" />
     <Content Include="Areas\Admin\Content\assets\js\line-chart.js" />
@@ -358,6 +360,11 @@
     <Content Include="Areas\Admin\Views\ProductCategory\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ProductCategory\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Insert.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\CommonSelect\_FormDropdownMultiple.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\UploadImage.cshtml" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

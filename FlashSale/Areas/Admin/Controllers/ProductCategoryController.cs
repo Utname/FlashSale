@@ -27,20 +27,15 @@ namespace FlashSale.Areas.Admin.Controllers
         mapProductCategory map = new mapProductCategory();
 
         [AuthorizationCheck(ChucNang = "ProductCategory_Index")]
-        public ActionResult Index(string search, string statusDel, int page = 1)
+
+        public ActionResult Index(ProductCategoryViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-            var allItems = map.getAllList(search, int.Parse(statusDel));
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-            return View(result);
+            model = map.getAllList(model);
+            return View(model);
         }
+
+
+      
 
 
         [AuthorizationCheck(ChucNang = "ProductCategory_Insert")]

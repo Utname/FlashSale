@@ -30,27 +30,13 @@ namespace FlashSale.Areas.Admin.Controllers
         // GET: Admin/ChucNang
         mapChucNang map = new mapChucNang();
 
-        public ActionResult Index(string search, string statusDel, int page = 1)
+
+
+        public ActionResult Index(FunctionViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            int pageSize = 10;
-            int skip = (page - 1) * pageSize;
-
-            var result = map.getAllList(search, int.Parse(statusDel))
-                            .Skip(skip)
-                            .Take(pageSize)
-                            .ToList();
-
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = map.getAllList(search, int.Parse(statusDel)).Count();
-
-            return View(result);
+            model = map.getAllList(model);
+            return View(model);
         }
-
-
 
 
         [HttpGet]

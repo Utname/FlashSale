@@ -27,24 +27,10 @@ namespace FlashSale.Areas.Admin.Controllers
         mapTypeProduct map = new mapTypeProduct();
 
         [AuthorizationCheck(ChucNang = "TypeProduct_Index")]
-        public ActionResult Index(string search, string statusDel, int? idNhomSanPham, int page = 1)
+        public ActionResult Index(TypeProductViewModel model)
         {
-            statusDel = statusDel ?? "1";
-            idNhomSanPham = idNhomSanPham ?? -1;
-            int pageSize = 10;  // Kích thước trang
-            int skip = (page - 1) * pageSize;
-
-            var allItems = map.getAllList(search, int.Parse(statusDel), idNhomSanPham);
-            var result = allItems.Skip(skip).Take(pageSize).ToList();
-
-            ViewBag.search = search;
-            ViewBag.statusDel = int.Parse(statusDel);
-            ViewBag.idNhomSanPham = idNhomSanPham;
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = allItems.Count();
-
-            return View(result);
+            model = map.getAllList(model);
+            return View(model);
         }
 
 
@@ -79,7 +65,7 @@ namespace FlashSale.Areas.Admin.Controllers
             var result = map.db.TypeProducts.Where(q => q.StatusDel == 1).Where(q => q.idProductGroup == groupId).Select(q => new CommonModel
             {
                 id = q.ID,
-                name = q.Code
+                name = q.Name
             }).ToList();
             return Json(result, JsonRequestBehavior.AllowGet);
         }

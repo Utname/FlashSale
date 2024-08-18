@@ -13,20 +13,32 @@ namespace Data
 
     public class mapProductClassification : mapCommon
     {
-        public List<ProductClassificationModel> getAllList(string search, int statusDel, int? idGroup)
+        public ProductClassificationViewModel getAllList(ProductClassificationViewModel model)
         {
-            var result = db.ProductClassifications.Where(q => q.StatusDel == statusDel)
-                .Where(q => q.idProductCategory == idGroup || idGroup == -1)
-                .Where(q => q.Name.ToLower().Contains(search) || String.IsNullOrEmpty(search)
+            model.StatusDel = model.StatusDel ?? 1;
+            model.Search = model.Search == null ? "" : model.Search.ToLower();
+            model.IdGroup = model.IdGroup ?? -1;
+            model.PageSize = 10; // Kích thước trang
+            int skip = (model.Page - 1) * model.PageSize;
+            var result = db.ProductClassifications.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.idProductCategory == model.IdGroup || model.IdGroup == -1)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
                 ).Select(q => new ProductClassificationModel
                 {
                     UpdateByName = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.UpdateBy).Select(d => d.Username).FirstOrDefault(),
                     ProductCategoryName = db.ProductCategories.Where(d => d.ID == q.idProductCategory).Select(d => d.Name).FirstOrDefault(),
                     db = q,
-                }).OrderByDescending(q => q.db.UpdateDate).ToList();
-            return result;
-        }
+                }).OrderByDescending(q => q.db.UpdateDate).Take(model.PageSize).ToList();
 
+            model.TotalCount = db.ProductClassifications.Where(q => q.StatusDel == model.StatusDel)
+                .Where(q => q.idProductCategory == model.IdGroup || model.IdGroup == -1)
+                .Where(q => q.Name.ToLower().Contains(model.Search) || String.IsNullOrEmpty(model.Search)
+                ).Count();
+            var resultNew = result;
+            model.CurrentPage = model.Page;
+            model.ProductClassification = resultNew;
+            return model;
+        }
 
 
         public int insert(ProductClassificationModel model)
@@ -56,6 +68,18 @@ namespace Data
         {
             var list = new List<CommonModel>();
             var result = db.ProductClassifications.Where(q => q.StatusDel == 1).Select(q => new CommonModel
+            {
+                id = q.ID,
+                name = q.Name
+            }).ToList();
+            list.AddRange(result);
+            return list;
+        }
+
+        public List<CommonModel> getListUseByGroup(string idGroup)
+        {
+            var list = new List<CommonModel>();
+            var result = db.ProductClassifications.Where(q=>q.idProductCategory.ToString() ==idGroup).Where(q => q.StatusDel == 1).Select(q => new CommonModel
             {
                 id = q.ID,
                 name = q.Name

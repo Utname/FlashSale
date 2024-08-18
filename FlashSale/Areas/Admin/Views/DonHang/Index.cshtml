@@ -1,14 +1,11 @@
-﻿@model IEnumerable<FlashSale.Areas.Admin.Model.DonHangModel>
+﻿@model FlashSale.Areas.Admin.Model.DonHangViewModel
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int i = 0;
     var controller = "DonHang";
-    int currentPage = ViewBag.CurrentPage;
-    int pageSize = ViewBag.PageSize;
-    int totalCount = ViewBag.TotalCount;
-    int totalPages = ViewBag.TotalPages;
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
 }
 
 <div class="main-content-inner">
@@ -26,7 +23,7 @@
                                     <select class="form-control form-control-lg" name="idShop">
                                         @foreach (var item in new Data.mapTaiKhoanShopSystem().getListUseFilter())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.idShop ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.IdShop ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -37,7 +34,7 @@
                                     <select class="form-control form-control-lg" name="statusDel">
                                         @foreach (var item in new Data.mapTypeProduct().GetListStatusDel())
                                         {
-                                            <option value="@item.id" @(item.id == ViewBag.statusDel ? "selected" : "")>@item.name</option>
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
                                         }
                                     </select>
                                 </div>
@@ -47,13 +44,13 @@
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-12">Thời gian đặt hàng từ</label>
                                 <div class="col-12">
-                                    <input class="form-control form-control-lg" type="datetime-local" name="timeOrderTo" value="@ViewBag.timeOrderTo">
+                                    <input class="form-control form-control-lg" type="datetime-local" name="timeOrderTo" value="@Model.TimeOrderTo">
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-12">Thời gian đặt hàng đến</label>
                                 <div class="col-12">
-                                    <input class="form-control form-control-lg" type="datetime-local" name="timeOrderCome" value="@ViewBag.timeOrderCome">
+                                    <input class="form-control form-control-lg" type="datetime-local" name="timeOrderCome" value="@Model.TimeOrderCome">
                                 </div>
                             </div>
                         </div>
@@ -61,12 +58,14 @@
                             <div class="col-md-6 col-12">
                                 <label class="control-label col-12">Tìm kiếm(Số điện thoại | Địa chỉ nhận hàng)</label>
                                 <div class="col-12">
-                                    <input class="form-control form-control-lg" type="text" name="search" value="@ViewBag.search">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-end">
-                            <button type="button" class="btn btn-warning mb-3 mr-1"> <a href="~/Admin/DonHang/Export" style="color:white">Xuất Excel</a></button>
+                            <button type="button" class="btn btn-warning mb-3 mr-1" onclick="exportExcel()">
+                                <span style="color:white"> Xuất Excel</span>
+                            </button>
                             <button type="button" class="btn btn-success mb-3 mr-1"> <a href="~/Admin/DonHang/Insert" style="color:white">Thêm</a></button>
                             <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter"> Tìm kiếm</button>
                         </div>
@@ -85,7 +84,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.DonHang)
                                 {
                                     <tr>
                                         <td>
@@ -146,16 +145,16 @@
 
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
                     {
-                        CurrentPage = currentPage,
+                        CurrentPage = Model.CurrentPage,
                         TotalPages = totalPages,
-                        TotalCount = totalCount,
-                        PageSize = pageSize,
+                        TotalCount = Model.TotalCount,
+                        PageSize = Model.PageSize,
                         PageRange = 5, // Default range
-                        Search = ViewBag.search,
-                        StatusDel = ViewBag.statusDel.ToString(),
-                        IdShop = ViewBag.idShop,
-                        TimeOrderTo = ViewBag.timeOrderTo,
-                        TimeOrderCome = ViewBag.timeOrderCome
+                        Search = Model.Search,
+                        StatusDel = Model.StatusDel,
+                        IdShop = Model.IdShop,
+                        TimeOrderTo = Model.TimeOrderTo,
+                        TimeOrderCome = Model.TimeOrderTo
                     })
                 </div>
             </div>
@@ -165,6 +164,22 @@
 
 @section scripts {
     <script>
-            // Your custom scripts here
+         function exportExcel() {
+            var form = document.getElementById('formFilters');
+            var formData = new FormData(form);
+            var search = formData.get('search');
+            var statusDel = formData.get('statusDel');
+             var idShop = formData.get('idShop');
+             var timeOrderTo = formData.get('timeOrderTo');
+             var timeOrderCome = formData.get('timeOrderCome');
+            var url = '@Url.Action("Export", "DonHang")' +
+                        '?search=' + encodeURIComponent(search) +
+                        '&statusDel=' + encodeURIComponent(statusDel) +
+                '&idShop=' + encodeURIComponent(idShop) +
+                '&timeOrderTo=' + encodeURIComponent(timeOrderTo) +
+                '&timeOrderCome=' + encodeURIComponent(timeOrderCome)
+                ;
+            window.location.href = url;
+        }
     </script>
 }

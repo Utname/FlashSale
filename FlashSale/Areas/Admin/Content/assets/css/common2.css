@@ -1,0 +1,129 @@
+﻿.image-list {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.image-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 32%;
+    box-sizing: border-box;
+    margin-bottom: 30px; /* Khoảng cách giữa các ảnh */
+    background-color: #f9f9f9;
+}
+
+    .image-item img {
+        width: 100%; /* Chiếm toàn bộ chiều rộng của khối chứa */
+        height: auto; /* Chiều cao tự động để duy trì tỷ lệ khung hình */
+        aspect-ratio: 16 / 9; /* Tỷ lệ khung hình 16:9 */
+        object-fit: cover; /* Đảm bảo hình ảnh phủ đầy khối chứa */
+        margin-bottom: 10px;
+    }
+
+.image-details {
+    margin-bottom: 10px; /* Khoảng cách giữa các thông tin và các nút */
+}
+
+    .image-details div {
+        margin-bottom: 10px; /* Khoảng cách giữa các thông tin */
+        line-height: 1.5; /* Tăng khoảng cách giữa các hàng */
+    }
+
+    .image-details input[type="text"] {
+        width: 100%;
+    }
+
+.image-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px; /* Khoảng cách giữa các nút */
+    margin-top: 10px; /* Khoảng cách giữa các thông tin và các nút */
+}
+
+.save-changes {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-input-display {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    white-space: nowrap; /* Prevent line break */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis if content overflows */
+}
+
+    .custom-select-input-display[readonly] {
+        background-color: #f8f8f8;
+    }
+
+.custom-select-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+    .custom-select-menu.show {
+        display: block;
+    }
+
+.custom-select-option {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .custom-select-option:hover {
+        background-color: #f0f0f0;
+    }
+
+.custom-select-input {
+    margin-right: 10px;
+}
+
+.custom-select-label {
+    margin: 0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Scrollbar styling */
+.custom-select-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-select-menu::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+}
+
+    .custom-select-menu::-webkit-scrollbar-thumb:hover {
+        background-color: #aaa;
+    }

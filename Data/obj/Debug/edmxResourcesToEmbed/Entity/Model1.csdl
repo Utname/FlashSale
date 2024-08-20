@@ -1,21 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="FlashSaleModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="NhomSanPham">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="TenNhom" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="ThuTu" Type="Int32" />
-    <Property Name="idCapCha" Type="Int32" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
-    <Property Name="NguoiCapNhat" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="NgayTao" Type="DateTime" Precision="3" />
-    <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="TypeProducts" Relationship="FlashSaleModel.FK_TypeProducts_NhomSanPham" FromRole="NhomSanPham" ToRole="TypeProduct" />
-    <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_NhomSanPham" FromRole="NhomSanPham" ToRole="Product" />
-  </EntityType>
   <EntityType Name="sysdiagram">
     <Key>
       <PropertyRef Name="diagram_id" />
@@ -52,7 +36,6 @@
     <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="Product" />
   </EntityType>
   <EntityContainer Name="FlashSaleEntities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="NhomSanPhams" EntityType="Self.NhomSanPham" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
     <EntitySet Name="TaiKhoanShops" EntityType="Self.TaiKhoanShop" />
     <EntitySet Name="ChucNangs" EntityType="FlashSaleModel.ChucNang" />
@@ -82,32 +65,15 @@
       <End Role="DonHangChiTiet" EntitySet="DonHangChiTiets" />
     </AssociationSet>
     <EntitySet Name="TypeProducts" EntityType="FlashSaleModel.TypeProduct" />
-    <AssociationSet Name="FK_TypeProducts_NhomSanPham" Association="FlashSaleModel.FK_TypeProducts_NhomSanPham">
-      <End Role="NhomSanPham" EntitySet="NhomSanPhams" />
-      <End Role="TypeProduct" EntitySet="TypeProducts" />
-    </AssociationSet>
     <EntitySet Name="ImageProducts" EntityType="FlashSaleModel.ImageProduct" />
     <EntitySet Name="ReturnAndExchangePolicies" EntityType="FlashSaleModel.ReturnAndExchangePolicy" />
     <EntitySet Name="SanPhams" EntityType="FlashSaleModel.SanPham" />
     <EntitySet Name="Warranties" EntityType="FlashSaleModel.Warranty" />
     <EntitySet Name="ProductClassifications" EntityType="FlashSaleModel.ProductClassification" />
-    <EntitySet Name="ProductCategories" EntityType="FlashSaleModel.ProductCategory" />
-    <AssociationSet Name="FK_ProductClassification_ProductCategory" Association="FlashSaleModel.FK_ProductClassification_ProductCategory">
-      <End Role="ProductCategory" EntitySet="ProductCategories" />
-      <End Role="ProductClassification" EntitySet="ProductClassifications" />
-    </AssociationSet>
     <EntitySet Name="Products" EntityType="FlashSaleModel.Product" />
     <AssociationSet Name="FK_ImageProduct_Product" Association="FlashSaleModel.FK_ImageProduct_Product">
       <End Role="Product" EntitySet="Products" />
       <End Role="ImageProduct" EntitySet="ImageProducts" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Product_NhomSanPham" Association="FlashSaleModel.FK_Product_NhomSanPham">
-      <End Role="NhomSanPham" EntitySet="NhomSanPhams" />
-      <End Role="Product" EntitySet="Products" />
-    </AssociationSet>
-    <AssociationSet Name="FK_Product_ProductCategory" Association="FlashSaleModel.FK_Product_ProductCategory">
-      <End Role="ProductCategory" EntitySet="ProductCategories" />
-      <End Role="Product" EntitySet="Products" />
     </AssociationSet>
     <AssociationSet Name="FK_Product_ReturnAndExchangePolicy" Association="FlashSaleModel.FK_Product_ReturnAndExchangePolicy">
       <End Role="ReturnAndExchangePolicy" EntitySet="ReturnAndExchangePolicies" />
@@ -120,6 +86,24 @@
     <AssociationSet Name="FK_Product_Warranty" Association="FlashSaleModel.FK_Product_Warranty">
       <End Role="Warranty" EntitySet="Warranties" />
       <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <EntitySet Name="NhomSanPhams" EntityType="FlashSaleModel.NhomSanPham" />
+    <EntitySet Name="ProductCategories" EntityType="FlashSaleModel.ProductCategory" />
+    <AssociationSet Name="FK_Product_NhomSanPham" Association="FlashSaleModel.FK_Product_NhomSanPham">
+      <End Role="NhomSanPham" EntitySet="NhomSanPhams" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TypeProducts_NhomSanPham" Association="FlashSaleModel.FK_TypeProducts_NhomSanPham">
+      <End Role="NhomSanPham" EntitySet="NhomSanPhams" />
+      <End Role="TypeProduct" EntitySet="TypeProducts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Product_ProductCategory" Association="FlashSaleModel.FK_Product_ProductCategory">
+      <End Role="ProductCategory" EntitySet="ProductCategories" />
+      <End Role="Product" EntitySet="Products" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductClassification_ProductCategory" Association="FlashSaleModel.FK_ProductClassification_ProductCategory">
+      <End Role="ProductCategory" EntitySet="ProductCategories" />
+      <End Role="ProductClassification" EntitySet="ProductClassifications" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="ChucNang">
@@ -307,18 +291,6 @@
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="NhomSanPham" Relationship="FlashSaleModel.FK_TypeProducts_NhomSanPham" FromRole="TypeProduct" ToRole="NhomSanPham" />
   </EntityType>
-  <Association Name="FK_TypeProducts_NhomSanPham">
-    <End Type="FlashSaleModel.NhomSanPham" Role="NhomSanPham" Multiplicity="0..1" />
-    <End Type="FlashSaleModel.TypeProduct" Role="TypeProduct" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="NhomSanPham">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="TypeProduct">
-        <PropertyRef Name="idProductGroup" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="ImageProduct">
     <Key>
       <PropertyRef Name="ID" />
@@ -399,35 +371,6 @@
     <Property Name="idProductCategory" Type="Int32" />
     <NavigationProperty Name="ProductCategory" Relationship="FlashSaleModel.FK_ProductClassification_ProductCategory" FromRole="ProductClassification" ToRole="ProductCategory" />
   </EntityType>
-  <EntityType Name="ProductCategory">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="CreateDate" Type="DateTime" Precision="3" />
-    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="ProductClassifications" Relationship="FlashSaleModel.FK_ProductClassification_ProductCategory" FromRole="ProductCategory" ToRole="ProductClassification" />
-    <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_ProductCategory" FromRole="ProductCategory" ToRole="Product" />
-  </EntityType>
-  <Association Name="FK_ProductClassification_ProductCategory">
-    <End Type="FlashSaleModel.ProductCategory" Role="ProductCategory" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FlashSaleModel.ProductClassification" Role="ProductClassification" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ProductCategory">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="ProductClassification">
-        <PropertyRef Name="idProductCategory" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="Product">
     <Key>
       <PropertyRef Name="ID" />
@@ -464,11 +407,11 @@
     <Property Name="CreateDate" Type="DateTime" Precision="3" />
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="ImageProducts" Relationship="FlashSaleModel.FK_ImageProduct_Product" FromRole="Product" ToRole="ImageProduct" />
-    <NavigationProperty Name="NhomSanPham" Relationship="FlashSaleModel.FK_Product_NhomSanPham" FromRole="Product" ToRole="NhomSanPham" />
-    <NavigationProperty Name="ProductCategory" Relationship="FlashSaleModel.FK_Product_ProductCategory" FromRole="Product" ToRole="ProductCategory" />
     <NavigationProperty Name="ReturnAndExchangePolicy" Relationship="FlashSaleModel.FK_Product_ReturnAndExchangePolicy" FromRole="Product" ToRole="ReturnAndExchangePolicy" />
     <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_Product_TaiKhoanShop" FromRole="Product" ToRole="TaiKhoanShop" />
     <NavigationProperty Name="Warranty" Relationship="FlashSaleModel.FK_Product_Warranty" FromRole="Product" ToRole="Warranty" />
+    <NavigationProperty Name="NhomSanPham" Relationship="FlashSaleModel.FK_Product_NhomSanPham" FromRole="Product" ToRole="NhomSanPham" />
+    <NavigationProperty Name="ProductCategory" Relationship="FlashSaleModel.FK_Product_ProductCategory" FromRole="Product" ToRole="ProductCategory" />
   </EntityType>
   <Association Name="FK_ImageProduct_Product">
     <End Type="FlashSaleModel.Product" Role="Product" Multiplicity="1" />
@@ -479,34 +422,6 @@
       </Principal>
       <Dependent Role="ImageProduct">
         <PropertyRef Name="idProduct" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Product_NhomSanPham">
-    <End Type="FlashSaleModel.NhomSanPham" Role="NhomSanPham" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FlashSaleModel.Product" Role="Product" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="NhomSanPham">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Product">
-        <PropertyRef Name="idGroup" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_Product_ProductCategory">
-    <End Type="FlashSaleModel.ProductCategory" Role="ProductCategory" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FlashSaleModel.Product" Role="Product" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="ProductCategory">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="Product">
-        <PropertyRef Name="idProductCategory" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -547,6 +462,92 @@
       </Principal>
       <Dependent Role="Product">
         <PropertyRef Name="idWanrranty" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="NhomSanPham">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TenNhom" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ThuTu" Type="Int32" />
+    <Property Name="idCapCha" Type="Int32" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
+    <Property Name="NguoiCapNhat" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="NgayTao" Type="DateTime" Precision="3" />
+    <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Image" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_NhomSanPham" FromRole="NhomSanPham" ToRole="Product" />
+    <NavigationProperty Name="TypeProducts" Relationship="FlashSaleModel.FK_TypeProducts_NhomSanPham" FromRole="NhomSanPham" ToRole="TypeProduct" />
+  </EntityType>
+  <EntityType Name="ProductCategory">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_ProductCategory" FromRole="ProductCategory" ToRole="Product" />
+    <NavigationProperty Name="ProductClassifications" Relationship="FlashSaleModel.FK_ProductClassification_ProductCategory" FromRole="ProductCategory" ToRole="ProductClassification" />
+  </EntityType>
+  <Association Name="FK_Product_NhomSanPham">
+    <End Type="FlashSaleModel.NhomSanPham" Role="NhomSanPham" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.Product" Role="Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NhomSanPham">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idGroup" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TypeProducts_NhomSanPham">
+    <End Type="FlashSaleModel.NhomSanPham" Role="NhomSanPham" Multiplicity="0..1" />
+    <End Type="FlashSaleModel.TypeProduct" Role="TypeProduct" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NhomSanPham">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="TypeProduct">
+        <PropertyRef Name="idProductGroup" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Product_ProductCategory">
+    <End Type="FlashSaleModel.ProductCategory" Role="ProductCategory" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.Product" Role="Product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Product">
+        <PropertyRef Name="idProductCategory" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductClassification_ProductCategory">
+    <End Type="FlashSaleModel.ProductCategory" Role="ProductCategory" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.ProductClassification" Role="ProductClassification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductCategory">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ProductClassification">
+        <PropertyRef Name="idProductCategory" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

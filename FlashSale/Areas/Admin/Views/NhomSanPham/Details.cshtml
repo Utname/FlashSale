@@ -34,7 +34,12 @@
                                     <div class="form-group">
                                         @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên nhóm", "db.TenNhom", Model.db.TenNhom, true))
                                     </div>
-
+                                    <div class="col-md-6 col-12">
+                                        <label class="control-label col-md-12">Hình ảnh</label>
+                                        <div class="col-md-12">
+                                            <img src="@Url.Content(Model.db.Image)" style=" aspect-ratio: 16/9;" />
+                                        </div>
+                                    </div>
                                     <div class="d-flex justify-content-end">
                                         <div class="form-group">
                                             <div class="col-md-offset-2 col-md-12">

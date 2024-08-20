@@ -25,7 +25,6 @@ namespace Data.Entity
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<NhomSanPham> NhomSanPhams { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<TaiKhoanShop> TaiKhoanShops { get; set; }
         public virtual DbSet<ChucNang> ChucNangs { get; set; }
@@ -40,7 +39,8 @@ namespace Data.Entity
         public virtual DbSet<SanPham> SanPhams { get; set; }
         public virtual DbSet<Warranty> Warranties { get; set; }
         public virtual DbSet<ProductClassification> ProductClassifications { get; set; }
-        public virtual DbSet<ProductCategory> ProductCategories { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<NhomSanPham> NhomSanPhams { get; set; }
+        public virtual DbSet<ProductCategory> ProductCategories { get; set; }
     }
 }

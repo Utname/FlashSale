@@ -45,13 +45,20 @@ namespace FlashSale.Areas.Admin.Controllers
             return View(new NhomSanPhamModel());
         }
 
+
+
         [HttpPost]
-        public ActionResult Insert(NhomSanPhamModel model)
+        public ActionResult Insert(NhomSanPhamModel model, HttpPostedFileBase Image)
         {
 
             int check = CheckValidation(model);
             if (check == 1)
             {
+                model.db.Image = map.anhMacDinh;
+                if (Image != null)
+                {
+                    model.db.Image = getFilePath(Image);
+                }
                 model.db.NgayTao = DateTime.Now;
                 model.db.StatusDel = 1;
                 model.db.NgayCapNhat = DateTime.Now;
@@ -61,6 +68,52 @@ namespace FlashSale.Areas.Admin.Controllers
             return View(model);
 
         }
+
+
+        string getFilePath(HttpPostedFileBase fileUpload)
+        {
+            List<string> exts = new List<string>() { ".jpeg", ".png", ".gif", ".jpg" };
+            string ten = Path.GetFileNameWithoutExtension(fileUpload.FileName);
+            string ext = Path.GetExtension(fileUpload.FileName);
+            string duongDanLuuFile = "";
+            if (fileUpload.ContentLength > 0 & exts.Count(m => m == ext.ToLower()) > 0)
+            {
+                //Lưu
+                //--Thêm thư mục con teho năm-tháng-ngày
+                string folderThoiGian = DateTime.Now.Year + "-" + DateTime.Now.Month + "-" + DateTime.Now.Day;
+                //1.Xác định thư mục lưu
+                string folder = map.pathFileUpLoadImamge + folderThoiGian + "/";
+                if (System.IO.File.Exists(Server.MapPath(folder)) == false)
+                {
+                    System.IO.Directory.CreateDirectory(Server.MapPath(folder));
+                }
+                //Tính kilobyte
+                var kb = fileUpload.ContentLength / 1024;
+                var mb = (float)kb / 1024;
+                //2.Xác định tên file
+                string tenFile = fileUpload.FileName;
+                //3.Xác định đường dẫn tuyệt đối của file
+                string ddTuyetDoi = Server.MapPath(folder + tenFile);
+                //4.Kiểm tra tồn tại => Có tồn tại file cũ thì xó   a
+                //if (System.IO.File.Exists(ddTuyetDoi) == true)
+                //{
+                //    System.IO.File.Delete(ddTuyetDoi);
+                //}
+                //5.Trùng tên file
+                int i = 0;
+                duongDanLuuFile = folder + tenFile;
+                while (System.IO.File.Exists(ddTuyetDoi) == true)
+                {
+                    i++;
+                    tenFile = ten + "_" + i + ext;
+                    ddTuyetDoi = Server.MapPath(folder + tenFile);
+                }
+                fileUpload.SaveAs(ddTuyetDoi);
+
+            }
+            return duongDanLuuFile;
+        }
+
 
         int CheckValidation(NhomSanPhamModel model)
         {
@@ -88,11 +141,17 @@ namespace FlashSale.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(NhomSanPhamModel model)
+        public ActionResult Edit(NhomSanPhamModel model , HttpPostedFileBase Image)
         {
             int check = CheckValidation(model);
             if (check == 1)
             {
+                var data = map.details(model.db.ID);
+                model.db.Image = data.db.Image;
+                if (Image != null)
+                {
+                    model.db.Image = getFilePath(Image);
+                }
                 model.db.NgayCapNhat = DateTime.Now;
                 map.edit(model);
                 return Redirect("Index");
@@ -100,6 +159,8 @@ namespace FlashSale.Areas.Admin.Controllers
             return View(model);
 
         }
+     
+
 
         [HttpGet]
         [AuthorizationCheck(ChucNang = "NhomSanPham_UpdateStatusDel")]

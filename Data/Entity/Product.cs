@@ -54,10 +54,10 @@ namespace Data.Entity
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ImageProduct> ImageProducts { get; set; }
-        public virtual NhomSanPham NhomSanPham { get; set; }
-        public virtual ProductCategory ProductCategory { get; set; }
         public virtual ReturnAndExchangePolicy ReturnAndExchangePolicy { get; set; }
         public virtual TaiKhoanShop TaiKhoanShop { get; set; }
         public virtual Warranty Warranty { get; set; }
+        public virtual NhomSanPham NhomSanPham { get; set; }
+        public virtual ProductCategory ProductCategory { get; set; }
     }
 }

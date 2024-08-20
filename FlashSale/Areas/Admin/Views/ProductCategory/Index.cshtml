@@ -93,6 +93,7 @@
                         </table>
                     </div>
 
+
                     @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
                {
                    CurrentPage = Model.CurrentPage,
@@ -102,7 +103,8 @@
                    PageRange = 5, // Default range
                    Search = Model.Search,
                    StatusDel = Model.StatusDel
-               )}
+
+               })
                 </div>
             </div>
         </div>

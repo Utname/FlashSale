@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FlashSale.Areas.Admin.Model;
+using FlashSale.Areas.Portal.Model;
+using Portal.Map;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +11,13 @@ namespace FlashSale.Areas.Portal.Controllers
 {
     public class HomeController : Controller
     {
+        mapHome map = new mapHome();
         // GET: Portal/Home
         public ActionResult Index()
         {
-            return View();
+            var model = new HomeModel();
+            model.listGroupProduct = map.getListGroupProduct();
+            return View(model);
         }
     }
 }

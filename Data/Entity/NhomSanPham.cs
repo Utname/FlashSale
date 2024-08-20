@@ -17,8 +17,8 @@ namespace Data.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public NhomSanPham()
         {
-            this.TypeProducts = new HashSet<TypeProduct>();
             this.Products = new HashSet<Product>();
+            this.TypeProducts = new HashSet<TypeProduct>();
         }
     
         public int ID { get; set; }
@@ -30,10 +30,11 @@ namespace Data.Entity
         public string NguoiCapNhat { get; set; }
         public Nullable<System.DateTime> NgayTao { get; set; }
         public string NguoiTao { get; set; }
+        public string Image { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TypeProduct> TypeProducts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TypeProduct> TypeProducts { get; set; }
     }
 }

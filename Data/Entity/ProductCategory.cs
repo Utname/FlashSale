@@ -17,8 +17,8 @@ namespace Data.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ProductCategory()
         {
-            this.ProductClassifications = new HashSet<ProductClassification>();
             this.Products = new HashSet<Product>();
+            this.ProductClassifications = new HashSet<ProductClassification>();
         }
     
         public int ID { get; set; }
@@ -31,8 +31,8 @@ namespace Data.Entity
         public string Note { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductClassification> ProductClassifications { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductClassification> ProductClassifications { get; set; }
     }
 }

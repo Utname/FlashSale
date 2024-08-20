@@ -94,6 +94,7 @@ namespace Data
                 item.ThuTu = model.db.ThuTu;
                 item.idCapCha = model.db.idCapCha;
                 item.TenNhom = model.db.TenNhom;
+                item.Image = model.db.Image;
                 item.NgayCapNhat = DateTime.Now;
                 db.SaveChanges();
                 return 1;

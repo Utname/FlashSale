@@ -79,6 +79,7 @@
     <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
     <Property Name="NgayTao" Type="datetime" />
     <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
+    <Property Name="Image" Type="nvarchar" MaxLength="500" />
   </EntityType>
   <EntityType Name="PhanQuyen">
     <Key>

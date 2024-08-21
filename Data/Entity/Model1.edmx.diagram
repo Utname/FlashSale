@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="596616c1ae6d44aba4b05e3b5dee41bd" Name="Diagram1" ZoomLevel="51">
+      <Diagram DiagramId="596616c1ae6d44aba4b05e3b5dee41bd" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="FlashSaleModel.sysdiagram" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="FlashSaleModel.TaiKhoanShop" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="FlashSaleModel.ChucNang" Width="1.5" PointX="5.75" PointY="1.5" />
@@ -35,6 +35,7 @@
         <AssociationConnector Association="FlashSaleModel.FK_TypeProducts_NhomSanPham" />
         <AssociationConnector Association="FlashSaleModel.FK_Product_ProductCategory" />
         <AssociationConnector Association="FlashSaleModel.FK_ProductClassification_ProductCategory" />
+        <EntityTypeShape EntityType="FlashSaleModel.Banner" Width="1.5" PointX="5.375" PointY="9.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

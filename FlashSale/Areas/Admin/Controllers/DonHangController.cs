@@ -54,11 +54,11 @@ namespace FlashSale.Areas.Admin.Controllers
             int check = CheckValidation(model, 1);
             if (check == 1)
             {
-                model.db.TongTienSanPham = decimal.Parse(model.TongTienSanPhamView.Replace(",", ""));
-                model.db.TrietKhau = decimal.Parse(model.TrietKhauView.Replace(",", ""));
-                model.db.PhiShip = decimal.Parse(model.PhiShipView.Replace(",", ""));
-                model.db.Vat = decimal.Parse(model.VatView.Replace(",", ""));
-                model.db.TongThanhToan = decimal.Parse(model.TongThanhToanView.Replace(",", ""));
+                model.db.TongTienSanPham = map.FormatDecimalView(model.TongTienSanPhamView); ;
+                model.db.TrietKhau = map.FormatDecimalView(model.TrietKhauView); ;
+                model.db.PhiShip = map.FormatDecimalView(model.PhiShipView); ;
+                model.db.Vat = map.FormatDecimalView(model.VatView); ;
+                model.db.TongThanhToan = map.FormatDecimalView(model.TongThanhToanView); ;
                 model.db.ID = Guid.NewGuid();
                 model.db.NgayTao = DateTime.Now;
                 model.db.StatusDel = 1;
@@ -164,11 +164,11 @@ namespace FlashSale.Areas.Admin.Controllers
             int check = CheckValidation(model, 2);
             if (check == 1)
             {
-                model.db.TongTienSanPham = decimal.Parse(model.TongTienSanPhamView.Replace(",", ""));
-                model.db.TrietKhau = decimal.Parse(model.TrietKhauView.Replace(",", ""));
-                model.db.PhiShip = decimal.Parse(model.PhiShipView.Replace(",", ""));
-                model.db.Vat = decimal.Parse(model.VatView.Replace(",", ""));
-                model.db.TongThanhToan = decimal.Parse(model.TongThanhToanView.Replace(",", ""));
+                model.db.TongTienSanPham = map.FormatDecimalView(model.TongTienSanPhamView);;
+                model.db.TrietKhau = map.FormatDecimalView(model.TrietKhauView);;
+                model.db.PhiShip = map.FormatDecimalView(model.PhiShipView); ;
+                model.db.Vat = map.FormatDecimalView(model.VatView); ;
+                model.db.TongThanhToan = map.FormatDecimalView(model.TongThanhToanView); ;
                 model.db.NgayCapNhat = DateTime.Now;
                 map.edit(model);
                 return Redirect("Index");

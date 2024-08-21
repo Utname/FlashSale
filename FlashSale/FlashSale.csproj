@@ -344,6 +344,7 @@
     <Compile Include="Areas\Admin\Controllers\DonHangChiTietController.cs" />
     <Compile Include="Areas\Admin\Controllers\DonHangController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BannerController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReturnAndExchangePolicyController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductClassificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductCategoryController.cs" />
@@ -357,7 +358,6 @@
     <Compile Include="Areas\Admin\Controllers\NhomSanPhamController.cs" />
     <Compile Include="Areas\Portal\Controllers\HomeController.cs" />
     <Compile Include="Areas\Portal\Controllers\TaiKhoanShopController.cs" />
-    <Compile Include="Areas\Portal\Model\HomeModel.cs" />
     <Compile Include="Areas\Portal\PortalAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -469,6 +469,10 @@
     <Content Include="Areas\Portal\Content\fonts\Material-Design-Iconic-Fontd1f1.woff" />
     <Content Include="Areas\Portal\Content\fonts\Material-Design-Iconic-Fontd1f1.woff2" />
     <Content Include="Areas\Portal\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Insert.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Banner\Details.cshtml" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

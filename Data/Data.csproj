@@ -73,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Entity\Banner.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\ChucNang.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -145,6 +148,7 @@
     <Compile Include="Map\mapChucNang.cs" />
     <Compile Include="Map\mapDonHangChiTiet.cs" />
     <Compile Include="Map\mapDonHang.cs" />
+    <Compile Include="Map\mapBanner.cs" />
     <Compile Include="Map\mapReturnAndExchangePolicy.cs" />
     <Compile Include="Map\mapProductClassification.cs" />
     <Compile Include="Map\mapProductCategory.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="Model\ImageProductModel.cs" />
     <Compile Include="Model\PaginationModel.cs" />
     <Compile Include="Model\FunctionModel.cs" />
+    <Compile Include="Model\BannerModel.cs" />
     <Compile Include="Model\ReturnAndExchangePolicyModel.cs" />
     <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\WarrantyModel.cs" />

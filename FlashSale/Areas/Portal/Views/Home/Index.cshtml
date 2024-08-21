@@ -4,6 +4,195 @@
     ViewBag.Title = "Index";
     Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
 }
+<!-- Begin Slider With Category Menu Area -->
+<div class="slider-with-banner">
+    <div class="container">
+        <div class="row">
+            <!-- Begin Category Menu Area -->
+            <div class="col-lg-3">
+                <!--Category Menu Start-->
+                <div class="category-menu">
+                    <div class="category-heading">
+                        <h2 class="categories-toggle"><span>Nhóm sản phẩm</span></h2>
+                    </div>
+                    <div id="cate-toggle" class="category-menu-list">
+                        <ul>
+                            @foreach (var group in Model.listMenuGroupProduct)
+                            {
+                                <li class="right-menu">
+                                    <a href="shop-left-sidebar.html" style="font-weight:bold">@group.Name</a>
+                                    <ul class="cat-mega-menu">
+                                        <li class="right-menu cat-mega-title">
+                                            <ul>
+                                                @foreach (var item2 in group.listTypeProduct)
+                                                {
+                                                    <li><a href="#" style="font-weight:bold">@item2.name</a></li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
 
-<h2>Index</h2>
+                            @foreach (var group in Model.listMenuGroupProductMore)
+                            {
+                                <li class="right-menu rx-child">
+                                    <a href="shop-left-sidebar.html" style="font-weight:bold">@group.Name</a>
+                                    <ul class="cat-mega-menu">
+                                        <li class="right-menu cat-mega-title">
+                                            <ul>
+                                                @foreach (var item2 in group.listTypeProduct)
+                                                {
+                                                    <li><a href="#" style="font-weight:bold">@item2.name</a></li>
+                                                }
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
 
+                            <li class="rx-parent">
+                                <a class="rx-default">Xem thêm</a>
+                                <a class="rx-show">Ẩn bớt</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--Category Menu End-->
+            </div>
+            <!-- Category Menu Area End Here -->
+            <!-- Begin Slider Area -->
+            <div class="col-lg-9">
+                <div class="slider-area pt-sm-30 pt-xs-30">
+                    <div class="slider-active owl-carousel">
+                        <!-- Begin Single Slide Area -->
+
+                        @foreach (var banner in Model.listBanner)
+                        {
+
+                            <div class="single-slide align-center-left animation-style-02 bg-4 " style="background-image: url('@Url.Content(banner.Image)')
+                                        ;background-repeat: no-repeat;
+                                        background-position: center center;
+                                        background-size: cover;
+                                        min-height: 475px;
+                                        width: 100%;
+                                ">
+                                <div class="slider-progress"></div>
+                                <div class="slider-content">
+                                    @Html.Raw(banner.Description)
+                                    <div class="default-btn slide-btn">
+                                        <a class="links" href="shop-left-sidebar.html">Shopping Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <!-- Slider Area End Here -->
+        </div>
+    </div>
+</div>
+<!-- Slider With Category Menu Area End Here -->
+<!-- Begin Li's Static Banner Area -->
+<div class="li-static-banner pt-20 pt-sm-30 pt-xs-30">
+    <div class="container">
+        <div class="row">
+            <!-- Begin Single Banner Area -->
+            <div class="col-lg-4 col-md-4">
+                <div class="single-banner pb-xs-30">
+                    <a href="#">
+                        <img src="~/Areas/Portal/Content/images/banner/1_3.jpg" alt="Li's Static Banner">
+                    </a>
+                </div>
+            </div>
+            <!-- Single Banner Area End Here -->
+            <!-- Begin Single Banner Area -->
+            <div class="col-lg-4 col-md-4">
+                <div class="single-banner pb-xs-30">
+                    <a href="#">
+                        <img src="~/Areas/Portal/Content/images/banner/1_4.jpg" alt="Li's Static Banner">
+                    </a>
+                </div>
+            </div>
+            <!-- Single Banner Area End Here -->
+            <!-- Begin Single Banner Area -->
+            <div class="col-lg-4 col-md-4">
+                <div class="single-banner">
+                    <a href="#">
+                        <img src="~/Areas/Portal/Content/images/banner/1_5.jpg" alt="Li's Static Banner">
+                    </a>
+                </div>
+            </div>
+            <!-- Single Banner Area End Here -->
+        </div>
+    </div>
+</div>
+
+<section class="product-area li-trending-product li-trending-product-2 pt-60 pb-45">
+    <div class="container">
+        <div class="row">
+            <!-- Begin Li's Tab Menu Area -->
+            <div class="col-lg-12">
+                <div class="li-product-tab li-trending-product-tab">
+                    <h2>
+                        <span>Nhóm sản phẩm</span>
+                    </h2>
+                </div>
+                <!-- Begin Li's Tab Menu Content Area -->
+                <div class="tab-content li-tab-content li-trending-product-content">
+                    <div id="home1" class="tab-pane show fade in active">
+                        <div class="row">
+                            <div class="product-active owl-carousel">
+
+                                @foreach (var group in Model.listGroupProduct)
+                                {
+                                    <div class="col-lg-12">
+                                        <!-- single-product-wrap start -->
+                                        <div class="single-product-wrap">
+                                            <div class="product-image">
+                                                <a href="single-product.html">
+                                                    <img src="@group.image" alt="Li's Product Image">
+                                                </a>
+                                                <span class="sticker">New</span>
+                                            </div>
+                                            <div class="product_desc">
+                                                <div class="product_desc_info">
+                                                    <div class="product-review">
+                                                        @*<h5 class="manufacturer">
+                                                                <a href="shop-left-sidebar.html">@item.name</a>
+                                                            </h5>*@
+                                                        @*<div class="rating-box">
+                                                                <ul class="rating">
+                                                                    <li><i class="fa fa-star-o"></i></li>
+                                                                    <li><i class="fa fa-star-o"></i></li>
+                                                                    <li><i class="fa fa-star-o"></i></li>
+                                                                    <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                                                    <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                                                </ul>
+                                                            </div>*@
+                                                    </div>
+                                                    <h4><a class="product_name" href="single-product.html">@group.name</a></h4>
+                                                </div>
+                                                <div class="add-actions">
+                                                    <ul class="add-actions-link">
+                                                        <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                        <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Tab Menu Content Area End Here -->
+            </div>
+            <!-- Tab Menu Area End Here -->
+        </div>
+    </div>
+</section>

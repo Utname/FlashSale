@@ -85,9 +85,9 @@ namespace FlashSale.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(DonHangChiTietModel model)
         {
-            model.db.GiaBan = decimal.Parse(model.GiaBanView.Replace(",", ""));
-            model.db.SoLuong = float.Parse(model.SoLuongView.Replace(",", ""));
-            model.db.GiaSale = decimal.Parse(model.GiaSaleView.Replace(",", ""));
+            model.db.GiaBan = map.FormatDecimalView(model.GiaBanView);
+            model.db.SoLuong =  map.FormatFloatView(model.SoLuongView);
+            model.db.GiaSale = map.FormatDecimalView(model.GiaSaleView);
             int check = CheckValidation(model, 2);
             if (check == 1)
             {

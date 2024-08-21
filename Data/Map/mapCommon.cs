@@ -64,6 +64,29 @@ namespace Data
             return regex.IsMatch(email);
         }
 
+        public decimal FormatDecimalView(string number)
+        {
+            return decimal.Parse(number.Replace(",", ""));
+        }
+
+
+        public string FormatDecimalViewString(decimal number)
+        {
+            return ((decimal) number).ToString("#,##0");
+        }
+
+      
+
+        public int FormatIntView(string number)
+        {
+            return int.Parse(number.Replace(",", ""));
+        }
+
+        public float FormatFloatView(string number)
+        {
+            return float.Parse(number.Replace(",", ""));
+        }
+
         public bool IsValidPassword(string password)
         {
             // Regular expression for validating a password
@@ -108,4 +131,6 @@ namespace Data
         }
 
     }
+
+
 }

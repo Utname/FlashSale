@@ -53,6 +53,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Map\mapHome.cs" />
     <Compile Include="Map\mapTaiKhoanShop.cs" />
+    <Compile Include="Model\HomeModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

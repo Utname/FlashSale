@@ -42,5 +42,6 @@ namespace Data.Entity
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<NhomSanPham> NhomSanPhams { get; set; }
         public virtual DbSet<ProductCategory> ProductCategories { get; set; }
+        public virtual DbSet<Banner> Banners { get; set; }
     }
 }

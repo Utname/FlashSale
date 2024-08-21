@@ -144,11 +144,11 @@ namespace Data
                 TenNguoiCapNhat = db.TaiKhoanShops.Where(d => d.ID.ToString() == q.NguoiCapNhat).Select(d => d.Username).FirstOrDefault(),
 
             }).SingleOrDefault();
-            result.TongTienSanPhamView = ((decimal)result.db.TongTienSanPham).ToString("#,##0");
-            result.TrietKhauView = ((decimal)result.db.TrietKhau).ToString("#,##0");
-            result.PhiShipView = ((decimal)result.db.PhiShip).ToString("#,##0");
-            result.VatView = ((decimal)result.db.Vat).ToString("#,##0");
-            result.TongThanhToanView = ((decimal)result.db.TongThanhToan).ToString("#,##0");
+            result.TongTienSanPhamView = FormatDecimalViewString((decimal)result.db.TongTienSanPham);
+            result.TrietKhauView = FormatDecimalViewString((decimal)result.db.TrietKhau);
+            result.PhiShipView = FormatDecimalViewString((decimal)result.db.PhiShip);
+            result.VatView = FormatDecimalViewString((decimal)result.db.Vat);
+            result.TongThanhToanView = FormatDecimalViewString((decimal)result.db.TongThanhToan);
             return result;
         }
 

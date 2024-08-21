@@ -16,6 +16,9 @@ namespace FlashSale.Areas.Portal.Controllers
         public ActionResult Index()
         {
             var model = new HomeModel();
+            model.listBanner = map.getListBanner();
+            model.listMenuGroupProduct = map.getListMenuPGroupProduct().Skip(0).Take(8).ToList();
+            model.listMenuGroupProductMore = map.getListMenuPGroupProduct().Skip(9).ToList();
             model.listGroupProduct = map.getListGroupProduct();
             return View(model);
         }

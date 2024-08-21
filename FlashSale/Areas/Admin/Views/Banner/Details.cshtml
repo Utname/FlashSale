@@ -1,0 +1,57 @@
+﻿@model FlashSale.Areas.Admin.Model.BannerModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Xem banner</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.db.ID)
+                                <div class="form-group row">
+                                    <div class="col-md-6 col-12">
+                                        @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên", "db.Name", Model.db.Name, true))
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <label class="control-label col-md-12">Hình ảnh</label>
+                                    <div class="col-md-12">
+                                        <img src="@Url.Content(Model.db.Image)" style=" aspect-ratio: 16/9;" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-12">
+                                        Mô tả
+                                        @Html.ValidationMessage("db.Description", "", new { @class = "text-danger" })
+                                    </label>
+                                    <div class="col-md-12">
+                                        <textarea disabled name="db.Description" class="form-control">@Model.db.Description</textarea>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-12">
+                                            <button type="button" class="btn btn-default mr-1"> <a href="~/Admin/Banner/Index" style="color:black">Đóng</a></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

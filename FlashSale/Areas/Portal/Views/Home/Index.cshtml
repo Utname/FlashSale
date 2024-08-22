@@ -129,7 +129,96 @@
         </div>
     </div>
 </div>
+<!-- Begin Li's Special Product Area -->
+<section class="product-area li-laptop-product Special-product pt-60 pb-45">
+    <div class="container">
+        <div class="row">
+            <!-- Begin Li's Section Area -->
+            <div class="col-lg-12">
+                <div class="li-section-title">
+                    <h2>
+                        <span>Hot Sales</span>
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="special-product-active owl-carousel">
+                        @foreach (var item in Model.listHotSaleProduct)
+                        {
+                            <div class="col-lg-12">
+                                <!-- single-product-wrap start -->
+                                <div class="single-product-wrap">
+                                    <div class="product-image">
+                                        <a href="single-product.html">
+                                            <img src="@item.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
+                                        </a>
+                                        <span class="sticker">New</span>
+                                    </div>
+                                    <div class="product_desc">
+                                        <div class="product_desc_info">
+                                            <div class="product-review">
+                                                <h5 class="manufacturer">
+                                                    <a href="shop-left-sidebar.html">@item.TypeProductName</a>
+                                                </h5>
+                                                <div class="rating-box">
+                                                    <ul class="rating">
+                                                        <li><span>@item.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <h4><a class="product_name" href="single-product.html">@item.Name</a></h4>
+                                            <div class="price-box">
+                                                @if (item.DiscountPercentage > 0)
+                                                {
+                                                    <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice - item.DiscountFrom))</span>
+                                                    if (item.DiscountUpTo != null && item.DiscountUpTo > 0)
+                                                    {
+                                                        <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", item.EndingPrice - item.DiscountUpTo))</span>
+                                                    }
 
+                                                    <span class="old-price">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))</span>
+                                                    if (item.EndingPrice != null && item.EndingPrice > 0)
+                                                    {
+                                                        <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", item.EndingPrice))</span>
+
+                                                    }
+                                                    <span class="discount-percentage">-@item.DiscountPercentage%</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))</span>
+                                                }
+
+
+                                            </div>
+
+                                            <div class="countersection">
+                                                <div class="li-countdown" data-endtime="@(item.EndTime.HasValue ? item.EndTime.Value.ToString("yyyy/MM/dd HH:mm:ss") : "")">
+                                                    <!-- The countdown timer will be injected here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="add-actions">
+                                            <ul class="add-actions-link">
+                                                <li class="add-cart active"><a href="#">Add to cart</a></li>
+                                                <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- single-product-wrap end -->
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- Li's Section Area End Here -->
+        </div>
+    </div>
+</section>
+<!-- Li's Special Product Area End Here -->
 <section class="product-area li-trending-product li-trending-product-2 pt-60 pb-45">
     <div class="container">
         <div class="row">
@@ -196,3 +285,139 @@
         </div>
     </div>
 </section>
+@foreach (var group in Model.listProductHome)
+{
+
+
+    <!-- Begin Li's Laptops Product | Home V2 Area -->
+    <section class="product-area li-laptop-product li-laptop-product-2 pb-45">
+        <div class="container">
+            <div class="row">
+                <!-- Begin Li's Section Area -->
+                <div class="col-lg-12">
+                    <div class="li-section-title">
+                        <h2>
+                            <span>@group.GroupName</span>
+                        </h2>
+                        @foreach (var type in group.listTypeProdctHome)
+                        {
+                            <ul class="li-sub-category-list">
+                                <li class="active"><a href="shop-left-sidebar.html">@type.TypeName</a></li>
+                            </ul>
+                        }
+                    </div>
+                  
+                        <div class="li-banner-2 pt-15">
+                            <div class="row">
+                                <!-- Begin Single Banner Area -->
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="single-banner">
+                                        <a href="#">
+                                            <img src="~/Areas/Portal/Content/images/banner/2_1.jpg" alt="Li's Static Banner">
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Single Banner Area End Here -->
+                                <!-- Begin Single Banner Area -->
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="single-banner pt-xs-30">
+                                        <a href="#">
+                                            <img src="~/Areas/Portal/Content/images/banner/2_2.jpg" alt="Li's Static Banner">
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Single Banner Area End Here -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="product-active owl-carousel">
+                                @foreach (var product in group.listProductHome)
+                                {
+                                    <div class="col-lg-12">
+                                        <!-- single-product-wrap start -->
+                                        <div class="single-product-wrap">
+                                            <div class="product-image">
+                                                <a href="single-product.html">
+                                                    <img src="@product.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
+                                                </a>
+                                                <span class="sticker">New</span>
+                                            </div>
+                                            <div class="product_desc">
+                                                <div class="product_desc_info">
+                                                    <div class="product-review">
+                                                        <h5 class="manufacturer">
+                                                        </h5>
+                                                        <div class="rating-box">
+                                                            <ul class="rating">
+                                                                <li><span>@product.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <h4><a class="product_name" href="single-product.html">@product.Name</a></h4>
+                                                    <div class="price-box">
+                                                        @if (product.DiscountPercentage > 0)
+                                                        {
+                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice - product.DiscountFrom))</span>
+                                                            if (product.DiscountUpTo != null && product.DiscountUpTo > 0)
+                                                            {
+                                                                <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice - product.DiscountUpTo))</span>
+                                                            }
+
+                                                            <span class="old-price">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))</span>
+                                                            if (product.EndingPrice != null && product.EndingPrice > 0)
+                                                            {
+                                                                <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", product.EndingPrice))</span>
+
+                                                            }
+                                                            <span class="discount-percentage">-@product.DiscountPercentage%</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))</span>
+                                                        }
+
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="add-actions">
+                                                    <ul class="add-actions-link">
+                                                        <li class="add-cart active"><a href="#">Add to cart</a></li>
+                                                        <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                        <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- single-product-wrap end -->
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                <!-- Li's Section Area End Here -->
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Li's Laptops Product | Home V2 Area End Here -->
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".li-countdown").each(function () {
+                var endTime = $(this).data("endtime");
+                $(this).countdown(endTime, function (event) {
+                    $(this).html(
+                        event.strftime('<div class="count">%D <span>Days:</span></div> <div class="count">%H <span>Hours:</span></div> <div class="count">%M <span>Mins:</span></div><div class="count"> %S <span>Secs</span></div>')
+                    );
+                });
+            });
+        });
+    </script>
+}
+
+

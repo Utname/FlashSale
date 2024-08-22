@@ -222,7 +222,7 @@ namespace FlashSale.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("QuantityView", Data.Helpers.Common.Constants.required);
             }
-            else if (decimal.Parse(model.QuantityView.Replace(",", "")) <= 0)
+            else if (map.FormatDecimalView(model.QuantityView) <= 0)
             {
                 ModelState.AddModelError("QuantityView", "Số lượng phải lớn hơn 0");
             }
@@ -231,7 +231,7 @@ namespace FlashSale.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("StartingPriceView", Data.Helpers.Common.Constants.required);
             }
-            else if (decimal.Parse(model.StartingPriceView.Replace(",", "")) <= 0)
+            else if (map.FormatDecimalView(model.StartingPriceView) <= 0)
             {
                 ModelState.AddModelError("StartingPriceView", "Giá từ phải lớn hơn 0");
             }
@@ -239,11 +239,11 @@ namespace FlashSale.Areas.Admin.Controllers
 
             if (!String.IsNullOrEmpty(model.EndingPriceView))
             {
-                if (decimal.Parse(model.EndingPriceView.Replace(",", "")) <= 0)
+                if (map.FormatDecimalView(model.EndingPriceView)  <= 0)
                 {
                     ModelState.AddModelError("EndingPriceView", "Giá đến phải lớn hơn 0");
                 }
-                else if (decimal.Parse(model.StartingPriceView.Replace(",", "")) > decimal.Parse(model.EndingPriceView.Replace(",", "")))
+                else if (map.FormatDecimalView(model.StartingPriceView)  > map.FormatDecimalView(model.EndingPriceView))
                 {
                     ModelState.AddModelError("StartingPriceView", "Giá từ phải nhỏ hơn hoặc bằng giá đến");
                 }
@@ -462,14 +462,14 @@ namespace FlashSale.Areas.Admin.Controllers
                             writer.WriteLine($"Dòng {row}:Vui lòng nhập đơn giá.");
                         }
 
-                        else if (decimal.Parse(Product.StartingPriceView.Replace(",", "")) <= 0)
+                        else if (map.FormatDecimalView(Product.StartingPriceView)  <= 0)
                         {
                             hasError = true;
                             writer.WriteLine($"Dòng {row} - {Product.StartingPriceView}:Đơn giá từ phải lơn hơn 0.");
                         }
                         else
                         {
-                            Product.db.StartingPrice = String.IsNullOrEmpty(Product.StartingPriceView) ? 0 : decimal.Parse(Product.StartingPriceView.Replace(",", ""));
+                            Product.db.StartingPrice = String.IsNullOrEmpty(Product.StartingPriceView) ? 0 : map.FormatDecimalView(Product.StartingPriceView);
                         }
 
 
@@ -481,14 +481,14 @@ namespace FlashSale.Areas.Admin.Controllers
                                 writer.WriteLine($"Dòng {row}:Đơn giá đến phải lơn hơn 0.");
                             }
 
-                            else if (decimal.Parse(Product.EndingPriceView.Replace(",", "")) <= decimal.Parse(Product.StartingPriceView.Replace(",", "")))
+                            else if (map.FormatDecimalView(Product.EndingPriceView) <= map.FormatDecimalView(Product.StartingPriceView))
                             {
                                 hasError = true;
                                 writer.WriteLine($"Dòng {row}:Đơn giá đến ({Product.EndingPriceView}) phải lơn hơn  đơn giá từ ({Product.StartingPriceView}).");
                             }
                             else
                             {
-                                Product.db.EndingPrice = String.IsNullOrEmpty(Product.EndingPriceView) ? 0 : decimal.Parse(Product.EndingPriceView.Replace(",", ""));
+                                Product.db.EndingPrice = String.IsNullOrEmpty(Product.EndingPriceView) ? 0 : map.FormatDecimalView(Product.EndingPriceView);
                             }
                         }
                        
@@ -496,14 +496,14 @@ namespace FlashSale.Areas.Admin.Controllers
 
                         if (!String.IsNullOrEmpty(Product.DiscountPercentageView))
                         {
-                            if (decimal.Parse(Product.DiscountPercentageView.Replace(",", "")) <= 0 && decimal.Parse(Product.DiscountPercentageView.Replace(",", "")) > 100)
+                            if (map.FormatDecimalView(Product.DiscountPercentageView)  <= 0 && map.FormatDecimalView(Product.DiscountPercentageView) > 100)
                             {
                                 hasError = true;
                                 writer.WriteLine($"Dòng {row} - {Product.DiscountPercentageView}:Phần trăm giảm giá phải lớn hơn 0 và phải nhở hơn bằng 100.");
                             }
                             else
                             {
-                                Product.db.DiscountPercentage = String.IsNullOrEmpty(Product.DiscountPercentageView) ? 0 : int.Parse(Product.DiscountPercentageView.Replace(",", ""));
+                                Product.db.DiscountPercentage = String.IsNullOrEmpty(Product.DiscountPercentageView) ? 0 : map.FormatIntView(Product.DiscountPercentageView);
                             }
                         }
 
@@ -521,7 +521,7 @@ namespace FlashSale.Areas.Admin.Controllers
                         }
                         else
                         {
-                            Product.db.Quantity = String.IsNullOrEmpty(Product.QuantityView) ? 0 : int.Parse(Product.QuantityView.Replace(",", ""));
+                            Product.db.Quantity = String.IsNullOrEmpty(Product.QuantityView) ? 0 : map.FormatIntView(Product.QuantityView);
                         }
 
                         if (Product.ProductCategoryName != null)
@@ -622,7 +622,7 @@ namespace FlashSale.Areas.Admin.Controllers
                     // Lưu dữ liệu vào cơ sở dữ liệu
                     foreach (var product in listNhomProduct)
                     {
-                        product.db.DiscountPercentage = String.IsNullOrEmpty(product.DiscountPercentageView) ? 0 : int.Parse(product.DiscountPercentageView.Replace(",", ""));
+                        product.db.DiscountPercentage = String.IsNullOrEmpty(product.DiscountPercentageView) ? 0 : map.FormatIntView(product.DiscountPercentageView);
                         if (product.db.DiscountPercentage != 0)
                         {
                             product.db.DiscountFrom = (product.db.StartingPrice * product.db.DiscountPercentage) / 100;
@@ -760,19 +760,19 @@ namespace FlashSale.Areas.Admin.Controllers
                         worksheet.Cells[row, 4].Value = Product.TypeProductName;
                         worksheet.Cells[row, 5].Value = Product.ShippingMethodName;
                         worksheet.Cells[row, 6].Value =
-                          Product.db.StartingPrice == null ? "0" : ((decimal)Product.db.StartingPrice).ToString("#,##0")
+                          Product.db.StartingPrice == null ? "0" : map.FormatDecimalViewString((decimal)Product.db.StartingPrice)
                             + " - "
-                            + Product.db.EndingPrice == null ? "0" : ((decimal)Product.db.EndingPrice).ToString("#,##0");
+                            + Product.db.EndingPrice == null ? "0" : map.FormatDecimalViewString((decimal)Product.db.EndingPrice);
                         worksheet.Cells[row, 7].Value =
-                            Product.db.DiscountPercentage == null ? "0" : ((int)Product.db.DiscountPercentage).ToString("#,##0");
+                            Product.db.DiscountPercentage == null ? "0" : map.FormatIntViewString((int)Product.db.DiscountPercentage);
                         worksheet.Cells[row, 8].Value =
-                            Product.db.DiscountFrom == null ? "0" : ((decimal)Product.db.DiscountFrom).ToString("#,##0")
+                            Product.db.DiscountFrom == null ? "0" : map.FormatDecimalViewString((decimal)Product.db.DiscountFrom)
                             + " - " +
-                            Product.db.DiscountUpTo == null ? "0" : ((decimal)Product.db.DiscountUpTo).ToString("#,##0");
+                            Product.db.DiscountUpTo == null ? "0" : map.FormatDecimalViewString((decimal)Product.db.DiscountUpTo);
                         worksheet.Cells[row, 9].Value =
-                            Product.db.Quantity == null ? "0" : ((int)Product.db.Quantity).ToString("#,##0");
+                            Product.db.Quantity == null ? "0" : map.FormatIntViewString((int)Product.db.Quantity);
                         worksheet.Cells[row, 10].Value =
-                            Product.db.RemainingQuantity == null ? "0" : ((int)Product.db.RemainingQuantity).ToString("#,##0");
+                            Product.db.RemainingQuantity == null ? "0" : map.FormatIntViewString((int)Product.db.RemainingQuantity);
                         worksheet.Cells[row, 11].Value = Product.ProductCategoryName;
                         worksheet.Cells[row, 12].Value = Product.ProductClassificationName;
                         worksheet.Cells[row, 13].Value = Product.WanrrantyName;

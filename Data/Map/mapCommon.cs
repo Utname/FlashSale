@@ -75,7 +75,13 @@ namespace Data
             return ((decimal) number).ToString("#,##0");
         }
 
-      
+        public string FormatIntViewString(int number)
+        {
+            return ((int)number).ToString("#,##0");
+        }
+
+
+
 
         public int FormatIntView(string number)
         {

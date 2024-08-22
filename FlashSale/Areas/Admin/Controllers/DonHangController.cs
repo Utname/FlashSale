@@ -54,7 +54,7 @@ namespace FlashSale.Areas.Admin.Controllers
             int check = CheckValidation(model, 1);
             if (check == 1)
             {
-                model.db.TongTienSanPham = map.FormatDecimalView(model.TongTienSanPhamView); ;
+                model.db.TongTienSanPham = map.FormatDecimalView(model.TongTienSanPhamView);
                 model.db.TrietKhau = map.FormatDecimalView(model.TrietKhauView); ;
                 model.db.PhiShip = map.FormatDecimalView(model.PhiShipView); ;
                 model.db.Vat = map.FormatDecimalView(model.VatView); ;

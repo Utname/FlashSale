@@ -142,13 +142,13 @@ namespace Data
 
         public int insert(ProductModel model)
         {
-            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : decimal.Parse(model.StartingPriceView.Replace(",", ""));
-            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : int.Parse(model.DiscountPercentageView.Replace(",", ""));
-            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : decimal.Parse(model.EndingPriceView.Replace(",", ""));
-            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : decimal.Parse(model.DiscountFromView.Replace(",", ""));
-            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : decimal.Parse(model.DiscountUpToView.Replace(",", ""));
-            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : decimal.Parse(model.ShippingFeeView.Replace(",", ""));
-            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : int.Parse(model.QuantityView.Replace(",", ""));
+            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : FormatDecimalView(model.StartingPriceView) ;
+            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : FormatIntView(model.DiscountPercentageView) ;
+            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : FormatDecimalView(model.EndingPriceView) ;
+            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : FormatDecimalView(model.DiscountFromView) ;
+            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : FormatDecimalView(model.DiscountUpToView) ;
+            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : FormatDecimalView(model.ShippingFeeView) ;
+            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : FormatIntView(model.QuantityView);
             model.db.RemainingQuantity = model.db.Quantity;
 
             model.db.ID = Guid.NewGuid();
@@ -171,13 +171,13 @@ namespace Data
 
         public int edit(ProductModel model)
         {
-            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : decimal.Parse(model.StartingPriceView.Replace(",", ""));
-            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : int.Parse(model.DiscountPercentageView.Replace(",", ""));
-            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : decimal.Parse(model.EndingPriceView.Replace(",", ""));
-            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : decimal.Parse(model.DiscountFromView.Replace(",", ""));
-            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : decimal.Parse(model.DiscountUpToView.Replace(",", ""));
-            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : decimal.Parse(model.ShippingFeeView.Replace(",", ""));
-            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : int.Parse(model.QuantityView.Replace(",", ""));
+            model.db.StartingPrice = String.IsNullOrEmpty(model.StartingPriceView) ? 0 : FormatDecimalView(model.StartingPriceView);
+            model.db.DiscountPercentage = String.IsNullOrEmpty(model.DiscountPercentageView) ? 0 : FormatIntView(model.DiscountPercentageView);
+            model.db.EndingPrice = String.IsNullOrEmpty(model.EndingPriceView) ? 0 : FormatDecimalView(model.EndingPriceView) ;
+            model.db.DiscountFrom = String.IsNullOrEmpty(model.DiscountFromView) ? 0 : FormatDecimalView(model.DiscountFromView);
+            model.db.DiscountUpTo = String.IsNullOrEmpty(model.DiscountUpToView) ? 0 : FormatDecimalView(model.DiscountUpToView) ;
+            model.db.ShippingFee = String.IsNullOrEmpty(model.ShippingFeeView) ? 0 : FormatDecimalView(model.ShippingFeeView);
+            model.db.Quantity = String.IsNullOrEmpty(model.QuantityView) ? 0 : FormatIntView(model.QuantityView) ;
             model.db.UpdateDate = DateTime.Now;
             model.db.UpdateBy = GetUserId();
             var item = db.Products.Where(q => q.ID == model.db.ID).SingleOrDefault();
@@ -264,13 +264,13 @@ namespace Data
                 UpdateByName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.Username).FirstOrDefault()
 
             }).SingleOrDefault();
-            result.StartingPriceView = result.db.StartingPrice == null ? "0" : ((decimal)result.db.StartingPrice).ToString("#,##0");
-            result.EndingPriceView = result.db.EndingPrice == null ? "0" : ((decimal)result.db.EndingPrice).ToString("#,##0");
-            result.DiscountFromView = result.db.DiscountFrom == null ? "0" : ((decimal)result.db.DiscountFrom).ToString("#,##0");
-            result.DiscountUpToView = result.db.DiscountUpTo == null ? "0" : result.db.StartingPrice == null ? "0" : ((decimal)result.db.DiscountUpTo).ToString("#,##0");
-            result.ShippingFeeView = result.db.ShippingFee == null ? "0" : ((decimal)result.db.ShippingFee).ToString("#,##0");
-            result.QuantityView = result.db.Quantity == null ? "0" : ((decimal)result.db.Quantity).ToString("#,##0");
-            result.DiscountPercentageView = result.db.DiscountPercentage == null ? "0" : ((decimal)result.db.DiscountPercentage).ToString("#,##0");
+            result.StartingPriceView = result.db.StartingPrice == null ? "0" : FormatDecimalViewString((decimal)result.db.StartingPrice);
+            result.EndingPriceView = result.db.EndingPrice == null ? "0" : FormatDecimalViewString((decimal)result.db.EndingPrice);
+            result.DiscountFromView = result.db.DiscountFrom == null ? "0" : FormatDecimalViewString((decimal)result.db.DiscountFrom);
+            result.DiscountUpToView = result.db.DiscountUpTo == null ? "0" : result.db.StartingPrice == null ? "0" : FormatDecimalViewString((decimal)result.db.DiscountUpTo);
+            result.ShippingFeeView = result.db.ShippingFee == null ? "0" : FormatDecimalViewString((decimal)result.db.ShippingFee);
+            result.QuantityView = result.db.Quantity == null ? "0" : FormatDecimalViewString((decimal)result.db.Quantity);
+            result.DiscountPercentageView = result.db.DiscountPercentage == null ? "0" : FormatDecimalViewString((decimal)result.db.DiscountPercentage);
 
             //result.RemainingQuantityView = ((decimal)result.db.RemainingQuantity).ToString("#,##0");
             return result;

@@ -20,6 +20,8 @@ namespace FlashSale.Areas.Portal.Controllers
             model.listMenuGroupProduct = map.getListMenuPGroupProduct().Skip(0).Take(8).ToList();
             model.listMenuGroupProductMore = map.getListMenuPGroupProduct().Skip(9).ToList();
             model.listGroupProduct = map.getListGroupProduct();
+            model.listHotSaleProduct= map.getListHotSaleProduct();
+            model.listProductHome = map.getListProductHome();
             return View(model);
         }
     }

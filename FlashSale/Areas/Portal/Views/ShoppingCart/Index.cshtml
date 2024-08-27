@@ -1,0 +1,97 @@
+﻿
+
+@model FlashSale.Areas.Portal.Model.ShoppingCartModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!-- Begin Li's Breadcrumb Area -->
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li class="active">Giỏ hàng</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Li's Breadcrumb Area End Here -->
+<!--Shopping Cart Area Strat-->
+<div class="Shopping-cart-area pt-60 pb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form action="#">
+                    <div class="table-content table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="li-product-remove">Xóa</th>
+                                    <th class="li-product-thumbnail">Hình ảnh</th>
+                                    <th class="cart-product-name">Sản phẩm</th>
+                                    <th class="li-product-price">Giá bán</th>
+                                    <th class="li-product-quantity">Số lượng</th>
+                                    <th class="li-product-subtotal">Tổng cộng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.listShoppingCartDetail)
+                                {
+                                    <tr>
+                                        <td class="li-product-remove"><a href="#"><i class="fa fa-times"></i></a></td>
+                                        <td class="li-product-thumbnail"><a href="#"><img src="@item.Image" alt="Li's Product Image" style="width:120px;"></a></td>
+                                        <td class="li-product-name"><a href="#">@item.ProductName</a></td>
+                                        <td class="li-product-price"><span class="amount"> @Html.Raw(String.Format("{0:N0}", item.UnitPrice ))đ</span></td>
+                                        <td class="quantity">
+                                            <label>Quantity</label>
+                                            <div class="cart-plus-minus">
+                                                <input class="cart-plus-minus-box" value="@item.Quantity" type="text">
+                                                <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                                                <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
+                                            </div>
+                                        </td>
+                                        <td class="product-subtotal"><span class="amount">@Html.Raw(String.Format("{0:N0}", item.Total))đ</span></td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="coupon-all">
+                                <div class="coupon">
+                                    <input id="coupon_code" class="input-text" name="coupon_code" value="" placeholder="Mã giảm giá" type="text">
+                                    <input class="button" name="apply_coupon" value="Áp dụng" type="submit">
+                                </div>
+                                <div class="coupon2">
+                                    <input class="button" name="update_cart" value="Cập nhật giỏ hàng" type="submit">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 ml-auto">
+                            <div class="cart-page-total">
+                                <h2>Tổng đơn hàng</h2>
+                                <ul>
+                                    <li>Tổng tiền sản phẩm <span>@Html.Raw(String.Format("{0:N0}", Model.SubTotal))đ</span></li>
+                                    <li>Số lượng <span>@Html.Raw(String.Format("{0:N0}", Model.TotalQuantity))</span></li>
+                                    <li>Tổng thành tiền <span> @Html.Raw(String.Format("{0:N0}", Model.Total))đ</span></li>
+                                </ul>
+                                <a href="#">Tiến hành đặt hàng</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Shopping Cart Area End-->

@@ -4,6 +4,46 @@
     ViewBag.Title = "Index";
     Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
 }
+<style>
+    .special-product-active2 .owl-item {
+        width: 25% !important; /* Each item takes up 25% of the carousel container's width */
+        max-width: 300px; /* Optionally, set a max-width for each item */
+        min-width: 250px; /* Optionally, set a min-width for each item */
+    }
+
+    .special-product-active2 .owl-stage {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .special-product-active2 .owl-stage-outer {
+        overflow: hidden; /* Ensure the carousel doesn't stretch */
+    }
+
+
+    .special-product-active2 .owl-item {
+        width: 25% !important; /* Each item takes up 25% of the carousel container's width */
+        max-width: 300px; /* Optionally, set a max-width for each item */
+        min-width: 250px; /* Optionally, set a min-width for each item */
+    }
+
+    .product-active2 .owl-stage {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .product-active2 .owl-stage-outer {
+        overflow: hidden; /* Ensure the carousel doesn't stretch */
+    }
+
+    .product-active2 .owl-item {
+        width: 20% !important; /* Each item takes up 25% of the carousel container's width */
+        max-width: 300px; /* Optionally, set a max-width for each item */
+        min-width: 250px; /* Optionally, set a min-width for each item */
+    }
+</style>
 <!-- Begin Slider With Category Menu Area -->
 <div class="slider-with-banner">
     <div class="container">
@@ -99,33 +139,18 @@
 <div class="li-static-banner pt-20 pt-sm-30 pt-xs-30">
     <div class="container">
         <div class="row">
-            <!-- Begin Single Banner Area -->
-            <div class="col-lg-4 col-md-4">
-                <div class="single-banner pb-xs-30">
-                    <a href="#">
-                        <img src="~/Areas/Portal/Content/images/banner/1_3.jpg" alt="Li's Static Banner">
-                    </a>
+
+            @foreach (var adBanner in Model.listAdvertisementBanner)
+            {
+                <div class="col-lg-4 col-md-4">
+                    <div class="single-banner pb-xs-30">
+                        <a href="#">
+                            <img src="@adBanner.Image" alt="Li's Static Banner">
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <!-- Single Banner Area End Here -->
-            <!-- Begin Single Banner Area -->
-            <div class="col-lg-4 col-md-4">
-                <div class="single-banner pb-xs-30">
-                    <a href="#">
-                        <img src="~/Areas/Portal/Content/images/banner/1_4.jpg" alt="Li's Static Banner">
-                    </a>
-                </div>
-            </div>
-            <!-- Single Banner Area End Here -->
-            <!-- Begin Single Banner Area -->
-            <div class="col-lg-4 col-md-4">
-                <div class="single-banner">
-                    <a href="#">
-                        <img src="~/Areas/Portal/Content/images/banner/1_5.jpg" alt="Li's Static Banner">
-                    </a>
-                </div>
-            </div>
-            <!-- Single Banner Area End Here -->
+            }
+          
         </div>
     </div>
 </div>
@@ -141,62 +166,72 @@
                     </h2>
                 </div>
                 <div class="row">
-                    <div class="special-product-active owl-carousel">
+                    <div class="special-product-active owl-carousel" data-product-count="@Model.listHotSaleProduct.Count">
                         @foreach (var item in Model.listHotSaleProduct)
                         {
                             <div class="col-lg-12">
                                 <!-- single-product-wrap start -->
                                 <div class="single-product-wrap">
                                     <div class="product-image">
-                                        <a href="single-product.html">
+                                        <a href="~/Portal/Product/Details?id=@item.Id">
                                             <img src="@item.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
                                         </a>
                                         <span class="sticker">New</span>
                                     </div>
                                     <div class="product_desc">
-                                        <div class="product_desc_info">
-                                            <div class="product-review">
-                                                <h5 class="manufacturer">
-                                                    <a href="shop-left-sidebar.html">@item.TypeProductName</a>
-                                                </h5>
-                                                <div class="rating-box">
-                                                    <ul class="rating">
-                                                        <li><span>@item.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
-                                                    </ul>
+                                        <a href="~/Portal/Product/Details?id=@item.Id">
+                                            <div class="product_desc_info">
+                                                <div class="product-review">
+                                                    <h5 class="manufacturer">
+                                                        <a href="shop-left-sidebar.html">Shop:@item.ShopName</a>
+                                                    </h5>
+                                                    <div class="rating-box">
+                                                        <ul class="rating">
+                                                            <li><span>@item.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <h4><a class="product_name" href="single-product.html">@item.Name</a></h4>
-                                            <div class="price-box">
-                                                @if (item.DiscountPercentage > 0)
-                                                {
-                                                    <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice - item.DiscountFrom))</span>
-                                                    if (item.DiscountUpTo != null && item.DiscountUpTo > 0)
+                                                <h4><a class="product_name" href="single-product.html">@item.Name</a></h4>
+                                                <div class="price-box">
+                                                    @if (item.DiscountPercentage > 0)
                                                     {
-                                                        <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", item.EndingPrice - item.DiscountUpTo))</span>
+                                                        <p class="mb-0">
+                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice - item.DiscountFrom))đ</span>
+                                                            @if (item.DiscountUpTo != null && item.DiscountUpTo > 0)
+                                                            {
+                                                                <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", item.EndingPrice - item.DiscountUpTo))đ</span>
+                                                            }
+                                                        </p>
+
+                                                        <p class="mb-0">
+                                                            <span class="old-price">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))đ</span>
+                                                            @if (item.EndingPrice != null && item.EndingPrice > 0)
+                                                            {
+                                                                <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", item.EndingPrice))đ</span>
+
+                                                            }
+                                                            <span class="discount-percentage">-@item.DiscountPercentage%</span>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))đ</span>
+                                                        if (item.EndingPrice > 0)
+                                                        {
+                                                            <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", item.EndingPrice))đ</span>
+                                                        }
                                                     }
 
-                                                    <span class="old-price">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))</span>
-                                                    if (item.EndingPrice != null && item.EndingPrice > 0)
-                                                    {
-                                                        <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", item.EndingPrice))</span>
 
-                                                    }
-                                                    <span class="discount-percentage">-@item.DiscountPercentage%</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", item.StartingPrice))</span>
-                                                }
+                                                </div>
 
-
-                                            </div>
-
-                                            <div class="countersection">
-                                                <div class="li-countdown" data-endtime="@(item.EndTime.HasValue ? item.EndTime.Value.ToString("yyyy/MM/dd HH:mm:ss") : "")">
-                                                    <!-- The countdown timer will be injected here -->
+                                                <div class="countersection">
+                                                    <div class="li-countdown" data-endtime="@(item.EndTime.HasValue ? item.EndTime.Value.ToString("yyyy/MM/dd HH:mm:ss") : "")">
+                                                        <!-- The countdown timer will be injected here -->
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                         <div class="add-actions">
                                             <ul class="add-actions-link">
                                                 <li class="add-cart active"><a href="#">Add to cart</a></li>
@@ -233,7 +268,7 @@
                 <div class="tab-content li-tab-content li-trending-product-content">
                     <div id="home1" class="tab-pane show fade in active">
                         <div class="row">
-                            <div class="product-active owl-carousel">
+                            <div class="product-active owl-carousel" data-product-count="@Model.listProductHome.Count">
 
                                 @foreach (var group in Model.listGroupProduct)
                                 {
@@ -306,46 +341,45 @@
                             </ul>
                         }
                     </div>
-                  
+                    @if (group.listAdvertisement.Count() > 0)
+                    {
                         <div class="li-banner-2 pt-15">
                             <div class="row">
-                                <!-- Begin Single Banner Area -->
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="single-banner">
-                                        <a href="#">
-                                            <img src="~/Areas/Portal/Content/images/banner/2_1.jpg" alt="Li's Static Banner">
-                                        </a>
+
+                                @foreach (var advertisement in group.listAdvertisement)
+                                {
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="single-banner">
+                                            <a href="#">
+                                                <img src="@advertisement.Image" alt="Li's Static Banner">
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- Single Banner Area End Here -->
-                                <!-- Begin Single Banner Area -->
-                                <div class="col-lg-6 col-md-6">
-                                    <div class="single-banner pt-xs-30">
-                                        <a href="#">
-                                            <img src="~/Areas/Portal/Content/images/banner/2_2.jpg" alt="Li's Static Banner">
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Single Banner Area End Here -->
+                                }
+
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="product-active owl-carousel">
-                                @foreach (var product in group.listProductHome)
-                                {
-                                    <div class="col-lg-12">
-                                        <!-- single-product-wrap start -->
-                                        <div class="single-product-wrap">
-                                            <div class="product-image">
-                                                <a href="single-product.html">
-                                                    <img src="@product.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
-                                                </a>
-                                                <span class="sticker">New</span>
-                                            </div>
-                                            <div class="product_desc">
+                    }
+
+                    <div class="row">
+                        <div class="product-active owl-carousel">
+                            @foreach (var product in group.listProductHome)
+                            {
+                                <div class="col-lg-12">
+                                    <!-- single-product-wrap start -->
+                                    <div class="single-product-wrap">
+                                        <div class="product-image">
+                                            <a href="~/Portal/Product/Details?id=@product.Id">
+                                                <img src="@product.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
+                                            </a>
+                                            <span class="sticker">New</span>
+                                        </div>
+                                        <div class="product_desc">
+                                            <a href="~/Portal/Product/Details?id=@product.Id">
                                                 <div class="product_desc_info">
                                                     <div class="product-review">
                                                         <h5 class="manufacturer">
+                                                            <a href="shop-left-sidebar.html">Shop:@product.ShopName</a>
                                                         </h5>
                                                         <div class="rating-box">
                                                             <ul class="rating">
@@ -357,51 +391,97 @@
                                                     <div class="price-box">
                                                         @if (product.DiscountPercentage > 0)
                                                         {
-                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice - product.DiscountFrom))</span>
-                                                            if (product.DiscountUpTo != null && product.DiscountUpTo > 0)
-                                                            {
-                                                                <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice - product.DiscountUpTo))</span>
-                                                            }
+                                                            <p class="mb-0">
+                                                                <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice - product.DiscountFrom))đ</span>
+                                                                @if (product.DiscountUpTo != null && product.DiscountUpTo > 0)
+                                                                {
+                                                                    <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice - product.DiscountUpTo))đ</span>
+                                                                }
+                                                            </p>
 
-                                                            <span class="old-price">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))</span>
-                                                            if (product.EndingPrice != null && product.EndingPrice > 0)
-                                                            {
-                                                                <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", product.EndingPrice))</span>
+                                                            <p class="mb-0">
+                                                                <span class="old-price">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))đ</span>
+                                                                @if (product.EndingPrice != null && product.EndingPrice > 0)
+                                                                {
+                                                                    <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", product.EndingPrice))đ</span>
 
-                                                            }
-                                                            <span class="discount-percentage">-@product.DiscountPercentage%</span>
+                                                                }
+                                                                <span class="discount-percentage">-@product.DiscountPercentage%</span>
+                                                            </p>
                                                         }
                                                         else
                                                         {
-                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))</span>
+                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))đ</span>
+                                                            if (product.EndingPrice > 0)
+                                                            {
+                                                                <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice))đ</span>
+                                                            }
                                                         }
+
 
 
                                                     </div>
 
                                                 </div>
-                                                <div class="add-actions">
-                                                    <ul class="add-actions-link">
-                                                        <li class="add-cart active"><a href="#">Add to cart</a></li>
-                                                        <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
-                                                        <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
-                                                    </ul>
-                                                </div>
+                                            </a>
+
+                                            <div class="add-actions">
+                                                <ul class="add-actions-link">
+                                                    <li class="add-cart active"><a href="#">Add to cart</a></li>
+                                                    <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                    <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                                </ul>
                                             </div>
                                         </div>
-                                        <!-- single-product-wrap end -->
                                     </div>
-                                }
+                                    <!-- single-product-wrap end -->
+                                </div>
+                            }
 
-                            </div>
                         </div>
                     </div>
+                </div>
                 <!-- Li's Section Area End Here -->
             </div>
         </div>
     </section>
 }
-
+<!-- Begin Li's Static Home Area -->
+<div class="li-static-home">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Begin Li's Static Home Image Area -->
+                <div class="li-static-home-image" style="background-image: url('@Url.Content(Model.advertisementHot.Image)'); background-size: cover; height: 400px; background-repeat: no-repeat;"></div>
+                <!-- Li's Static Home Image Area End Here -->
+                <!-- Begin Li's Static Home Content Area -->
+                <div class="li-static-home-content">
+                     @Html.Raw(Model.advertisementHot.Description)
+                    <div class="default-btn">
+                        <a href="shop-left-sidebar.html" class="links">Shopping Now</a>
+                    </div>
+                </div>
+                <!-- Li's Static Home Content Area End Here -->
+            </div>
+        </div>
+    </div>
+    @*<div class="single-slide align-center-left animation-style-02 bg-4 " style="background-image: url('@Url.Content(banner.Image)')
+                                        ;background-repeat: no-repeat;
+                                        background-position: center center;
+                                        background-size: cover;
+                                        min-height: 475px;
+                                        width: 100%;
+                                ">
+        <div class="slider-progress"></div>
+        <div class="slider-content">
+            @Html.Raw(banner.Description)
+            <div class="default-btn slide-btn">
+                <a class="links" href="shop-left-sidebar.html">Shopping Now</a>
+            </div>
+        </div>
+    </div>*@
+</div>
+<!-- Li's Static Home Area End Here -->
 <!-- Li's Laptops Product | Home V2 Area End Here -->
 
 
@@ -417,6 +497,80 @@
                 });
             });
         });
+
+
+        $(document).ready(function () {
+            // Get the product count from the data attribute
+            var productCount = $('.special-product-active2').data('product-count');
+
+            // Initialize Owl Carousel on the .special-product-active2 element
+            $(".special-product-active2").owlCarousel({
+                loop: false,  // Disable looping
+                nav: false,
+                dots: false,
+                autoplay: false,
+                autoplayTimeout: 5000,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                items: productCount,  // Show all items
+                responsive: {
+                    0: {
+                        items: productCount  // Show all items on small screens
+                    },
+                    480: {
+                        items: productCount  // Show all items on small screens
+                    },
+                    768: {
+                        items: productCount  // Show all items on tablets
+                    },
+                    992: {
+                        items: productCount  // Show all items on desktops
+                    },
+                    1200: {
+                        items: productCount  // Show all items on larger screens
+                    }
+                }
+            });
+        });
+
+
+
+        $(document).ready(function () {
+            // Get the product count from the data attribute
+            var productCount = $('.product-active2').data('product-count');
+
+            // Initialize Owl Carousel on the .special-product-active2 element
+            $(".product-active2").owlCarousel({
+                loop: true,
+                nav: true,
+                dots: false,
+                autoplay: false,
+                autoplayTimeout: 5000,
+                navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                items: productCount,  // Show all items
+                responsive: {
+
+                    0: {
+                        items: productCount
+                    },
+                    480: {
+                        items: productCount
+                    },
+                    768: {
+                        items: productCount
+                    },
+                    992: {
+                        items: productCount
+                    },
+                    1200: {
+                        items: productCount
+                    }
+                }
+            });
+        });
+
+
+
+
     </script>
 }
 

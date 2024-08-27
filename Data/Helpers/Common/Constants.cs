@@ -9,7 +9,7 @@ namespace Data.Helpers.Common
 {
     public static class Constants
     {
-        public static readonly String  required = "(Bắt buộc)";
+        public static readonly String required = "(Bắt buộc)";
         public static readonly String emailNotCorrect = "(Email không đúng)";
         public static readonly String passwordWrong = "(Password không đúng)";
         public static readonly String passworNotCorrect = "(Password không đúng. Password dài 8 ký tự bao gồm 1 ký số và 1 ký tự viết hoa)";
@@ -44,6 +44,40 @@ namespace Data.Helpers.Common
             { "_Export", "Export excel danh sách @@ChucNang@@" },
 
         };
+
+        public static Dictionary<int, string> defaultImage = new Dictionary<int, string>
+        {
+            { 1, "Hệ thống" },
+            { 2, "Tài khoản" },
+        };
+        public static readonly
+        List<CommonModel> defaultImageList =
+            new List<CommonModel>{
+                 new CommonModel(){ id =1,name="Hệ thống" },
+                 new CommonModel(){ id =2,name="Tài khoản" },
+
+            };
+
+        public static Dictionary<int, string> advertisement = new Dictionary<int, string>
+        {
+            { 1, "Trang chủ" },
+            { 2, "Sản phẩm" },
+            { 3, "Chi tiết sản phẩm" },
+            { 4, "Banner" },
+
+
+        };
+        public static readonly
+        List<CommonModel> advertisementList =
+            new List<CommonModel>{
+                 new CommonModel(){ id =1,name="Trang chủ" },
+                 new CommonModel(){ id =2,name="Sản phẩm" },
+                 new CommonModel(){ id =3,name="Chi tiết sản phẩm" },
+                 new CommonModel(){ id =4,name="Banner" },
+
+
+            };
+
 
     }
 }

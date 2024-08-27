@@ -51,9 +51,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Map\mapBase.cs" />
+    <Compile Include="Map\mapShoppingCart.cs" />
+    <Compile Include="Map\mapProduct.cs" />
     <Compile Include="Map\mapHome.cs" />
     <Compile Include="Map\mapTaiKhoanShop.cs" />
+    <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\HomeModel.cs" />
+    <Compile Include="Model\ShoppingCartModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

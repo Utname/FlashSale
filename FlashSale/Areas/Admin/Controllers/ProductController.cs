@@ -272,6 +272,7 @@ namespace FlashSale.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult Edit(ProductModel model)
         {
 

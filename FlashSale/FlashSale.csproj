@@ -155,7 +155,7 @@
     <Content Include="Areas\Admin\Content\assets\images\card\card-img8.jpg" />
     <Content Include="Areas\Admin\Content\assets\images\card\card-img9.jpg" />
     <Content Include="Areas\Admin\Content\assets\images\icon\loader.gif" />
-    <Content Include="Areas\Admin\Content\assets\images\icon\logo.png" />
+    <Content Include="Areas\Admin\Content\assets\images\icon\logo_flashsale.png" />
     <Content Include="Areas\Admin\Content\assets\images\icon\logo2.png" />
     <Content Include="Areas\Admin\Content\assets\images\icon\market-value\icon1.png" />
     <Content Include="Areas\Admin\Content\assets\images\icon\market-value\icon2.png" />
@@ -319,11 +319,11 @@
     <Content Include="Areas\Portal\Content\js\jquery.mixitup.min.js" />
     <Content Include="Areas\Portal\Content\js\jquery.nice-select.min.js" />
     <Content Include="Areas\Portal\Content\js\main.js" />
+    <Content Include="Areas\Portal\Content\js\main_common2.js" />
     <Content Include="Areas\Portal\Content\js\owl.carousel.min.js" />
     <Content Include="Areas\Portal\Content\js\scrollUp.min.js" />
     <Content Include="Areas\Portal\Content\js\slick.min.js" />
     <Content Include="Areas\Portal\Content\js\vendor\jquery-1.12.4.min.js" />
-    <Content Include="Areas\Portal\Content\js\main_common.js" />
     <Content Include="Areas\Portal\Content\js\vendor\modernizr-2.8.3.min.js" />
     <Content Include="Areas\Portal\Content\js\vendor\popper.min.js" />
     <Content Include="Areas\Portal\Content\js\venobox.min.js" />
@@ -345,6 +345,8 @@
     <Compile Include="Areas\Admin\Controllers\DonHangController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannerController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DefaultImageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdvertisementController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReturnAndExchangePolicyController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductClassificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductCategoryController.cs" />
@@ -356,6 +358,9 @@
     <Compile Include="Areas\Admin\Controllers\SanPhamController.cs" />
     <Compile Include="Areas\Admin\Controllers\TaiKhoanShopController.cs" />
     <Compile Include="Areas\Admin\Controllers\NhomSanPhamController.cs" />
+    <Compile Include="Areas\Portal\Controllers\BaseController.cs" />
+    <Compile Include="Areas\Portal\Controllers\ShoppingCartController.cs" />
+    <Compile Include="Areas\Portal\Controllers\ProductController.cs" />
     <Compile Include="Areas\Portal\Controllers\HomeController.cs" />
     <Compile Include="Areas\Portal\Controllers\TaiKhoanShopController.cs" />
     <Compile Include="Areas\Portal\PortalAreaRegistration.cs" />
@@ -473,6 +478,17 @@
     <Content Include="Areas\Admin\Views\Banner\Insert.cshtml" />
     <Content Include="Areas\Admin\Views\Banner\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Banner\Details.cshtml" />
+    <Content Include="Areas\Portal\Views\Product\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\DefaultImage\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DefaultImage\Insert.cshtml" />
+    <Content Include="Areas\Admin\Views\DefaultImage\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\DefaultImage\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Advertisement\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Advertisement\Insert.cshtml" />
+    <Content Include="Areas\Admin\Views\Advertisement\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Advertisement\Details.cshtml" />
+    <Content Include="Areas\Portal\Views\ShoppingCart\Index.cshtml" />
+    <Content Include="Areas\Portal\Views\ShoppingCart\CheckOut.cshtml" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -485,6 +501,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Content\FileUpload\Excel\" />
     <Folder Include="Areas\Admin\Content\FileUpload\Images\" />
+    <Folder Include="Areas\Portal\Views\Base\" />
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
   </ItemGroup>

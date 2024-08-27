@@ -43,5 +43,10 @@ namespace Data.Entity
         public virtual DbSet<NhomSanPham> NhomSanPhams { get; set; }
         public virtual DbSet<ProductCategory> ProductCategories { get; set; }
         public virtual DbSet<Banner> Banners { get; set; }
+        public virtual DbSet<DefaultImage> DefaultImages { get; set; }
+        public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual DbSet<ShoppingCartDetail> ShoppingCartDetails { get; set; }
+        public virtual DbSet<Advertisement> Advertisements { get; set; }
+        public virtual DbSet<Bill> Bills { get; set; }
     }
 }

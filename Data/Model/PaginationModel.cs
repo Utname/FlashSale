@@ -20,7 +20,6 @@ namespace FlashSale.Areas.Admin.Model
         public string TimeOrderCome { get; set; }
         public int? IdNhomSanPham { get; set; }
         public int? IdGroup { get; set; }
-        public int? idGroup { get; set; }
         public int? Type { get; set; }
     }
 }

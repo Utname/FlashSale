@@ -12,3 +12,7 @@ C:\Project\FlashSale\Portal\obj\Debug\Portal.csproj.CoreCompileInputs.cache
 C:\Project\FlashSale\Portal\obj\Debug\Portal.csproj.CopyComplete
 C:\Project\FlashSale\Portal\obj\Debug\Portal.dll
 C:\Project\FlashSale\Portal\obj\Debug\Portal.pdb
+C:\Project\FlashSale\Portal\bin\Debug\grpc_csharp_ext.x86.dll
+C:\Project\FlashSale\Portal\bin\Debug\grpc_csharp_ext.x64.dll
+C:\Project\FlashSale\Portal\bin\Debug\libgrpc_csharp_ext.x64.so
+C:\Project\FlashSale\Portal\bin\Debug\libgrpc_csharp_ext.x64.dylib

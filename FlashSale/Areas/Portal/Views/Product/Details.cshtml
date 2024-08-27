@@ -1,0 +1,473 @@
+﻿@model FlashSale.Areas.Portal.Model.ProductModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
+}
+
+<div class="breadcrumb-area">
+    <div class="container">
+        <div class="breadcrumb-content">
+            <ul>
+                <li><a href="index.html">Trang chủ</a></li>
+                <li><a href="index.html"></a>@Model.GroupProductName</li>
+                <li class="active">@Model.TypeProductName</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Li's Breadcrumb Area End Here -->
+<!-- content-wraper start -->
+<div class="content-wraper">
+    <div class="container">
+        <div class="row single-product-area">
+            <div class="col-lg-5 col-md-6">
+                <!-- Product Details Left -->
+                <div class="product-details-left">
+                    <div class="product-details-images slider-navigation-1">
+
+
+                        @foreach (var image in Model.ListImage)
+                        {
+
+                            <div class="lg-image">
+                                <a class="popup-img venobox vbox-item" href="@image" data-gall="myGallery">
+                                    <img src="@image" alt="product image">
+                                </a>
+                            </div>
+                        }
+
+
+                    </div>
+                    <div class="product-details-thumbs slider-thumbs-1">
+                        @foreach (var image in Model.ListImage)
+                        {
+                            <div class="sm-image"><img src="@image" alt="product image thumb"></div>
+                        }
+                    </div>
+                </div>
+                <!--// Product Details Left -->
+            </div>
+
+            <div class="col-lg-7 col-md-6">
+                <div class="product-details-view-content pt-60">
+                    <div class="product-info">
+                        <h2>@Model.Name</h2>
+                        <span class="product-details-ref">Shop: @Model.ShopName</span>
+                        <div class="rating-box pt-20">
+                            <ul class="rating rating-with-review-item">
+                                <li><span style="color:black">@Model.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
+                            </ul>
+                        </div>
+                        <div class="price-box pt-20">
+                            @if (Model.DiscountPercentage > 0)
+                            {
+                                <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", @Model.StartingPrice - @Model.DiscountFrom))đ</span>
+                                if (Model.DiscountUpTo != null && Model.DiscountUpTo > 0)
+                                {
+                                    <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", @Model.EndingPrice - @Model.DiscountUpTo))đ</span>
+                                }
+
+                            }
+                            else
+                            {
+                                <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", @Model.StartingPrice))đ</span>
+                                if (Model.EndingPrice > 0)
+                                {
+                                    <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", @Model.EndingPrice))đ</span>
+                                }
+                            }
+                        </div>
+                        <div class="product-variants">
+                            <div class="produt-variants-size">
+                                <label>@Model.ProductCategoryName</label>
+                                <div style="display:flex;justify-content:start;align-items:center">
+                                    @foreach (var classification in Model.ListProductClassification)
+                                    {
+
+                                        <div style="margin-right: 15px">
+                                            <img src="@classification.image" style="height:45px;width:45px;">
+                                            <span class="bold">@classification.name</span>
+                                        </div>
+
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                     
+                        <div class="single-add-to-cart">
+                            <form id="add-to-cart-form" class="cart-quantity">
+                                <input type="hidden" name="idProduct" value="@Model.ID">
+                                <div class="quantity">
+                                    <label>Quantity</label>
+                                    <div class="cart-plus-minus">
+                                        <input class="cart-plus-minus-box" name="quantity" value="1" type="text">
+                                        <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                                        <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
+                                    </div>
+                                </div>
+                                <button class="add-to-cart" type="button" onclick="submitAddToCart()">Thêm vào giỏ hàng</button>
+                            </form>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="successModalLabel">Thành công</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Sản phẩm đã được thêm vào giỏ hàng thành công!
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" onclick="redirectToDetails()">Đóng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<form action="/Portal/Product/AddToCart" method="post" class="cart-quantity">
+            <input type="hidden" name="idProduct" value="@Model.ID">
+            <div class="quantity">
+                <label>Quantity</label>
+                <div class="cart-plus-minus">
+                    <input class="cart-plus-minus-box" name="quantity" value="1" type="text">
+                    <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                    <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
+                </div>
+            </div>
+            <button class="add-to-cart" type="submit">Thêm vào giỏ hàng</button>
+        </form>*@
+                        </div>
+                        <div class="product-additional-info pt-25">
+                            <a class="wishlist-btn" href="wishlist.html"><i class="fa fa-heart-o"></i>Add to wishlist</a>
+                            <div class="product-social-sharing pt-25">
+                                <ul>
+                                    <li class="facebook"><a href="#"><i class="fa fa-facebook"></i>Facebook</a></li>
+                                    <li class="twitter"><a href="#"><i class="fa fa-twitter"></i>Twitter</a></li>
+                                    <li class="google-plus"><a href="#"><i class="fa fa-google-plus"></i>Google +</a></li>
+                                    <li class="instagram"><a href="#"><i class="fa fa-instagram"></i>Instagram</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="block-reassurance">
+                            <ul>
+                                <li>
+                                    <div class="reassurance-item">
+                                        <div class="reassurance-icon">
+                                            <i class="fa fa-check-square-o"></i>
+                                        </div>
+                                        <p>
+                                            @Model.ReturnAndExchangePolicyName@if (Model.ReturnAndExchangePolicyFee > 0)
+                                            {<span> - @Html.Raw(String.Format("{0:N0}", @Model.ReturnAndExchangePolicyFee))đ</span>}
+                                        else
+                                        {<span> - Miễn phí</span>}
+                                        </p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="reassurance-item">
+                                        <div class="reassurance-icon">
+                                            <i class="fa fa-truck"></i>
+                                        </div>
+                                        <p>
+                                            @Model.ShippingMethodName@if (Model.ShippingFee > 0)
+                                            {<span> - @Html.Raw(String.Format("{0:N0}", @Model.ShippingFee))đ</span>}
+                                        </p>
+
+                                    </div>
+
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- content-wraper end -->
+<!-- Begin Product Area -->
+<div class="product-area pt-35">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="li-product-tab">
+                    <ul class="nav li-product-menu">
+                        <li><a class="active" data-toggle="tab" href="#description"><span>Mô tả</span></a></li>
+                        <li><a data-toggle="tab" href="#product-details"><span>Chi tiết sản phẩm</span></a></li>
+                        <li><a data-toggle="tab" href="#reviews"><span>Reviews</span></a></li>
+                    </ul>
+                </div>
+                <!-- Begin Li's Tab Menu Content Area -->
+            </div>
+        </div>
+        <div class="tab-content">
+            <div id="description" class="tab-pane active show" role="tabpanel">
+                <div class="product-description">
+                    <span> @Html.Raw(Model.Description) </span>
+                </div>
+            </div>
+            <div id="product-details" class="tab-pane" role="tabpanel">
+                <div class="product-details-manufacturer">
+                    <p><span>Bảo hành:</span> @Model.WanrrantyName</p>
+                </div>
+            </div>
+            <div id="reviews" class="tab-pane" role="tabpanel">
+                <div class="product-reviews">
+                    <div class="product-details-comment-block">
+                        <div class="comment-review">
+                            <span>Grade</span>
+                            <ul class="rating">
+                                <li><i class="fa fa-star-o"></i></li>
+                                <li><i class="fa fa-star-o"></i></li>
+                                <li><i class="fa fa-star-o"></i></li>
+                                <li class="no-star"><i class="fa fa-star-o"></i></li>
+                                <li class="no-star"><i class="fa fa-star-o"></i></li>
+                            </ul>
+                        </div>
+                        <div class="comment-author-infos pt-25">
+                            <span>HTML 5</span>
+                            <em>01-12-18</em>
+                        </div>
+                        <div class="comment-details">
+                            <h4 class="title-block">Demo</h4>
+                            <p>Plaza</p>
+                        </div>
+                        <div class="review-btn">
+                            <a class="review-links" href="#" data-toggle="modal" data-target="#mymodal">Write Your Review!</a>
+                        </div>
+                        <!-- Begin Quick View | Modal Area -->
+                        <div class="modal fade modal-wrapper" id="mymodal">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        <h3 class="review-page-title">Write Your Review</h3>
+                                        <div class="modal-inner-area row">
+                                            <div class="col-lg-6">
+                                                <div class="li-review-product">
+                                                    <img src="images/product/large-size/3.jpg" alt="Li's Product">
+                                                    <div class="li-review-product-desc">
+                                                        <p class="li-product-name">Today is a good day Framed poster</p>
+                                                        <p>
+                                                            <span>Beach Camera Exclusive Bundle - Includes Two Samsung Radiant 360 R3 Wi-Fi Bluetooth Speakers. Fill The Entire Room With Exquisite Sound via Ring Radiator Technology. Stream And Control R3 Speakers Wirelessly With Your Smartphone. Sophisticated, Modern Design </span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="li-review-content">
+                                                    <!-- Begin Feedback Area -->
+                                                    <div class="feedback-area">
+                                                        <div class="feedback">
+                                                            <h3 class="feedback-title">Our Feedback</h3>
+                                                            <form action="#">
+                                                                <p class="your-opinion">
+                                                                    <label>Your Rating</label>
+                                                                    <span>
+                                                                        <select class="star-rating">
+                                                                            <option value="1">1</option>
+                                                                            <option value="2">2</option>
+                                                                            <option value="3">3</option>
+                                                                            <option value="4">4</option>
+                                                                            <option value="5">5</option>
+                                                                        </select>
+                                                                    </span>
+                                                                </p>
+                                                                <p class="feedback-form">
+                                                                    <label for="feedback">Your Review</label>
+                                                                    <textarea id="feedback" name="comment" cols="45" rows="8" aria-required="true"></textarea>
+                                                                </p>
+                                                                <div class="feedback-input">
+                                                                    <p class="feedback-form-author">
+                                                                        <label for="author">
+                                                                            Name<span class="required">*</span>
+                                                                        </label>
+                                                                        <input id="author" name="author" value="" size="30" aria-required="true" type="text">
+                                                                    </p>
+                                                                    <p class="feedback-form-author feedback-form-email">
+                                                                        <label for="email">
+                                                                            Email<span class="required">*</span>
+                                                                        </label>
+                                                                        <input id="email" name="email" value="" size="30" aria-required="true" type="text">
+                                                                        <span class="required"><sub>*</sub> Required fields</span>
+                                                                    </p>
+                                                                    <div class="feedback-btn pb-15">
+                                                                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">Close</a>
+                                                                        <a href="#">Submit</a>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Feedback Area End Here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Quick View | Modal Area End Here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Area End Here -->
+<!-- Begin Li's Laptop Product Area -->
+<section class="product-area li-laptop-product pt-30 pb-50">
+    <div class="container">
+        <div class="row">
+            <!-- Begin Li's Section Area -->
+            <div class="col-lg-12">
+                <div class="li-section-title">
+                    <h2>
+                        <span>15 sản phẩm khác trong cùng danh mục:</span>
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="product-active owl-carousel">
+                        @foreach (var product in Model.ListProductCategory)
+                        {
+                            <div class="col-lg-12">
+                                <!-- single-product-wrap start -->
+                                <div class="single-product-wrap">
+                                    <div class="product-image">
+                                        <a href="~/Portal/Product/Details?id=@product.Id">
+                                            <img src="@product.Image" alt="Li's Product Image" style="aspect-ratio: 16/9 !important;">
+                                        </a>
+                                        <span class="sticker">New</span>
+                                    </div>
+                                    <div class="product_desc">
+                                        <a href="~/Portal/Product/Details?id=@product.Id">
+                                            <div class="product_desc_info">
+                                                <div class="product-review">
+                                                    <h5 class="manufacturer">
+                                                    </h5>
+                                                    <div class="rating-box">
+                                                        <ul class="rating">
+                                                            <li><span>@product.AverageRating</span>&nbsp;<i class="fa fa-star-o" style="font-size:17px"></i></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <h4><a class="product_name" href="single-product.html">@product.Name</a></h4>
+                                                <div class="price-box">
+                                                    @if (product.DiscountPercentage > 0)
+                                                    {
+                                                        <p class="mb-0">
+                                                            <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice - product.DiscountFrom))đ</span>
+                                                            @if (product.DiscountUpTo != null && product.DiscountUpTo > 0)
+                                                            {
+                                                                <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice - product.DiscountUpTo))đ</span>
+                                                            }
+                                                        </p>
+
+                                                        <p class="mb-0">
+                                                            <span class="old-price">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))đ</span>
+                                                            @if (product.EndingPrice != null && product.EndingPrice > 0)
+                                                            {
+                                                                <span class="old-price"> - @Html.Raw(String.Format("{0:N0}", product.EndingPrice))đ</span>
+
+                                                            }
+                                                            <span class="discount-percentage">-@product.DiscountPercentage%</span>
+                                                        </p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="new-price new-price-2">@Html.Raw(String.Format("{0:N0}", product.StartingPrice))đ</span>
+                                                        if (product.EndingPrice > 0)
+                                                        {
+                                                            <span class="new-price new-price-2">- @Html.Raw(String.Format("{0:N0}", product.EndingPrice))đ</span>
+                                                        }
+                                                    }
+
+
+
+                                                </div>
+
+                                            </div>
+                                        </a>
+
+                                        <div class="add-actions">
+                                            <ul class="add-actions-link">
+                                                <li class="add-cart active"><a href="#">Add to cart</a></li>
+                                                <li><a class="links-details" href="wishlist.html"><i class="fa fa-heart-o"></i></a></li>
+                                                <li><a href="#" title="quick view" class="quick-view-btn" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-eye"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- single-product-wrap end -->
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <!-- Li's Section Area End Here -->
+        </div>
+    </div>
+</section>
+@section scripts {
+    <script>
+
+        /* 22. Cart Plus Minus Button
+/*----------------------------------------*/
+        $(".cart-plus-minus").append('<div class="dec qtybutton"><i class="fa fa-angle-down"></i></div><div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>');
+        $(".qtybutton").on("click", function () {
+            var $button = $(this);
+            var oldValue = $button.parent().find("input").val();
+            if ($button.hasClass('inc')) {
+                var newVal = parseFloat(oldValue) + 1;
+            } else {
+                // Don't allow decrementing below zero
+                if (oldValue > 0) {
+                    var newVal = parseFloat(oldValue) - 1;
+                } else {
+                    newVal = 0;
+                }
+            }
+            $button.parent().find("input").val(newVal);
+        });
+        /*----------------------------------------*/
+
+        function submitAddToCart() {
+            const form = document.getElementById("add-to-cart-form");
+            const formData = new FormData(form);
+
+            fetch("/Portal/Product/AddToCart", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show the modal on success
+                        $('#successModal').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                      //  $('#successModal').modal('show');
+                    } else {
+                        alert('Có lỗi xảy ra: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    alert('Có lỗi xảy ra: ' + error.message);
+                });
+        }
+        function redirectToDetails() {
+            const idProduct = document.querySelector('input[name="idProduct"]').value;
+            window.location.href = `/Portal/Product/Details/${idProduct}`;
+        }
+
+    </script>
+}
+

@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace FlashSale.Areas.Portal.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         mapHome map = new mapHome();
         // GET: Portal/Home
@@ -22,6 +22,8 @@ namespace FlashSale.Areas.Portal.Controllers
             model.listGroupProduct = map.getListGroupProduct();
             model.listHotSaleProduct= map.getListHotSaleProduct();
             model.listProductHome = map.getListProductHome();
+            model.advertisementHot = map.getAdvertisementHot();
+            model.listAdvertisementBanner = map.getAdvertisementBanner();
             return View(model);
         }
     }

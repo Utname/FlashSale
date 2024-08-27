@@ -15,6 +15,9 @@ namespace FlashSale.Areas.Portal.Model
         public List<MenuGroupProductModel> listMenuGroupProductMore { get; set; }
         public List<HotSaleProductModel> listHotSaleProduct { get; set; }
         public List<GroupProductHomeModel> listProductHome { get; set; }
+        public AdvertisementModel advertisementHot { get; set; }
+        public List<AdvertisementModel> listAdvertisementBanner { get; set; }
+
     }
 
     public class MenuGroupProductModel
@@ -23,6 +26,15 @@ namespace FlashSale.Areas.Portal.Model
         public string Name { get; set; }
         public List<CommonModel> listTypeProduct { get; set; }
 
+    }
+
+    public class AdvertisementModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        public string Image { get; set; }
     }
 
     public class BannerHomeModel
@@ -41,6 +53,8 @@ namespace FlashSale.Areas.Portal.Model
 
         public List<TypeProductHomeModel> listTypeProdctHome { get; set; }
         public List<ProductHomeModel> listProductHome { get; set; }
+        public List<AdvertisementModel> listAdvertisement { get; set; }
+
 
     }
 
@@ -56,6 +70,7 @@ namespace FlashSale.Areas.Portal.Model
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string ShopName { get; set; }
         public string Image { get; set; }
         public double? AverageRating { get; set; }
         public int? DiscountPercentage { get; set; }

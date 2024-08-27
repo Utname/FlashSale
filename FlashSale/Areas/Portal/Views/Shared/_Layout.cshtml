@@ -226,39 +226,32 @@
                                         <div class="hm-minicart-trigger">
                                             <span class="item-icon"></span>
                                             <span class="item-text">
-                                                £160
-                                                <span class="cart-item-count">2</span>
+                                                @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCart))đ
+                                                <span class="cart-item-count"> @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalItem))</span>
                                             </span>
                                         </div>
                                         <span></span>
                                         <div class="minicart">
                                             <ul class="minicart-product-list">
-                                                <li>
-                                                    <a href="single-product.html" class="minicart-product-image">
-                                                        <img src="~/Areas/Portal/Content/images/product/small-size/3.jpg" alt="cart products">
-                                                    </a>
-                                                    <div class="minicart-product-details">
-                                                        <h6><a href="single-product.html">Aenean eu tristique</a></h6>
-                                                        <span>£80 x 1</span>
-                                                    </div>
-                                                    <button class="close">
-                                                        <i class="fa fa-close"></i>
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <a href="single-product.html" class="minicart-product-image">
-                                                        <img src="~/Areas/Portal/Content/images/product/small-size/4.jpg" alt="cart products">
-                                                    </a>
-                                                    <div class="minicart-product-details">
-                                                        <h6><a href="single-product.html">Aenean eu tristique</a></h6>
-                                                        <span>£80 x 1</span>
-                                                    </div>
-                                                    <button class="close">
-                                                        <i class="fa fa-close"></i>
-                                                    </button>
-                                                </li>
+                                                @foreach (var shoppingCart in ViewBag.ShoppingCart.ListShoppingCart)
+                                                {
+                                                    <li>
+                                                        <a href="single-product.html" class="minicart-product-image">
+                                                            <img src="@shoppingCart.Image" alt="cart products">
+                                                        </a>
+                                                        <div class="minicart-product-details">
+                                                            <h6><a href="single-product.html">@shoppingCart.ProductName</a></h6>
+                                                            <span>@Html.Raw(String.Format("{0:N0}", shoppingCart.Total))đ x @Html.Raw(String.Format("{0:N0}", shoppingCart.Quantity))</span>
+                                                        </div>
+                                                        <button class="close">
+                                                            <i class="fa fa-close"></i>
+                                                        </button>
+                                                    </li>
+                                                }
+
+                                                
                                             </ul>
-                                            <p class="minicart-total">SUBTOTAL: <span>£160</span></p>
+                                            <p class="minicart-total">SUBTOTAL: <span>@Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCart))đ</span></p>
                                             <div class="minicart-button">
                                                 <a href="checkout.html" class="li-button li-button-dark li-button-fullwidth li-button-sm">
                                                     <span>View Full Cart</span>
@@ -449,34 +442,6 @@
 
         <div>@RenderBody()</div>
         <!-- Li's Static Banner Area End Here -->
-      
-        <!-- Begin Li's Static Home Area -->
-        <div class="li-static-home">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Begin Li's Static Home Image Area -->
-                        <div class="li-static-home-image"></div>
-                        <!-- Li's Static Home Image Area End Here -->
-                        <!-- Begin Li's Static Home Content Area -->
-                        <div class="li-static-home-content">
-                            <p>Sale Offer<span>-20% Off</span>This Week</p>
-                            <h2>Featured Product</h2>
-                            <h2>Meito Accessories 2018</h2>
-                            <p class="schedule">
-                                Starting at
-                                <span> $1209.00</span>
-                            </p>
-                            <div class="default-btn">
-                                <a href="shop-left-sidebar.html" class="links">Shopping Now</a>
-                            </div>
-                        </div>
-                        <!-- Li's Static Home Content Area End Here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Li's Static Home Area End Here -->
         <!-- Begin Li's Trending Product | Home V2 Area -->
         <!-- Li's Trending Product | Home V2 Area End Here -->
         <!-- Begin Footer Area -->
@@ -862,7 +827,7 @@
     <!-- ScrollUp js -->
     <script src="~/Areas/Portal/Content/js/scrollUp.min.js"></script>
     <!-- Main/Activator js -->
-    <script src="~/Areas/Portal/Content/js/main_common.js"></script>
+    <script src="~/Areas/Portal/Content/js/main_common2.js"></script>
     @RenderSection("scripts", false)
 
 </body>

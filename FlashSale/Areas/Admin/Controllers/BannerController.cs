@@ -40,7 +40,9 @@ namespace FlashSale.Areas.Admin.Controllers
         [AuthorizationCheck(ChucNang = "Banner_Insert")]
         public ActionResult Insert()
         {
-            return View(new BannerModel());
+            var model = new BannerModel();
+            model.db.Image = map.getDefaultImage(1).image;
+            return View(model);
         }
 
         [HttpPost]
@@ -58,6 +60,11 @@ namespace FlashSale.Areas.Admin.Controllers
                 {
                     model.db.Image = getFilePath(Image);
                 }
+                else
+                {
+                    model.db.Image = map.getDefaultImage(1).image;
+                }
+
                 model.db.CreateDate = DateTime.Now;
                 model.db.UpdateDate = DateTime.Now;
                 model.db.StatusDel = 1;

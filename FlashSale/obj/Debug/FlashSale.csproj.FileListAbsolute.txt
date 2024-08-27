@@ -90,3 +90,7 @@ C:\Project\FlashSale\FlashSale\obj\Debug\FlashSale.pdb
 C:\Project\FlashSale\FlashSale\bin\System.Linq.Dynamic.Core.dll
 C:\Project\FlashSale\FlashSale\bin\System.Linq.Dynamic.Core.pdb
 C:\Project\FlashSale\FlashSale\bin\System.Linq.Dynamic.Core.xml
+C:\Project\FlashSale\FlashSale\bin\grpc_csharp_ext.x86.dll
+C:\Project\FlashSale\FlashSale\bin\grpc_csharp_ext.x64.dll
+C:\Project\FlashSale\FlashSale\bin\libgrpc_csharp_ext.x64.so
+C:\Project\FlashSale\FlashSale\bin\libgrpc_csharp_ext.x64.dylib

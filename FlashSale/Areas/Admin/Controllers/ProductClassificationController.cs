@@ -34,13 +34,12 @@ namespace FlashSale.Areas.Admin.Controllers
             return View(model);
         }
 
-      
-
-
         [AuthorizationCheck(ChucNang = "ProductClassification_Insert")]
         public ActionResult Insert()
         {
-            return View(new ProductClassificationModel());
+            var model = new ProductClassificationModel();
+            model.db.Image = map.getDefaultImage(1).image;
+            return View( model);
         }
 
         [HttpPost]
@@ -56,6 +55,10 @@ namespace FlashSale.Areas.Admin.Controllers
                 if (Image != null)
                 {
                     model.db.Image = getFilePath(Image);
+                }
+                else
+                {
+                    model.db.Image = map.getDefaultImage(1).image;
                 }
                 model.db.CreateDate = DateTime.Now;
                 model.db.UpdateDate = DateTime.Now;

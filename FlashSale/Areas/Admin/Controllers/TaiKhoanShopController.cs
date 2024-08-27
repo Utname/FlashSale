@@ -42,9 +42,11 @@ namespace FlashSale.Areas.Admin.Controllers
         [AuthorizationCheck(ChucNang = "TaiKhoanShop_Insert")]
         public ActionResult Insert()
         {
-            return View(new TaiKhoanShopModel()
-            {
-            });
+            var model = new TaiKhoanShopModel();
+            model.db.AnhDaiDien = map.getDefaultImage(2).image;
+            model.db.AnhBia = map.getDefaultImage(2).coverImage;
+            return View(model);
+           
         }
 
         [HttpPost]
@@ -59,9 +61,17 @@ namespace FlashSale.Areas.Admin.Controllers
             {
                 model.db.AnhBia = getFilePath(AnhBiaUpload);
             }
+            else
+            {
+                model.db.AnhDaiDien = map.getDefaultImage(1).image;
+            }
             if (AnhDaiDienUpload != null)
             {
                 model.db.AnhDaiDien = getFilePath(AnhDaiDienUpload);
+            }
+            else
+            {
+                model.db.AnhDaiDien = map.getDefaultImage(1).image;
             }
             if (check == 1)
             {

@@ -13,7 +13,7 @@ using Microsoft.Office.Interop.Excel;
 
 namespace FlashSale.Areas.Portal.Controllers
 {
-    public class TaiKhoanShopController : Controller
+    public class TaiKhoanShopController : BaseController
     {
         mapTaiKhoanShop map = new mapTaiKhoanShop();
         //GET: Portal/TaiKhoanShop

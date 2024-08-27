@@ -34,6 +34,7 @@
     <NavigationProperty Name="ShopNhomSanPhams" Relationship="FlashSaleModel.FK_Shop_NhomSanPham_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="ShopNhomSanPham" />
     <NavigationProperty Name="DonHangs" Relationship="FlashSaleModel.FK_DonHang_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="DonHang" />
     <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="Product" />
+    <NavigationProperty Name="ShoppingCarts" Relationship="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="ShoppingCart" />
   </EntityType>
   <EntityContainer Name="FlashSaleEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
@@ -106,6 +107,23 @@
       <End Role="ProductClassification" EntitySet="ProductClassifications" />
     </AssociationSet>
     <EntitySet Name="Banners" EntityType="FlashSaleModel.Banner" />
+    <EntitySet Name="DefaultImages" EntityType="FlashSaleModel.DefaultImage" />
+    <EntitySet Name="ShoppingCarts" EntityType="FlashSaleModel.ShoppingCart" />
+    <EntitySet Name="ShoppingCartDetails" EntityType="FlashSaleModel.ShoppingCartDetail" />
+    <AssociationSet Name="FK_ShoppingCart_TaiKhoanShop" Association="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShops" />
+      <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ShoppingCartDetail_ShoppingCart" Association="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart">
+      <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
+      <End Role="ShoppingCartDetail" EntitySet="ShoppingCartDetails" />
+    </AssociationSet>
+    <EntitySet Name="Advertisements" EntityType="FlashSaleModel.Advertisement" />
+    <EntitySet Name="Bills" EntityType="FlashSaleModel.Bill" />
+    <AssociationSet Name="FK_Bill_ShoppingCart" Association="FlashSaleModel.FK_Bill_ShoppingCart">
+      <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
+      <End Role="Bill" EntitySet="Bills" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="ChucNang">
     <Key>
@@ -565,5 +583,142 @@
     <Property Name="CreateDate" Type="DateTime" Precision="3" />
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" />
   </EntityType>
+  <EntityType Name="DefaultImage">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Image" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="CoverImage" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="ShoppingCart">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="IdShop" Type="Guid" />
+    <Property Name="DiscountCode" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
+    <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="DiscountAmount" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="TotalProductPrice" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="TotalQantity" Type="Int64" />
+    <Property Name="StatusOrder" Type="Int32" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingFee" Type="Decimal" Precision="18" Scale="4" />
+    <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop" FromRole="ShoppingCart" ToRole="TaiKhoanShop" />
+    <NavigationProperty Name="ShoppingCartDetails" Relationship="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart" FromRole="ShoppingCart" ToRole="ShoppingCartDetail" />
+    <NavigationProperty Name="Bills" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="ShoppingCart" ToRole="Bill" />
+  </EntityType>
+  <EntityType Name="ShoppingCartDetail">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idShoppingCart" Type="Guid" />
+    <Property Name="idProudct" Type="Guid" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="ProductName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="UnitPrice" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="Quantity" Type="Int64" />
+    <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ShoppingCart" Relationship="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart" FromRole="ShoppingCartDetail" ToRole="ShoppingCart" />
+  </EntityType>
+  <Association Name="FK_ShoppingCart_TaiKhoanShop">
+    <End Type="FlashSaleModel.TaiKhoanShop" Role="TaiKhoanShop" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.ShoppingCart" Role="ShoppingCart" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShoppingCart">
+        <PropertyRef Name="IdShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ShoppingCartDetail_ShoppingCart">
+    <End Type="FlashSaleModel.ShoppingCart" Role="ShoppingCart" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.ShoppingCartDetail" Role="ShoppingCartDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShoppingCart">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="ShoppingCartDetail">
+        <PropertyRef Name="idShoppingCart" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Advertisement">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" />
+    <Property Name="idGroupProduct" Type="Int32" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Bill">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="idUser" Type="Guid" />
+    <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneUser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="EmailUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryAdress" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
+    <Property Name="OrderDate" Type="DateTime" Precision="3" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="TransactionStatus" Type="Int32" />
+    <Property Name="idShopingCart" Type="Guid" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ShoppingCart" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="Bill" ToRole="ShoppingCart" />
+  </EntityType>
+  <Association Name="FK_Bill_ShoppingCart">
+    <End Type="FlashSaleModel.ShoppingCart" Role="ShoppingCart" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.Bill" Role="Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShoppingCart">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bill">
+        <PropertyRef Name="idShopingCart" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

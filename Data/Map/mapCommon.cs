@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Data.Helpers.Common;
 using Data.Helpers.Model;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,10 @@ namespace Data
 
         public FlashSaleEntities db = new FlashSaleEntities();
         public  string phonePattern = @"^(\+?[0-9]{1,3})?[-. ]?(\(?[0-9]{1,4}\)?)?[-. ]?[0-9]{1,4}[-. ]?[0-9]{1,4}[-. ]?[0-9]{1,9}$";
-        public  string anhMacDinh = "~/Areas/Admin/Content/FileUpload/Images/2024-7-7/design_patten.jpg";
+        public  string anhMacDinh = "~/Areas/Admin/Content/assets/images/icon/logo_flashsale.png";
         public  string pathFileUploadExcel = "~/Areas/Admin/Content/FileUpload/Excel/";
+
+
         public  string pathFileUpLoadImamge = "/Areas/Admin/Content/FileUpload/Images/";
         public  string pathFileUpLoadDowload = "~/Areas/Admin/Content/Templates/Excel/";
         public  string tatCa = "Tất cả";
@@ -33,6 +36,12 @@ namespace Data
                 new CommonModel(){id = 1,name="Sử dụng"},
                 new CommonModel(){id = 2,name="Ngưng sử dụng"}
             };
+            return result;
+        }
+
+        public List<CommonModel> GetListDefaultImage()
+        {
+            var result = Constants.defaultImageList;
             return result;
         }
 
@@ -136,7 +145,18 @@ namespace Data
             return idTaiKhoan;
         }
 
+        public CommonModelImageCover getDefaultImage(int type)
+        {
+            var result = db.DefaultImages.Where(q => q.Type == type).Where(q => q.StatusDel == 1).Select(q => new CommonModelImageCover
+            {
+                id = q.ID,
+                name = q.Name,
+                image= q.Image,
+                coverImage = q.CoverImage,
+            }).FirstOrDefault();
+            return result;
+        }
+      
     }
-
 
 }

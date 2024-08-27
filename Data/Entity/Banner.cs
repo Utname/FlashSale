@@ -23,5 +23,6 @@ namespace Data.Entity
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string UpdateBy { get; set; }
         public string Description { get; set; }
+        public Nullable<int> Type { get; set; }
     }
 }

@@ -61,6 +61,7 @@ namespace Portal.Map
                 Name = q.Name,
                 AverageRating = q.AverageRating ?? 3,
                 TypeProductName = db.TypeProducts.Where(d => d.StatusDel == 1).Where(d => d.ID == q.idType).Select(d => d.Name).FirstOrDefault(),
+                ShopName = db.TaiKhoanShops.Where(d => d.StatusDel == 1).Where(d => d.ID == q.idShop).Select(d => d.TenShop).FirstOrDefault(),
                 DiscountPercentage = q.DiscountPercentage ?? 0,
                 StartingPrice = q.StartingPrice ?? 0,
                 EndingPrice = q.EndingPrice ?? 0,
@@ -95,21 +96,52 @@ namespace Portal.Map
                                         {
                                             Id = product.ID.ToString(),
                                             Name = product.Name,
-                                            AverageRating = product.AverageRating ?? 3,
+                                            AverageRating = product.AverageRating ?? 0,
                                             DiscountPercentage = product.DiscountPercentage ?? 0,
+                                            ShopName = db.TaiKhoanShops.Where(d => d.StatusDel == 1).Where(d => d.ID == product.idShop).Select(d => d.TenShop).FirstOrDefault(),
                                             StartingPrice = product.StartingPrice ?? 0,
                                             EndingPrice = product.EndingPrice ?? 0,
                                             DiscountFrom = product.DiscountFrom ?? 0,
                                             DiscountUpTo = product.DiscountUpTo ?? 0,
                                             UpdateDate = product.UpdateDate,
                                             Image = db.ImageProducts.Where(d => d.idProduct == product.ID).Select(d => d.FilePath).FirstOrDefault() ?? "~/Areas/Admin/Content/FileUpload/Images/2024-7-7/design_patten.jpg",
-                                        }).OrderByDescending(product => product.UpdateDate).Take(10).ToList()
+                                        }).OrderByDescending(product => product.UpdateDate).Take(10).ToList(),
+                    listAdvertisement = db.Advertisements.Where(ad=>ad.StatusDel == 1).Where(ad=>ad.idGroupProduct == group.Key.ID).Select(ad=> new AdvertisementModel
+                    {
+                        Id = ad.ID,
+                        Name = ad.Name,
+                        Image = ad.Image
+                    }).ToList()
                 }).OrderBy(group => group.GroupName).ToList();
                 return result;
             }
             catch(Exception e) {
                 return new List<GroupProductHomeModel>();
             }
+        }
+
+        public AdvertisementModel getAdvertisementHot()
+        {
+            var result = db.Advertisements.Where(q => q.Type == 1).Where(q => q.idGroupProduct == null).Where(q=>q.StatusDel == 1).Select(q => new AdvertisementModel
+            {
+                Id = q.ID,
+                Name = q.Name,
+                Description = q.Description,
+                Image = q.Image
+            }).FirstOrDefault();
+            return result;
+        }
+
+        public List<AdvertisementModel> getAdvertisementBanner()
+        {
+            var result = db.Advertisements.Where(q => q.Type == 4).Where(q => q.idGroupProduct == null).Where(q => q.StatusDel == 1).Select(q => new AdvertisementModel
+            {
+                Id = q.ID,
+                Name = q.Name,
+                Description = q.Description,
+                Image = q.Image
+            }).ToList();
+            return result;
         }
     }
 }

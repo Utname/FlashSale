@@ -78,6 +78,11 @@ namespace Data
             return decimal.Parse(number.Replace(",", ""));
         }
 
+        public long FormatLongView(string number)
+        {
+            return long.Parse(number.Replace(",", ""));
+        }
+
 
         public string FormatDecimalViewString(decimal number)
         {
@@ -88,6 +93,8 @@ namespace Data
         {
             return ((int)number).ToString("#,##0");
         }
+
+
 
 
 

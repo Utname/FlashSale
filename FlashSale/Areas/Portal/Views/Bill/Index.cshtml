@@ -1,0 +1,56 @@
+﻿@model IEnumerable<FlashSale.Areas.Portal.Model.BillModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .rounded-box {
+        border-radius: 10px; /* Bo tròn các góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm box-shadow */
+        padding: 15px; /* Tùy chọn: thêm khoảng cách bên trong */
+        background-color: #fff; /* Tùy chọn: đặt màu nền */
+    }
+</style>
+<div class="content-wraper">
+    <div class="container">
+        <h2>Danh sách hóa đơn</h2>
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4  col-sm-6 col-12 order-lg-2 order-1 rounded-box">
+                <div class="row li-main-content">
+                    <div class="col-12">
+                        <div class="li-blog-single-item">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="li-blog-content">
+                                        <div class="li-blog-details">
+                                            <h3 class="li-blog-heading pt-xs-25 pt-sm-25" style="padding-bottom:0px !important"><a href="blog-details-left-sidebar.html">Shop: @item.ShopName</a></h3>
+                                            <div class="li-blog-meta" style="padding:0px !important">
+                                                <a class="author" href="#"><i class="fa fa-user"></i>@item.PhoneShop</a>
+                                                <a class="comment" href="#"><i class="fa fa-comment-o"></i> @item.AddressShop</a>
+                                            </div>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Ngày đặt hàng:</span><span class="text-black"> @Html.Raw(((DateTime)item.OrderDate).ToString("dd/MM/yyyy"))</span></p>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Ngày giao hàng:</span><span class="text-black"> @Html.Raw(((DateTime)item.DeliveryDate).ToString("dd/MM/yyyy"))</span></p>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Trạng thái giao hàng:</span><span class="text-black"> @item.TransactionStatusName</span></p>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Tổng sản phẩm:</span><span class="text-black"> @Html.Raw(String.Format("{0:N0}", item.TotalQantity))</span></p>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Phí ship:</span><span class="text-black"> @Html.Raw(String.Format("{0:N0}", item.ShippingFee))đ</span></p>
+                                            <p class="m-0"><span class="font-weight-bold text-black">Tổng sản phẩm:</span><span class="text-black"> @Html.Raw(String.Format("{0:N0}", item.Total))đ</span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <button type="button" class="btn btn-success mb-3 mr-1" style="width:100%"> <a href="~/Portal/ShoppingCart/Details?id=@item.idShoppingCart" style="color:white">Xem chi tiết</a></button>
+                    </div>
+                    <!-- Li's Pagination End Here Area -->
+                </div>
+            </div>
+        }
+        <hr />
+    </div>
+</div>

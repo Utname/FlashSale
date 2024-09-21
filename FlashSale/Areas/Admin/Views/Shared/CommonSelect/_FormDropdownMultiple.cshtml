@@ -39,7 +39,7 @@
                                    id="checkbox_@item.Value"
                                    class="custom-select-input"
                                    @(selectedValues.Contains(item.Value) ? "checked" : "")
-                                   @(isDisabled ? "disabled" : "") />
+                                   @(isDisabled ? "readonly" : "") />
                             <label class="custom-select-label" for="checkbox_@item.Value">
                                 @item.Text
                             </label>

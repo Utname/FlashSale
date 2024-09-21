@@ -1,0 +1,140 @@
+﻿@model FlashSale.Areas.Admin.Model.BillModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Xem hóa đơn</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.db.ID)
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên shop", "db.ShopName", Model.db.ShopName, true))
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Sô điện thoại shop", "db.PhoneShop", Model.db.PhoneShop, true))
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Địa chỉ shop", "db.AddressShop", Model.db.AddressShop, true))
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Tên người mua", "db.UserName", Model.db.UserName, true))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Số điện thoại người mua", "db.PhoneUser", Model.db.PhoneUser, true))
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Email người mua", "db.EmailUser", Model.db.EmailUser, true))
+                                        </div>
+                                     
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Địa chỉ giao hàng", "db.DeliveryAddress", Model.db.DeliveryAddress, true))
+                                        </div>
+
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Trạng thái giao hàng", "db.TransactionStatusName", Model.TransactionStatusName, true))
+                                        </div>
+
+                                       
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormDateTimeInput", Tuple.Create("Ngày đặt hàng", "db.OrderDate", Model.db.OrderDate, true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormDateTimeInput", Tuple.Create("Ngày giao hàng", "db.DeliveryDate", Model.db.DeliveryDate, true))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Tổng số lượng", "TotalQantityView", Model.TotalQantityView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số tiền vận chuyển", "ShippingFeeView", Model.ShippingFeeView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Tổng thanh toán", "TotalView", Model.TotalView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                    </div>
+                                    <div class="table-content table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="li-product-remove">STT</th>
+                                                    <th class="li-product-thumbnail">Hình ảnh</th>
+                                                    <th class="cart-product-name">Sản phẩm</th>
+                                                    <th class="li-product-price">Giá bán</th>
+                                                    <th class="li-product-quantity">Số lượng</th>
+                                                    <th class="li-product-subtotal">Tổng cộng</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listBillDetail)
+                                                {
+                                                    <tr>
+                                                        <td align="center">@(++i)</td>
+                                                        <td class="li-product-thumbnail"><a href="#"><img src="@item.Image" alt="Li's Product Image" style="width:120px;"></a></td>
+                                                        <td class="li-product-name"><a href="#">@item.ProductName</a></td>
+                                                        <td class="li-product-price"><span class="amount"> @Html.Raw(String.Format("{0:N0}", item.UnitPrice))đ</span></td>
+                                                        <td class="quantity">
+                                                            @Html.Raw(String.Format("{0:N0}", item.Quantity))
+                                                        </td>
+                                                        <td class="product-subtotal"><span class="amount">@Html.Raw(String.Format("{0:N0}", item.Total))đ</span></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-12">
+                                            <button type="button" class="btn btn-default mr-1">
+                                                <a href="~/Admin/Bill/Index" style="color:black">Đóng</a>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+     CKEDITOR.replace("db.Description");
+
+    </script>
+
+}

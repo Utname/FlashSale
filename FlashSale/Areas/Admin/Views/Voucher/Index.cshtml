@@ -1,0 +1,138 @@
+﻿@model FlashSale.Areas.Admin.Model.VoucherViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var controller = "Voucher";
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="header-title">Danh sách voucher</h4>
+                    <form id="formFilters" method="get" action="@Url.Action("Index", "Voucher")">
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-12">Shop</label>
+                                <div class="col-12">
+                                    <select class="form-control form-control-lg" name="idShop">
+                                        @foreach (var item in new Data.mapTaiKhoanShopSystem().getListUseFilter())
+                                        {
+                                            <option value="@item.id" @(item.id == Model.idShop.ToString() ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Trạng thái</label>
+                                <div class="col-md-12">
+                                    <select class="form-control form-control-lg" name="statusDel">
+                                        @foreach (var item in new Data.mapTypeProduct().GetListStatusDel())
+                                        {
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Tìm kiếm (Tên | Mã)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-success mb-3 mr-1">
+                                <a href="~/Admin/Voucher/Insert" style="color:white">Thêm</a>
+                            </button>
+                            <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter">Tìm kiếm</button>
+                        </div>
+                    </form>
+
+                    <div class="col-12" style="overflow:hidden; overflow-x:auto">
+                        <table id="example" class="display table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead class="text-uppercase bg-primary text-white">
+                                <tr>
+                                    <th width="80"></th>
+                                    <th width="50">STT</th>
+                                    <th>Tên</th>
+                                    <th>Mã</th>
+                                    <th>Phần trăm</th>
+                                    <th>Shop</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Ngày cập nhật</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Voucher)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="dropdown col-lg-6 col-md-4 col-sm-6">
+                                                <button class="btn btn-rounded btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    Chức năng
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="~/Admin/Voucher/Details?id=@item.db.ID">Xem</a>
+                                                    <a class="dropdown-item" href="~/Admin/Voucher/Edit?id=@item.db.ID">Sửa</a>
+                                                    @if (item.db.StatusDel == 1)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 2, '@controller')">Ngưng sử dụng</a>
+                                                    }
+                                                    else if (item.db.StatusDel == 2)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 1, '@controller')">Sử dụng</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td align="center">@(++i)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.Name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.db.Code)</td>
+                                        <td align="right">  @if (item.db.Value > 0)
+                                            {<p>@Html.Raw(String.Format("{0:N0}", item.db.Value))</p>}</td>
+                                        <td>@Html.DisplayFor(modelItem => item.ShopName)</td>
+                                        <td >
+                                            @if (!String.IsNullOrEmpty(item.db.Image))
+                                            {<img src="@Url.Content(item.db.Image)" style="width:120px;" id="previewImage">}
+                                        </td>
+                                        <td>
+                                            @if (item.UpdateByName != null)
+                                            {<p>@Html.DisplayFor(modelItem => item.UpdateByName)</p>}
+                                            <p>@Html.DisplayFor(modelItem => item.db.UpdateDate, "{0:yyyy-MM-dd}")</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
+               {
+                   CurrentPage = Model.CurrentPage,
+                   TotalPages = totalPages,
+                   TotalCount = Model.TotalCount,
+                   PageSize = Model.PageSize,
+                   PageRange = 5, // Default range
+                   Search = Model.Search,
+                   StatusDel = Model.StatusDel,
+                   IdShop = Model.idShop.ToString()
+               })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+                    // Custom scripts here
+    </script>
+}

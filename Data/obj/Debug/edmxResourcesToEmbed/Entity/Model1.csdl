@@ -32,9 +32,9 @@
     <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="PhanQuyens" Relationship="FlashSaleModel.FK_PhanQuyen_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="PhanQuyen" />
     <NavigationProperty Name="ShopNhomSanPhams" Relationship="FlashSaleModel.FK_Shop_NhomSanPham_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="ShopNhomSanPham" />
-    <NavigationProperty Name="DonHangs" Relationship="FlashSaleModel.FK_DonHang_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="DonHang" />
     <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="Product" />
     <NavigationProperty Name="ShoppingCarts" Relationship="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="ShoppingCart" />
+    <NavigationProperty Name="Vouchers" Relationship="FlashSaleModel.FK_Voucher_TaiKhoanShop" FromRole="TaiKhoanShop" ToRole="Voucher" />
   </EntityType>
   <EntityContainer Name="FlashSaleEntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
@@ -54,21 +54,10 @@
       <End Role="TaiKhoanShop" EntitySet="TaiKhoanShops" />
       <End Role="ShopNhomSanPham" EntitySet="ShopNhomSanPhams" />
     </AssociationSet>
-    <EntitySet Name="DonHangChiTiets" EntityType="FlashSaleModel.DonHangChiTiet" />
     <EntitySet Name="Vats" EntityType="FlashSaleModel.Vat" />
-    <EntitySet Name="DonHangs" EntityType="FlashSaleModel.DonHang" />
-    <AssociationSet Name="FK_DonHang_TaiKhoanShop" Association="FlashSaleModel.FK_DonHang_TaiKhoanShop">
-      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShops" />
-      <End Role="DonHang" EntitySet="DonHangs" />
-    </AssociationSet>
-    <AssociationSet Name="FK_DonHangChiTiet_DonHang" Association="FlashSaleModel.FK_DonHangChiTiet_DonHang">
-      <End Role="DonHang" EntitySet="DonHangs" />
-      <End Role="DonHangChiTiet" EntitySet="DonHangChiTiets" />
-    </AssociationSet>
     <EntitySet Name="TypeProducts" EntityType="FlashSaleModel.TypeProduct" />
     <EntitySet Name="ImageProducts" EntityType="FlashSaleModel.ImageProduct" />
     <EntitySet Name="ReturnAndExchangePolicies" EntityType="FlashSaleModel.ReturnAndExchangePolicy" />
-    <EntitySet Name="SanPhams" EntityType="FlashSaleModel.SanPham" />
     <EntitySet Name="Warranties" EntityType="FlashSaleModel.Warranty" />
     <EntitySet Name="ProductClassifications" EntityType="FlashSaleModel.ProductClassification" />
     <EntitySet Name="Products" EntityType="FlashSaleModel.Product" />
@@ -108,8 +97,14 @@
     </AssociationSet>
     <EntitySet Name="Banners" EntityType="FlashSaleModel.Banner" />
     <EntitySet Name="DefaultImages" EntityType="FlashSaleModel.DefaultImage" />
-    <EntitySet Name="ShoppingCarts" EntityType="FlashSaleModel.ShoppingCart" />
     <EntitySet Name="ShoppingCartDetails" EntityType="FlashSaleModel.ShoppingCartDetail" />
+    <EntitySet Name="Advertisements" EntityType="FlashSaleModel.Advertisement" />
+    <EntitySet Name="Bills" EntityType="FlashSaleModel.Bill" />
+    <EntitySet Name="ShoppingCarts" EntityType="FlashSaleModel.ShoppingCart" />
+    <AssociationSet Name="FK_Bill_ShoppingCart" Association="FlashSaleModel.FK_Bill_ShoppingCart">
+      <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
+      <End Role="Bill" EntitySet="Bills" />
+    </AssociationSet>
     <AssociationSet Name="FK_ShoppingCart_TaiKhoanShop" Association="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop">
       <End Role="TaiKhoanShop" EntitySet="TaiKhoanShops" />
       <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
@@ -118,11 +113,10 @@
       <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
       <End Role="ShoppingCartDetail" EntitySet="ShoppingCartDetails" />
     </AssociationSet>
-    <EntitySet Name="Advertisements" EntityType="FlashSaleModel.Advertisement" />
-    <EntitySet Name="Bills" EntityType="FlashSaleModel.Bill" />
-    <AssociationSet Name="FK_Bill_ShoppingCart" Association="FlashSaleModel.FK_Bill_ShoppingCart">
-      <End Role="ShoppingCart" EntitySet="ShoppingCarts" />
-      <End Role="Bill" EntitySet="Bills" />
+    <EntitySet Name="Vouchers" EntityType="FlashSaleModel.Voucher" />
+    <AssociationSet Name="FK_Voucher_TaiKhoanShop" Association="FlashSaleModel.FK_Voucher_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShops" />
+      <End Role="Voucher" EntitySet="Vouchers" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="ChucNang">
@@ -209,24 +203,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityType Name="DonHangChiTiet">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Guid" Nullable="false" />
-    <Property Name="idDonHang" Type="Guid" Nullable="false" />
-    <Property Name="TenSanPham" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="GiaBan" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="GiaSale" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="SoLuong" Type="Double" />
-    <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
-    <Property Name="NguoiCapNhat" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="NgayTao" Type="DateTime" Precision="3" />
-    <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="idSanPham" Type="Guid" />
-    <NavigationProperty Name="DonHang" Relationship="FlashSaleModel.FK_DonHangChiTiet_DonHang" FromRole="DonHangChiTiet" ToRole="DonHang" />
-  </EntityType>
   <EntityType Name="Vat">
     <Key>
       <PropertyRef Name="ID" />
@@ -241,59 +217,6 @@
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="PercentVat" Type="Int32" />
   </EntityType>
-  <EntityType Name="DonHang">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Guid" Nullable="false" />
-    <Property Name="idShop" Type="Guid" />
-    <Property Name="SoDienThoai" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-    <Property Name="DiaChiGiaoHang" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-    <Property Name="ThoiGianDatHang" Type="DateTime" Precision="3" />
-    <Property Name="TrangThai" Type="Int32" />
-    <Property Name="TongTienSanPham" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="TrietKhau" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="PhiShip" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="Vat" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="TongThanhToan" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
-    <Property Name="NguoiCapNhat" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="NgayTao" Type="DateTime" Precision="3" />
-    <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="KhacHangGhiChu" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="idVat" Type="Int32" />
-    <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_DonHang_TaiKhoanShop" FromRole="DonHang" ToRole="TaiKhoanShop" />
-    <NavigationProperty Name="DonHangChiTiets" Relationship="FlashSaleModel.FK_DonHangChiTiet_DonHang" FromRole="DonHang" ToRole="DonHangChiTiet" />
-  </EntityType>
-  <Association Name="FK_DonHang_TaiKhoanShop">
-    <End Type="FlashSaleModel.TaiKhoanShop" Role="TaiKhoanShop" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FlashSaleModel.DonHang" Role="DonHang" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="TaiKhoanShop">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="DonHang">
-        <PropertyRef Name="idShop" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_DonHangChiTiet_DonHang">
-    <End Type="FlashSaleModel.DonHang" Role="DonHang" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="FlashSaleModel.DonHangChiTiet" Role="DonHangChiTiet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="DonHang">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="DonHangChiTiet">
-        <PropertyRef Name="idDonHang" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <EntityType Name="TypeProduct">
     <Key>
       <PropertyRef Name="ID" />
@@ -338,28 +261,6 @@
     <Property Name="CreateDate" Type="DateTime" Precision="3" />
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="Products" Relationship="FlashSaleModel.FK_Product_ReturnAndExchangePolicy" FromRole="ReturnAndExchangePolicy" ToRole="Product" />
-  </EntityType>
-  <EntityType Name="SanPham">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Guid" Nullable="false" />
-    <Property Name="TenSanPham" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="GiaNiemYet" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="GiaSale" Type="Decimal" Precision="19" Scale="4" />
-    <Property Name="ConHang" Type="Boolean" Nullable="false" />
-    <Property Name="GioBatDau" Type="DateTime" Precision="3" />
-    <Property Name="GioKetThuc" Type="DateTime" Precision="3" />
-    <Property Name="idShop" Type="Guid" Nullable="false" />
-    <Property Name="idLoaiSanPham" Type="Int32" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="NgayCapNhat" Type="DateTime" Precision="3" />
-    <Property Name="NguoiCapNhat" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="NgayTao" Type="DateTime" Precision="3" />
-    <Property Name="NguoiTao" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="idNhomSanPham" Type="Int32" />
-    <Property Name="LuotHienThi" Type="Int32" />
-    <Property Name="LuotXem" Type="Int32" />
   </EntityType>
   <EntityType Name="Warranty">
     <Key>
@@ -600,28 +501,6 @@
     <Property Name="CreateDate" Type="DateTime" Precision="3" />
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
   </EntityType>
-  <EntityType Name="ShoppingCart">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Guid" Nullable="false" />
-    <Property Name="IdShop" Type="Guid" />
-    <Property Name="DiscountCode" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
-    <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
-    <Property Name="DiscountAmount" Type="Decimal" Precision="18" Scale="4" />
-    <Property Name="TotalProductPrice" Type="Decimal" Precision="18" Scale="4" />
-    <Property Name="TotalQantity" Type="Int64" />
-    <Property Name="StatusOrder" Type="Int32" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="CreateDate" Type="DateTime" Precision="3" />
-    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="ShippingFee" Type="Decimal" Precision="18" Scale="4" />
-    <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop" FromRole="ShoppingCart" ToRole="TaiKhoanShop" />
-    <NavigationProperty Name="ShoppingCartDetails" Relationship="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart" FromRole="ShoppingCart" ToRole="ShoppingCartDetail" />
-    <NavigationProperty Name="Bills" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="ShoppingCart" ToRole="Bill" />
-  </EntityType>
   <EntityType Name="ShoppingCartDetail">
     <Key>
       <PropertyRef Name="ID" />
@@ -641,6 +520,88 @@
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="ShoppingCart" Relationship="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart" FromRole="ShoppingCartDetail" ToRole="ShoppingCart" />
   </EntityType>
+  <EntityType Name="Advertisement">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Type" Type="Int32" />
+    <Property Name="idGroupProduct" Type="Int32" />
+    <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Bill">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="idUser" Type="Guid" />
+    <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneUser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="EmailUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryAddress" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
+    <Property Name="OrderDate" Type="DateTime" Precision="3" />
+    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+    <Property Name="TransactionStatus" Type="Int32" />
+    <Property Name="idShopingCart" Type="Guid" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="idShop" Type="Guid" />
+    <Property Name="ShopName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="PhoneShop" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="AddressShop" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="TotalQantity" Type="Int64" />
+    <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="ShippingFee" Type="Decimal" Precision="18" Scale="4" />
+    <NavigationProperty Name="ShoppingCart" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="Bill" ToRole="ShoppingCart" />
+  </EntityType>
+  <EntityType Name="ShoppingCart">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="IdShop" Type="Guid" />
+    <Property Name="DiscountCode" Type="String" MaxLength="200" FixedLength="true" Unicode="true" />
+    <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="DiscountAmount" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="TotalProductPrice" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="TotalQantity" Type="Int64" />
+    <Property Name="StatusOrder" Type="Int32" />
+    <Property Name="StatusDel" Type="Int32" />
+    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ShippingFee" Type="Decimal" Precision="18" Scale="4" />
+    <Property Name="VoucherCode" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Bills" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="ShoppingCart" ToRole="Bill" />
+    <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_ShoppingCart_TaiKhoanShop" FromRole="ShoppingCart" ToRole="TaiKhoanShop" />
+    <NavigationProperty Name="ShoppingCartDetails" Relationship="FlashSaleModel.FK_ShoppingCartDetail_ShoppingCart" FromRole="ShoppingCart" ToRole="ShoppingCartDetail" />
+  </EntityType>
+  <Association Name="FK_Bill_ShoppingCart">
+    <End Type="FlashSaleModel.ShoppingCart" Role="ShoppingCart" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="FlashSaleModel.Bill" Role="Bill" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ShoppingCart">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Bill">
+        <PropertyRef Name="idShopingCart" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_ShoppingCart_TaiKhoanShop">
     <End Type="FlashSaleModel.TaiKhoanShop" Role="TaiKhoanShop" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -669,55 +630,36 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <EntityType Name="Advertisement">
+  <EntityType Name="Voucher">
     <Key>
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Code" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="Type" Type="Int32" />
-    <Property Name="idGroupProduct" Type="Int32" />
     <Property Name="Image" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StartTime" Type="DateTime" Precision="3" />
+    <Property Name="EndTime" Type="DateTime" Precision="3" />
     <Property Name="StatusDel" Type="Int32" />
     <Property Name="UpdateDate" Type="DateTime" Precision="3" />
     <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
     <Property Name="CreateDate" Type="DateTime" Precision="3" />
     <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="idShop" Type="Guid" />
+    <Property Name="Value" Type="Int32" />
+    <NavigationProperty Name="TaiKhoanShop" Relationship="FlashSaleModel.FK_Voucher_TaiKhoanShop" FromRole="Voucher" ToRole="TaiKhoanShop" />
   </EntityType>
-  <EntityType Name="Bill">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="Guid" Nullable="false" />
-    <Property Name="idUser" Type="Guid" />
-    <Property Name="UserName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="PhoneUser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-    <Property Name="EmailUser" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-    <Property Name="DeliveryAdress" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="DeliveryDate" Type="DateTime" Precision="3" />
-    <Property Name="OrderDate" Type="DateTime" Precision="3" />
-    <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-    <Property Name="TransactionStatus" Type="Int32" />
-    <Property Name="idShopingCart" Type="Guid" />
-    <Property Name="StatusDel" Type="Int32" />
-    <Property Name="UpdateDate" Type="DateTime" Precision="3" />
-    <Property Name="CreateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <Property Name="CreateDate" Type="DateTime" Precision="3" />
-    <Property Name="UpdateBy" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-    <NavigationProperty Name="ShoppingCart" Relationship="FlashSaleModel.FK_Bill_ShoppingCart" FromRole="Bill" ToRole="ShoppingCart" />
-  </EntityType>
-  <Association Name="FK_Bill_ShoppingCart">
-    <End Type="FlashSaleModel.ShoppingCart" Role="ShoppingCart" Multiplicity="0..1">
+  <Association Name="FK_Voucher_TaiKhoanShop">
+    <End Type="FlashSaleModel.TaiKhoanShop" Role="TaiKhoanShop" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
     </End>
-    <End Type="FlashSaleModel.Bill" Role="Bill" Multiplicity="*" />
+    <End Type="FlashSaleModel.Voucher" Role="Voucher" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="ShoppingCart">
+      <Principal Role="TaiKhoanShop">
         <PropertyRef Name="ID" />
       </Principal>
-      <Dependent Role="Bill">
-        <PropertyRef Name="idShopingCart" />
+      <Dependent Role="Voucher">
+        <PropertyRef Name="idShop" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

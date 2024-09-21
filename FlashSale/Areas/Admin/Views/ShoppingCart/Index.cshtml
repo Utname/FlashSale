@@ -1,0 +1,166 @@
+﻿@model FlashSale.Areas.Admin.Model.ShoppingCartViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+    var controller = "ShoppingCart";
+    int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
+}
+
+
+
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12 mt-5">
+            <div class="card">
+                <div class="card-body">
+
+                    <h4 class="header-title">Đơn hàng</h4>
+                  
+                    <form id="formFilters" method="get" action="@Url.Action("Index", "ShoppingCart")">
+                        <div class="form-group row">
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Trạng thái</label>
+                                <div class="col-md-12">
+                                    <select class="form-control form-control-lg" name="statusDel">
+                                        @foreach (var item in new Data.mapTypeProduct().GetListStatusDel())
+                                        {
+                                            <option value="@item.id" @(item.id == Model.StatusDel ? "selected" : "")>@item.name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <label class="control-label col-md-12">Tìm kiếm (Tên shop | Tên người mua)</label>
+                                <div class="col-md-12">
+                                    <input class="form-control form-control-lg" type="text" name="search" value="@Model.Search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-warning mb-3 mr-1" onclick="exportExcel()">
+                                <span style="color:white"> Xuất Excel</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary mb-3 mr-1" name="filter">Tìm kiếm</button>
+                        </div>
+                    </form>
+
+                    <div class="col-12" style="overflow:hidden; overflow-x:auto">
+                        <table id="example" class="display table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead class="text-uppercase bg-primary text-white">
+                                <tr>
+                                    <th width="80"></th>
+                                    <th width="50">STT</th>
+                                    <th>Shop</th>
+                                    <th>Người mua</th>
+                                    <th>Thông tin sản phẩm</th>
+                                    <th>Thông tin giá</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày cập nhật</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ShoppingCarts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="dropdown col-lg-6 col-md-4 col-sm-6">
+                                                <button class="btn btn-rounded btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    Chức năng
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="~/Admin/ShoppingCart/Details?id=@item.db.ID">Xem</a>
+                                                    @if (item.db.StatusDel == 1)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 2, '@controller')">Ngưng sử dụng</a>
+                                                    }
+                                                    else if (item.db.StatusDel == 2)
+                                                    {
+                                                        <a class="dropdown-item" onclick="UpdateStatusDel('@item.db.ID', 1, '@controller')">Sử dụng</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td align="center">@(++i)</td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.ShopName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.UserName)
+                                        </td>
+                                        <td>
+                                            @if (!String.IsNullOrEmpty(item.ProductName))
+                                            {<p><span style="font-weight:bold">Tên sản phẩm:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.ProductName)</span></p>}
+                                            @if (!String.IsNullOrEmpty(item.db.VoucherCode))
+                                            {<p><span style="font-weight:bold">Mã giảm giá:&nbsp;</span><span>@Html.DisplayFor(modelItem => item.db.VoucherCode)</span></p>}
+                                        </td>
+
+                                        <td>
+                                            <p><span style="font-weight:bold">Tổng tiền sản phẩm:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.TotalProductPrice))đ</span></p>
+                                            @if (item.db.DiscountAmount > 0)
+                                            {<p><span style="font-weight:bold">Số tiền giảm:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.DiscountAmount))đ</span></p>}
+                                            @if (item.db.ShippingFee > 0)
+                                            {<p><span style="font-weight:bold">Phí ship:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.ShippingFee))đ</span></p>}
+                                            <p><span style="font-weight:bold">Tổng số lượng:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.TotalQantity))</span></p>
+                                            <p><span style="font-weight:bold">Tổng thành tiền:&nbsp;</span><span align="right">@Html.Raw(String.Format("{0:N0}", item.db.Total))đ</span></p>
+
+                                        </td>
+
+                                        <td>
+                                            @if (item.db.StatusOrder == 1)
+                                            {
+                                                <span>Đang xử lý</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Đang giao hàng</span>
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @if (item.UpdateByName != null)
+                                            {<p>@Html.DisplayFor(modelItem => item.UpdateByName)</p>}
+                                            <p>@Html.DisplayFor(modelItem => item.db.UpdateDate, "{0:yyyy-MM-dd}")</p>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- pagination here -->
+                    @Html.Partial("_Pagination", new FlashSale.Areas.Admin.Model.PaginationModel
+                    {
+                        CurrentPage = Model.CurrentPage,
+                        TotalPages = totalPages,
+                        TotalCount = Model.TotalCount,
+                        PageSize = Model.PageSize,
+                        PageRange = 5, // Default range
+                        Search = Model.Search,
+                        StatusDel = Model.StatusDel,
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        function exportExcel() {
+            var form = document.getElementById('formFilters');
+            var formData = new FormData(form);
+            var search = formData.get('search');
+            var statusDel = formData.get('statusDel');
+            var idGroup = formData.get('idGroup');
+            var url = '@Url.Action("Export", "ShoppingCart")' +
+                        '?search=' + encodeURIComponent(search) +
+                        '&statusDel=' + encodeURIComponent(statusDel) +
+                        '&idGroup=' + encodeURIComponent(idGroup);
+            window.location.href = url;
+        }
+    </script>
+}

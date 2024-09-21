@@ -21,7 +21,7 @@
                    name="@validationMessageName"
                    class="form-control"
                    value="@(fieldName.HasValue ? Html.Encode(fieldName.Value.ToString("yyyy-MM-ddTHH:mm")) : Html.Encode(""))"
-                   @(isDisabled ? "disabled" : "") />
+                   @(isDisabled ? "readonly" : "") />
         </div>
     }
 }

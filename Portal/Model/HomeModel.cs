@@ -28,6 +28,14 @@ namespace FlashSale.Areas.Portal.Model
 
     }
 
+    public class MenuCategoryProductModel
+    {
+        public int? Id { get; set; }
+        public string Name { get; set; }
+        public List<CommonModel> listClassficationProduct { get; set; }
+
+    }
+
     public class AdvertisementModel
     {
         public int Id { get; set; }
@@ -79,7 +87,8 @@ namespace FlashSale.Areas.Portal.Model
         public decimal? DiscountFrom { get; set; }
         public decimal? DiscountUpTo { get; set; }
         public DateTime? UpdateDate { get; set; }
-
+        public string idProductClassification { get; set; }
+      
 
     }
 

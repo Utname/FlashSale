@@ -77,6 +77,16 @@ namespace Data.Helpers.Common
 
 
             };
+        public static readonly
+        List<CommonModel> shortByList =
+           new List<CommonModel>{
+                 new CommonModel(){ id =-1,name="Tất cả" },
+                 new CommonModel(){ id =1,name="Tên từ A - Z" },
+                 new CommonModel(){ id =2,name="Tên từ Z - A" },
+                 new CommonModel(){ id =3,name="Giá từ Thấp - Cao" },
+                 new CommonModel(){ id =4,name="Giá từ Cao - Thấp" },
+
+           };
 
 
     }

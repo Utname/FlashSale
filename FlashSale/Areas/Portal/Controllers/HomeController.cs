@@ -12,6 +12,10 @@ namespace FlashSale.Areas.Portal.Controllers
     public class HomeController : BaseController
     {
         mapHome map = new mapHome();
+
+
+
+
         // GET: Portal/Home
         public ActionResult Index()
         {

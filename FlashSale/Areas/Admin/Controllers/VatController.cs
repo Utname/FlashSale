@@ -60,6 +60,9 @@ namespace FlashSale.Areas.Admin.Controllers
 
         int CheckValidation(VatModel model)
         {
+
+
+
             if (string.IsNullOrWhiteSpace(model.db.Code))
             {
                 ModelState.AddModelError("db.Code", Data.Helpers.Common.Constants.required);

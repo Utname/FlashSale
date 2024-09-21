@@ -83,6 +83,7 @@ namespace Data
                 item.Code = model.db.Code;
                 item.PercentVat = model.db.PercentVat;
                 item.Note = model.db.Note;
+
                 item.UpdateDate = DateTime.Now;
                 item.UpdateBy = model.db.UpdateBy;
                 db.SaveChanges();

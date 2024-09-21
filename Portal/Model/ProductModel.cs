@@ -43,4 +43,20 @@ namespace FlashSale.Areas.Portal.Model
 
     }
 
+
+
+    public class ProductFilterModel
+    {
+        public int? idGroup { get; set; }
+        public string idType { get; set; }
+        public string Search { get; set; }
+        public List<string> SelectedClassifications { get; set; }
+        public int ShortBy { get; set; } = -1;
+        public int PageNumber { get; set; } = 1; // New
+        public int PageSize { get; set; } = 12;  // New
+        public int TotalItems { get; set; }
+        public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
+        public List<ProductHomeModel> Products { get; set; }
+        public string Ads { get; set; }
+    }
 }

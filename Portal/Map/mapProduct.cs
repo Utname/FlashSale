@@ -6,6 +6,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace Portal.Map
             {
                 ID = q.ID.ToString(),
                 Name = q.Name,
+
                 AverageRating = q.AverageRating ?? 0,
                 Description = q.Description,
                 StartTime = q.StartTime,
@@ -64,11 +66,88 @@ namespace Portal.Map
             }).SingleOrDefault();
             return result;
         }
+
+        public List<ProductHomeModel> index(ProductFilterModel model)
+        {
+            model.idGroup = model.idGroup ?? -1;
+            model.idType = model.idType ?? "-1";
+            model.ShortBy = model.ShortBy;
+            model.Ads = db.Advertisements.Where(d => d.Type == 2).Where(d => d.StatusDel == 1).OrderByDescending(d => d.CreateDate).Select(d => d.Image).FirstOrDefault();
+
+            var data = db.Products.Where(q => q.idGroup == model.idGroup || model.idGroup == -1)
+                        .Where(q => model.idType.Contains(q.idType + "") || model.idType == "-1")
+                        .Where(q => q.Name.Contains(model.Search) || string.IsNullOrEmpty(model.Search))
+                        .Where(q => q.StatusDel == 1)
+                        .Select(q => new ProductHomeModel
+                        {
+                            Id = q.ID.ToString(),
+                            Name = q.Name,
+                            StartingPrice = q.StartingPrice,
+                            EndingPrice = q.EndingPrice ?? 0,
+                            DiscountFrom = q.DiscountFrom ?? 0,
+                            DiscountUpTo = q.DiscountUpTo ?? 0,
+                            DiscountPercentage = q.DiscountPercentage ?? 0,
+                            UpdateDate = q.UpdateDate,
+                            AverageRating = q.AverageRating ?? 0,
+                            ShopName = db.TaiKhoanShops.Where(d => d.ID == q.idShop).Select(d => d.TenShop).FirstOrDefault(),
+                            Image = db.ImageProducts.Where(d => d.idProduct == q.ID).Select(d => d.FilePath).FirstOrDefault(),
+                            idProductClassification = q.idProductClassification
+                        });
+            if(model.SelectedClassifications != null)
+            {
+                data = data.Where(q => model.SelectedClassifications.Contains(q.idProductClassification));
+            }
+            // Apply sorting based on ShortBy
+            switch (model.ShortBy)
+            {
+                case 1:
+                    data = data.OrderBy(d => d.Name);
+                    break;
+                case 2:
+                    data = data.OrderByDescending(d => d.Name);
+                    break;
+                case 3:
+                    data = data.OrderBy(d => d.StartingPrice);
+                    break;
+                case 4:
+                    data = data.OrderByDescending(d => d.StartingPrice);
+                    break;
+                case 5:
+                    data = data.OrderBy(d => d.AverageRating);
+                    break;
+                default:
+                    data = data.OrderByDescending(d => d.AverageRating);
+                    break;
+            }
+            model.TotalItems = data.Count();
+            // Apply pagination
+            return data.Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToList();
+        }
+
+        public List<MenuCategoryProductModel> getListMenuCategoryProduct()
+        {
+            var result = db.ProductCategories.Where(q => q.StatusDel == 1).GroupBy(p => new { p.ID, p.Name }).Select(q => new MenuCategoryProductModel
+            {
+                Id = q.Key.ID,
+                Name = q.Key.Name,
+                listClassficationProduct = db.ProductClassifications.Where(d => d.StatusDel == 1).Where(d => d.idProductCategory == q.Key.ID).Select(d => new CommonModel
+                {
+                    id = d.ID,
+                    name = d.Name
+                }).OrderByDescending(d => d.id).ToList()
+            }).OrderByDescending(q => q.Id).ToList();
+            return result;
+        }
+
         public async Task<string> upsetShoppingCart(string idProduct, int quantity)
         {
             var userId = GetUserId();
-            var shoppingCart = db.ShoppingCarts.Where(q => q.StatusDel == 1).Where(q => q.StatusOrder == 1).Where(q => q.IdShop.ToString() == userId).FirstOrDefault();
+
             var product = db.Products.Where(q => q.ID.ToString() == idProduct).SingleOrDefault();
+            var shoppingCart = db.ShoppingCarts.Where(q => q.StatusDel == 1).Where(q => q.StatusOrder == 1)
+                .Where(q => q.CreateBy.ToString() == userId)
+                .Where(q=>q.IdShop == product.idShop).FirstOrDefault();
+
             if (shoppingCart == null)
             {
                 await insertShoppingCart(product, quantity);
@@ -129,7 +208,7 @@ namespace Portal.Map
             shoppingCart.CreateDate = DateTime.Now;
             shoppingCart.CreateBy = GetUserId();
             shoppingCart.UpdateBy = shoppingCart.CreateBy;
-            shoppingCart.IdShop = Guid.Parse(shoppingCart.CreateBy);
+            shoppingCart.IdShop = product.idShop;
             shoppingCart.ShippingFee = product.ShippingFee ?? 0;
             shoppingCart.TotalQantity = quantity;
             var total = (product.StartingPrice - product.DiscountFrom) * quantity;

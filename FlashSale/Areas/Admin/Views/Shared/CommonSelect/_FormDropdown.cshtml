@@ -20,7 +20,7 @@
             @Html.ValidationMessage(validationMessageName, "", new { @class = "text-danger" })
         </label>
         <div class="col-12">
-            <select name="@validationMessageName" id="@idselectedValue" class="form-control" @(isDisabled ? "disabled" : "") onchange="@onchangeFunction" style="height:45px">
+            <select name="@validationMessageName" id="@idselectedValue" class="form-control" @(isDisabled ? "readonly" : "") onchange="@onchangeFunction" style="height:45px">
                 <option value="">-- Chọn --</option>
                 @foreach (var item in selectList)
                 {

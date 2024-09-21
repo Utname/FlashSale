@@ -59,7 +59,7 @@
                         <div class="col-lg-3 col-md-4">
                             <div class="header-top-left">
                                 <ul class="phone-wrap">
-                                    <li><span>Telephone Enquiry:</span><a href="#">(+123) 123 321 345</a></li>
+                                    <li><span>Hot line:</span><a href="#">0789 653 090</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -120,12 +120,12 @@
             <!-- Begin Header Middle Area -->
             <div class="header-middle pl-sm-0 pr-sm-0 pl-xs-0 pr-xs-0">
                 <div class="container">
-                    <div class="row">
+                    <div class="row" style="align-items:center">
                         <!-- Begin Header Logo Area -->
                         <div class="col-lg-3">
                             <div class="logo pb-sm-30 pb-xs-30">
                                 <a href="index.html">
-                                    <img src="~/Areas/Portal/Content/images/menu/logo/1.jpg" alt="">
+                                    <img src="~/Areas/Admin/Content/assets/images/icon/logo_flashsale2.png" style="width:100px;"/>
                                 </a>
                             </div>
                         </div>
@@ -226,42 +226,51 @@
                                         <div class="hm-minicart-trigger">
                                             <span class="item-icon"></span>
                                             <span class="item-text">
-                                                @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCart))đ
-                                                <span class="cart-item-count"> @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalItem))</span>
+                                                @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCartGroup))đ
+                                                <span class="cart-item-count"> @Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalItemGroup))</span>
                                             </span>
                                         </div>
                                         <span></span>
-                                        <div class="minicart">
-                                            <ul class="minicart-product-list">
-                                                @foreach (var shoppingCart in ViewBag.ShoppingCart.ListShoppingCart)
-                                                {
-                                                    <li>
-                                                        <a href="single-product.html" class="minicart-product-image">
-                                                            <img src="@shoppingCart.Image" alt="cart products">
-                                                        </a>
-                                                        <div class="minicart-product-details">
-                                                            <h6><a href="single-product.html">@shoppingCart.ProductName</a></h6>
-                                                            <span>@Html.Raw(String.Format("{0:N0}", shoppingCart.Total))đ x @Html.Raw(String.Format("{0:N0}", shoppingCart.Quantity))</span>
-                                                        </div>
-                                                        <button class="close">
-                                                            <i class="fa fa-close"></i>
-                                                        </button>
-                                                    </li>
-                                                }
 
-                                                
-                                            </ul>
-                                            <p class="minicart-total">SUBTOTAL: <span>@Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCart))đ</span></p>
-                                            <div class="minicart-button">
-                                                <a href="checkout.html" class="li-button li-button-dark li-button-fullwidth li-button-sm">
-                                                    <span>View Full Cart</span>
-                                                </a>
-                                                <a href="checkout.html" class="li-button li-button-fullwidth li-button-sm">
-                                                    <span>Checkout</span>
-                                                </a>
-                                            </div>
+
+
+                                        <div class="minicart">
+                                            @foreach (var group in ViewBag.ShoppingCart.ListGroupShoppingCart)
+                                            {
+                                                <p class="minicart-total mb-0  mt-2">Shop: <span>@group.ShopName</span></p>
+                                                <ul class="minicart-product-list">
+                                                    @foreach (var shoppingCart in group.ListShoppingCart)
+                                                    {
+                                                        <li>
+                                                            <a href="single-product.html" class="minicart-product-image">
+                                                                <img src="@shoppingCart.Image" alt="cart products">
+                                                            </a>
+                                                            <div class="minicart-product-details">
+                                                                <h6><a href="single-product.html">@shoppingCart.ProductName</a></h6>
+                                                                <span>@Html.Raw(String.Format("{0:N0}", shoppingCart.Total))đ x @Html.Raw(String.Format("{0:N0}", shoppingCart.Quantity))</span>
+                                                            </div>
+                                                            <button class="close" onclick="confirmDelete('@group.ID', '@shoppingCart.ID')">
+                                                                <i class="fa fa-close"></i>
+                                                            </button>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                                <p class="minicart-total mb-0">SUBTOTAL: <span>@Html.Raw(String.Format("{0:N0}", group.TotalShoppingCart))đ</span></p>
+                                                <p class="minicart-total" style="line-height:0px !important">TOTAL ITEM: <span>@Html.Raw(String.Format("{0:N0}", group.TotalItem))</span></p>
+                                                <div class="minicart-button">
+                                                    <a href="/Portal/ShoppingCart/Index?id=@group.ID" class="li-button li-button-dark li-button-fullwidth li-button-sm">
+                                                        <span>Danh sách sản phẩm</span>
+                                                    </a>
+                                                    <a href="/Portal/ShoppingCart/CheckOut?id=@group.ID" class="li-button li-button-fullwidth li-button-sm">
+                                                        <span>Kiểm tra đơn hàng</span>
+                                                    </a>
+                                                </div>
+                                            }
+                                            <p class="minicart-total">Tổng các đơn: <span>@Html.Raw(String.Format("{0:N0}", ViewBag.ShoppingCart.TotalShoppingCartGroup))đ</span></p>
+
                                         </div>
                                     </li>
+
                                     <!-- Header Mini Cart Area End Here -->
                                 </ul>
                             </div>
@@ -281,7 +290,12 @@
                             <div class="hb-menu hb-menu-2 d-xl-block">
                                 <nav>
                                     <ul>
-                                        <li class="dropdown-holder">
+                                        <li><a href="~/Portal/Home/Index">Trang chủ</a></li>
+                                        <li><a href="~/Portal/Product/Index">Sản phẩm</a></li>
+                                        <li><a href="contact.html">Shop</a></li>
+
+
+                                        @*<li class="dropdown-holder">
                                             <a href="index.html">Home</a>
                                             <ul class="hb-dropdown">
                                                 <li><a href="index.html">Home One</a></li>
@@ -412,10 +426,10 @@
                                             </ul>
                                         </li>
                                         <li><a href="about-us.html">About Us</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="contact.html">Contact</a></li>*@
                                         <!-- Begin Header Bottom Menu Information Area -->
                                         <li class="hb-info f-right p-0 d-sm-none d-lg-block">
-                                            <span>6688 London, Greater London BAS 23JK, UK</span>
+                                            <span>156/56 Huỳnh Tấn Phát, P.Tân Thuận Tây, Quận 7, Hồ Chí Minh</span>
                                         </li>
                                         <!-- Header Bottom Menu Information Area End Here -->
                                     </ul>
@@ -518,23 +532,23 @@
                             <!-- Begin Footer Logo Area -->
                             <div class="col-lg-4 col-md-6">
                                 <div class="footer-logo">
-                                    <img src="~/Areas/Portal/Content/images/menu/logo/1.jpg" alt="Footer Logo">
+                                    <img src="~/Areas/Admin/Content/assets/images/icon/logo_flashsale2.png" style="width:100px;" />
                                     <p class="info">
                                         We are a team of designers and developers that create high quality HTML Template & Woocommerce, Shopify Theme.
                                     </p>
                                 </div>
                                 <ul class="des">
                                     <li>
-                                        <span>Address: </span>
-                                        6688Princess Road, London, Greater London BAS 23JK, UK
+                                        <span>Địa chỉ: </span>
+                                        156/56 Huỳnh Tấn Phát, P.Tân Thuận Tây, Quận 7, Hồ Chí Minh
                                     </li>
                                     <li>
-                                        <span>Phone: </span>
-                                        <a href="#">(+123) 123 321 345</a>
+                                        <span>Số điện thoại: </span>
+                                        <a href="#">0789 653 090</a>
                                     </li>
                                     <li>
                                         <span>Email: </span>
-                                        <a href="mailto://info@yourdomain.com">info@yourdomain.com</a>
+                                        <a href="mailto://info@yourdomain.com">nguyenvanutdev@gmail.com</a>
                                     </li>
                                 </ul>
                             </div>
@@ -826,8 +840,65 @@
     <script src="~/Areas/Portal/Content/js/jquery.nice-select.min.js"></script>
     <!-- ScrollUp js -->
     <script src="~/Areas/Portal/Content/js/scrollUp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Main/Activator js -->
     <script src="~/Areas/Portal/Content/js/main_common2.js"></script>
+    <script>
+       function confirmDelete(groupID, shoppingCartID) {
+                // Store the IDs in a hidden field or a variable
+              window.groupIdToDelete = groupID;
+              window.shoppingCartIdToDelete = shoppingCartID;
+
+               Swal.fire({
+                   title: 'Bạn có chắc muốn xóa sản phẩm này?',
+                 //  text: 'Bạn có chắc muốn xóa sản phẩm này?',
+                   icon: 'warning',
+                   showCancelButton: true,
+                   confirmButtonColor: '#3085d6',
+                   cancelButtonColor: '#d33',
+                   confirmButtonText: 'Có',
+                   cancelButtonText: 'Không',
+               }).then((result) => {
+                   if (result.isConfirmed) {
+                       deleteItem();
+                   }
+               });
+            }
+
+            function deleteItem() {
+                const idShoppingCart = window.groupIdToDelete;
+                const idShoppingCartDetails = parseInt(window.shoppingCartIdToDelete);
+
+                // Perform the deletion using an AJAX call or redirect to a delete action
+                $.ajax({
+                    url: '@Url.Action("DeleteOrderShoppingCart", "ShoppingCart")', // Replace with your action and controller
+                    type: 'POST',
+                    data: { idShoppingCart: idShoppingCart, idShoppingCartDetails: idShoppingCartDetails },
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Đã xóa sản phẩm',
+                            //text: 'Item has been successfully deleted.',
+                            icon: 'success',
+                            confirmButtonText: 'Đóng'
+                        }).then(() => {
+                            // Reload the page after the user acknowledges the alert
+                            location.reload(); // Refresh the page to reflect the changes
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        Swal.fire({
+                            title: 'Đã xảy ra lỗi',
+                            //text: 'Item has been successfully deleted.',
+                            icon: 'error',
+                            confirmButtonText: 'Đóng'
+                        }).then(() => {
+                        });
+                       
+                    }
+                });
+            }
+    </script>
     @RenderSection("scripts", false)
 
 </body>

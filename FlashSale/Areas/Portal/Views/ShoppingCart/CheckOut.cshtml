@@ -3,6 +3,7 @@
     ViewBag.Title = "CheckOut";
     Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
 }
+
 <!-- Begin Li's Breadcrumb Area -->
 <div class="breadcrumb-area">
     <div class="container">
@@ -70,40 +71,62 @@
                         <h3>Billing Details</h3>
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.ID)
-                    <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <div class="form-group row">
-                            @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Họ và tên", "UserName", Model.UserName, false))
-                        </div>
-                        <div class="form-group row">
-                            @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Email", "Email", Model.Email, false))
-                        </div>
-                        <div class="form-group row">
-                            @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Số điện thoại", "Phone", Model.Phone, false))
-                        </div>
-                        <div class="form-group row">
-                            @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Địa chỉ", "Address", Model.Address, false))
-                        </div>
+                        @Html.HiddenFor(model => model.idShop)
 
-                        <div class="form-group row">
-                            <label class="control-label col-md-12">Thời gian đặt hàng</label>
-                            <div class="col-md-12">
-                                <input type="datetime-local"
-                                       class="form-control"
-                                       name="OrderTime"
-                                       value="@(Html.Encode(DateTime.Now.ToString("yyyy-MM-ddTHH:mm")))"
-                                       readonly  />
+
+
+                        @for (int i = 0; i < Model.listShoppingCartDetail.Count; i++)
+                        {
+                            @Html.HiddenFor(model => model.listShoppingCartDetail[i].ProductName)
+                            @Html.HiddenFor(model => model.listShoppingCartDetail[i].Quantity)
+                            @Html.HiddenFor(model => model.listShoppingCartDetail[i].Total)
+                        }
+                        @Html.HiddenFor(model => model.SubTotal)
+                        @Html.HiddenFor(model => model.TotalQuantity)
+                        @Html.HiddenFor(model => model.Total)
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Tên Shop", "ShopName", Model.ShopName, true))
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTexteareInput.cshtml", Tuple.Create("Ghi chú", "Note", Model.Note, false))
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Sô điện thoại Shop", "PhoneShop", Model.PhoneShop, true))
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Địa chỉ shop", "AddressShop", Model.AddressShop, true))
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Họ và tên", "UserName", Model.UserName, false))
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Email", "Email", Model.Email, false))
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Số điện thoại", "Phone", Model.Phone, false))
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTextInput.cshtml", Tuple.Create("Địa chỉ", "Address", Model.Address, false))
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="control-label col-md-12">Thời gian đặt hàng</label>
+                                <div class="col-md-12">
+                                    <input type="datetime-local"
+                                           class="form-control"
+                                           name="OrderTime"
+                                           value="@(Html.Encode(DateTime.Now.ToString("yyyy-MM-ddTHH:mm")))"
+                                           readonly />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                @Html.Partial("~/Areas/Admin/Views/Shared/CommonInput/_FormTexteareInput.cshtml", Tuple.Create("Ghi chú", "Note", Model.Note, false))
+
+                            </div>
+                            <div class="order-button-payment">
+                                <input value="Đặt hàng" type="submit">
+                            </div>
 
                         </div>
-                        <div class="order-button-payment">
-                            <input value="Đặt hàng" type="submit">
-                        </div>
-
-                    </div>
                     </div>
                 </form>
             </div>
@@ -125,9 +148,9 @@
                                         <td class="cart-product-name"> @item.ProductName<strong class="product-quantity"> × @Html.Raw(String.Format("{0:N0}", item.Quantity))</strong></td>
                                         <td class="cart-product-total"><span class="amount">@Html.Raw(String.Format("{0:N0}", item.Total))đ</span></td>
                                     </tr>
-                                  
+
                                 }
-                                </tbody>
+                            </tbody>
                             <tfoot>
                                 <tr class="cart-subtotal">
                                     <th>Tổng tiền sản phẩm</th>
@@ -135,7 +158,7 @@
                                 </tr>
                                 <tr class="cart-subtotal">
                                     <th>Tổng số lượng</th>
-                                    <td><span class="amount"> @Html.Raw(String.Format("{0:N0}", Model.TotalQuantity))đ</span></td>
+                                    <td><span class="amount"> @Html.Raw(String.Format("{0:N0}", Model.TotalQuantity))</span></td>
                                 </tr>
                                 <tr class="order-total">
                                     <th>Tổng thanh toán</th>
@@ -190,7 +213,7 @@
                                     </div>
                                 </div>
                             </div>
-                           
+
                         </div>
                     </div>
                 </div>

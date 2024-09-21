@@ -105,12 +105,6 @@
     <Compile Include="Entity\DefaultImage.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entity\DonHang.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Entity\DonHangChiTiet.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entity\ImageProduct.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -147,9 +141,6 @@
     <Compile Include="Entity\ReturnAndExchangePolicy.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Entity\SanPham.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Entity\ShopNhomSanPham.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -171,6 +162,9 @@
     <Compile Include="Entity\Vat.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Voucher.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\Warranty.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -178,11 +172,12 @@
     <Compile Include="Helpers\Model\CommonModel.cs" />
     <Compile Include="Map\mapCommon.cs" />
     <Compile Include="Map\mapChucNang.cs" />
-    <Compile Include="Map\mapDonHangChiTiet.cs" />
-    <Compile Include="Map\mapDonHang.cs" />
     <Compile Include="Map\mapBanner.cs" />
     <Compile Include="Map\mapDefaultImage.cs" />
     <Compile Include="Map\mapAdvertisement.cs" />
+    <Compile Include="Map\mapBill.cs" />
+    <Compile Include="Map\mapShoppingCart.cs" />
+    <Compile Include="Map\mapVoucher.cs" />
     <Compile Include="Map\mapReturnAndExchangePolicy.cs" />
     <Compile Include="Map\mapProductClassification.cs" />
     <Compile Include="Map\mapProductCategory.cs" />
@@ -192,16 +187,16 @@
     <Compile Include="Map\mapVat.cs" />
     <Compile Include="Map\mapShopNhomSanPham.cs" />
     <Compile Include="Map\mapNhomSanPham.cs" />
-    <Compile Include="Map\mapSanPham.cs" />
     <Compile Include="Map\mapTaiKhoanShopSystem.cs" />
-    <Compile Include="Model\DonHangChiTietModel.cs" />
-    <Compile Include="Model\DonHangModel.cs" />
     <Compile Include="Model\ImageProductModel.cs" />
     <Compile Include="Model\PaginationModel.cs" />
     <Compile Include="Model\FunctionModel.cs" />
     <Compile Include="Model\BannerModel.cs" />
     <Compile Include="Model\DefaultImageModel.cs" />
     <Compile Include="Model\AdvertisementModel.cs" />
+    <Compile Include="Model\BillModel.cs" />
+    <Compile Include="Model\ShoppingCartModel.cs" />
+    <Compile Include="Model\VoucherModel.cs" />
     <Compile Include="Model\ReturnAndExchangePolicyModel.cs" />
     <Compile Include="Model\ProductModel.cs" />
     <Compile Include="Model\WarrantyModel.cs" />
@@ -212,7 +207,6 @@
     <Compile Include="Model\VatModel.cs" />
     <Compile Include="Model\ShopNhomSanPhamModel.cs" />
     <Compile Include="Model\NhomSanPhamModel.cs" />
-    <Compile Include="Model\SanPhamModel.cs" />
     <Compile Include="Model\TaiKhoanShopModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -17,8 +17,8 @@ namespace Data.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ShoppingCart()
         {
-            this.ShoppingCartDetails = new HashSet<ShoppingCartDetail>();
             this.Bills = new HashSet<Bill>();
+            this.ShoppingCartDetails = new HashSet<ShoppingCartDetail>();
         }
     
         public System.Guid ID { get; set; }
@@ -35,11 +35,12 @@ namespace Data.Entity
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string UpdateBy { get; set; }
         public Nullable<decimal> ShippingFee { get; set; }
+        public string VoucherCode { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Bill> Bills { get; set; }
         public virtual TaiKhoanShop TaiKhoanShop { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShoppingCartDetail> ShoppingCartDetails { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Bill> Bills { get; set; }
     }
 }

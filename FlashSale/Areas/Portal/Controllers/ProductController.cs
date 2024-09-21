@@ -1,4 +1,6 @@
-﻿using FlashSale.Areas.Portal.Model;
+﻿using Data.Helpers.Model;
+using FlashSale.Areas.Portal.Model;
+using Microsoft.Office.Interop.Excel;
 using Portal.Map;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Web.Mvc;
 
 namespace FlashSale.Areas.Portal.Controllers
 {
+  
     public class ProductController : BaseController
     {
         mapProduct map = new mapProduct();
@@ -19,6 +22,14 @@ namespace FlashSale.Areas.Portal.Controllers
             return View(model);
         }
 
+        public ActionResult Index(ProductFilterModel model)
+        {
+            model.Products = map.index(model);
+            return View(model);
+        }
+
+
+      
 
         //[HttpPost]
         //public ActionResult AddToCart(string idProduct, int quantity)

@@ -1,0 +1,117 @@
+﻿@model FlashSale.Areas.Admin.Model.ShoppingCartModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+
+<div class="main-content-inner">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="pl-3">Xem đơn hàng</h3>
+                            <br>
+                            <form enctype="multipart/form-data" method="post">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(model => model.db.ID)
+
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Shop", "db.IdShop",
+                                           new Data.mapTaiKhoanShopSystem().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.IdShop.ToString(), true, "", ""))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonSelect/_FormDropdown", Tuple.Create("Người mua", "db.CreateBy",
+                                           new Data.mapTaiKhoanShopSystem().getListUse().Select(x => new SelectListItem { Value = x.id.ToString(), Text = x.name }),
+                                           Model.db.CreateBy.ToString(), true, "", ""))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Tổng tiền sản phẩm", "TotalProductPriceView", Model.TotalProductPriceView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số lượng", "TotalQantityView", Model.TotalQantityView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormTextInput", Tuple.Create("Mã giảm giá", "db.VoucherCode", Model.db.VoucherCode, true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số tiền giảm", "DiscountAmountView", Model.DiscountAmountView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Số tiền vận chuyển", "ShippingFeeView", Model.ShippingFeeView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            @Html.Partial("CommonInput/_FormNumberInputField", Tuple.Create("Tổng thanh toán", "TotalView", Model.TotalView ?? "", "formatNumberCommon(this)", true))
+                                        </div>
+                                    </div>
+                                    <div class="table-content table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="li-product-remove">STT</th>
+                                                    <th class="li-product-thumbnail">Hình ảnh</th>
+                                                    <th class="cart-product-name">Sản phẩm</th>
+                                                    <th class="li-product-price">Giá bán</th>
+                                                    <th class="li-product-quantity">Số lượng</th>
+                                                    <th class="li-product-subtotal">Tổng cộng</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.listShoppingCartDetail)
+                                                {
+                                                    <tr>
+                                                        <td align="center">@(++i)</td>
+                                                        <td class="li-product-thumbnail"><a href="#"><img src="@item.Image" alt="Li's Product Image" style="width:120px;"></a></td>
+                                                        <td class="li-product-name"><a href="#">@item.ProductName</a></td>
+                                                        <td class="li-product-price"><span class="amount"> @Html.Raw(String.Format("{0:N0}", item.UnitPrice))đ</span></td>
+                                                        <td class="quantity">
+                                                            @Html.Raw(String.Format("{0:N0}", item.Quantity))
+                                                        </td>
+                                                        <td class="product-subtotal"><span class="amount">@Html.Raw(String.Format("{0:N0}", item.Total))đ</span></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-12">
+                                            <button type="button" class="btn btn-default mr-1">
+                                                <a href="~/Admin/ShoppingCart/Index" style="color:black">Đóng</a>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+     CKEDITOR.replace("db.Description");
+
+    </script>
+
+}

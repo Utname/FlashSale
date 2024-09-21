@@ -72,24 +72,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="DonHangChiTiets">
-      <EntityTypeMapping TypeName="FlashSaleModel.DonHangChiTiet">
-        <MappingFragment StoreEntitySet="DonHangChiTiet">
-          <ScalarProperty Name="idSanPham" ColumnName="idSanPham" />
-          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
-          <ScalarProperty Name="NguoiTao" ColumnName="NguoiTao" />
-          <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
-          <ScalarProperty Name="NguoiCapNhat" ColumnName="NguoiCapNhat" />
-          <ScalarProperty Name="NgayCapNhat" ColumnName="NgayCapNhat" />
-          <ScalarProperty Name="SoLuong" ColumnName="SoLuong" />
-          <ScalarProperty Name="GiaSale" ColumnName="GiaSale" />
-          <ScalarProperty Name="GiaBan" ColumnName="GiaBan" />
-          <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
-          <ScalarProperty Name="idDonHang" ColumnName="idDonHang" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Vats">
       <EntityTypeMapping TypeName="FlashSaleModel.Vat">
         <MappingFragment StoreEntitySet="Vat">
@@ -101,30 +83,6 @@
           <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
           <ScalarProperty Name="Note" ColumnName="Note" />
           <ScalarProperty Name="Code" ColumnName="Code" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="DonHangs">
-      <EntityTypeMapping TypeName="FlashSaleModel.DonHang">
-        <MappingFragment StoreEntitySet="DonHang">
-          <ScalarProperty Name="idVat" ColumnName="idVat" />
-          <ScalarProperty Name="KhacHangGhiChu" ColumnName="KhacHangGhiChu" />
-          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
-          <ScalarProperty Name="NguoiTao" ColumnName="NguoiTao" />
-          <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
-          <ScalarProperty Name="NguoiCapNhat" ColumnName="NguoiCapNhat" />
-          <ScalarProperty Name="NgayCapNhat" ColumnName="NgayCapNhat" />
-          <ScalarProperty Name="TongThanhToan" ColumnName="TongThanhToan" />
-          <ScalarProperty Name="Vat" ColumnName="Vat" />
-          <ScalarProperty Name="PhiShip" ColumnName="PhiShip" />
-          <ScalarProperty Name="TrietKhau" ColumnName="TrietKhau" />
-          <ScalarProperty Name="TongTienSanPham" ColumnName="TongTienSanPham" />
-          <ScalarProperty Name="TrangThai" ColumnName="TrangThai" />
-          <ScalarProperty Name="ThoiGianDatHang" ColumnName="ThoiGianDatHang" />
-          <ScalarProperty Name="DiaChiGiaoHang" ColumnName="DiaChiGiaoHang" />
-          <ScalarProperty Name="SoDienThoai" ColumnName="SoDienThoai" />
-          <ScalarProperty Name="idShop" ColumnName="idShop" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -170,29 +128,6 @@
           <ScalarProperty Name="RefundFee" ColumnName="RefundFee" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="SanPhams">
-      <EntityTypeMapping TypeName="FlashSaleModel.SanPham">
-        <MappingFragment StoreEntitySet="SanPham">
-          <ScalarProperty Name="LuotXem" ColumnName="LuotXem" />
-          <ScalarProperty Name="LuotHienThi" ColumnName="LuotHienThi" />
-          <ScalarProperty Name="idNhomSanPham" ColumnName="idNhomSanPham" />
-          <ScalarProperty Name="NguoiTao" ColumnName="NguoiTao" />
-          <ScalarProperty Name="NgayTao" ColumnName="NgayTao" />
-          <ScalarProperty Name="NguoiCapNhat" ColumnName="NguoiCapNhat" />
-          <ScalarProperty Name="NgayCapNhat" ColumnName="NgayCapNhat" />
-          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
-          <ScalarProperty Name="idLoaiSanPham" ColumnName="idLoaiSanPham" />
-          <ScalarProperty Name="idShop" ColumnName="idShop" />
-          <ScalarProperty Name="GioKetThuc" ColumnName="GioKetThuc" />
-          <ScalarProperty Name="GioBatDau" ColumnName="GioBatDau" />
-          <ScalarProperty Name="ConHang" ColumnName="ConHang" />
-          <ScalarProperty Name="GiaSale" ColumnName="GiaSale" />
-          <ScalarProperty Name="GiaNiemYet" ColumnName="GiaNiemYet" />
-          <ScalarProperty Name="TenSanPham" ColumnName="TenSanPham" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -325,26 +260,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="ShoppingCarts">
-      <EntityTypeMapping TypeName="FlashSaleModel.ShoppingCart">
-        <MappingFragment StoreEntitySet="ShoppingCart">
-          <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
-          <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
-          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-          <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-          <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
-          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
-          <ScalarProperty Name="StatusOrder" ColumnName="StatusOrder" />
-          <ScalarProperty Name="TotalQantity" ColumnName="TotalQantity" />
-          <ScalarProperty Name="TotalProductPrice" ColumnName="TotalProductPrice" />
-          <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
-          <ScalarProperty Name="Total" ColumnName="Total" />
-          <ScalarProperty Name="DiscountCode" ColumnName="DiscountCode" />
-          <ScalarProperty Name="IdShop" ColumnName="IdShop" />
-          <ScalarProperty Name="ID" ColumnName="ID" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="ShoppingCartDetails">
       <EntityTypeMapping TypeName="FlashSaleModel.ShoppingCartDetail">
         <MappingFragment StoreEntitySet="ShoppingCartDetail">
@@ -384,6 +299,13 @@
     <EntitySetMapping Name="Bills">
       <EntityTypeMapping TypeName="FlashSaleModel.Bill">
         <MappingFragment StoreEntitySet="Bill">
+          <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="TotalQantity" ColumnName="TotalQantity" />
+          <ScalarProperty Name="AddressShop" ColumnName="AddressShop" />
+          <ScalarProperty Name="PhoneShop" ColumnName="PhoneShop" />
+          <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+          <ScalarProperty Name="idShop" ColumnName="idShop" />
           <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
           <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
           <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
@@ -394,11 +316,51 @@
           <ScalarProperty Name="Note" ColumnName="Note" />
           <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
           <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
-          <ScalarProperty Name="DeliveryAdress" ColumnName="DeliveryAdress" />
+          <ScalarProperty Name="DeliveryAddress" ColumnName="DeliveryAddress" />
           <ScalarProperty Name="EmailUser" ColumnName="EmailUser" />
           <ScalarProperty Name="PhoneUser" ColumnName="PhoneUser" />
           <ScalarProperty Name="UserName" ColumnName="UserName" />
           <ScalarProperty Name="idUser" ColumnName="idUser" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ShoppingCarts">
+      <EntityTypeMapping TypeName="FlashSaleModel.ShoppingCart">
+        <MappingFragment StoreEntitySet="ShoppingCart">
+          <ScalarProperty Name="VoucherCode" ColumnName="VoucherCode" />
+          <ScalarProperty Name="ShippingFee" ColumnName="ShippingFee" />
+          <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+          <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
+          <ScalarProperty Name="StatusOrder" ColumnName="StatusOrder" />
+          <ScalarProperty Name="TotalQantity" ColumnName="TotalQantity" />
+          <ScalarProperty Name="TotalProductPrice" ColumnName="TotalProductPrice" />
+          <ScalarProperty Name="DiscountAmount" ColumnName="DiscountAmount" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="DiscountCode" ColumnName="DiscountCode" />
+          <ScalarProperty Name="IdShop" ColumnName="IdShop" />
+          <ScalarProperty Name="ID" ColumnName="ID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Vouchers">
+      <EntityTypeMapping TypeName="FlashSaleModel.Voucher">
+        <MappingFragment StoreEntitySet="Voucher">
+          <ScalarProperty Name="Value" ColumnName="Value" />
+          <ScalarProperty Name="idShop" ColumnName="idShop" />
+          <ScalarProperty Name="UpdateBy" ColumnName="UpdateBy" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+          <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+          <ScalarProperty Name="StatusDel" ColumnName="StatusDel" />
+          <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+          <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Code" ColumnName="Code" />
           <ScalarProperty Name="ID" ColumnName="ID" />
         </MappingFragment>
       </EntityTypeMapping>

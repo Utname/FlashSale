@@ -19,7 +19,7 @@ namespace Data.Entity
         public string UserName { get; set; }
         public string PhoneUser { get; set; }
         public string EmailUser { get; set; }
-        public string DeliveryAdress { get; set; }
+        public string DeliveryAddress { get; set; }
         public Nullable<System.DateTime> DeliveryDate { get; set; }
         public Nullable<System.DateTime> OrderDate { get; set; }
         public string Note { get; set; }
@@ -30,6 +30,13 @@ namespace Data.Entity
         public string CreateBy { get; set; }
         public Nullable<System.DateTime> CreateDate { get; set; }
         public string UpdateBy { get; set; }
+        public Nullable<System.Guid> idShop { get; set; }
+        public string ShopName { get; set; }
+        public string PhoneShop { get; set; }
+        public string AddressShop { get; set; }
+        public Nullable<long> TotalQantity { get; set; }
+        public Nullable<decimal> Total { get; set; }
+        public Nullable<decimal> ShippingFee { get; set; }
     
         public virtual ShoppingCart ShoppingCart { get; set; }
     }

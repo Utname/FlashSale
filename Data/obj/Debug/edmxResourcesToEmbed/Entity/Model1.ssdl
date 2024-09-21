@@ -40,7 +40,7 @@
     <Property Name="UserName" Type="nvarchar" MaxLength="200" />
     <Property Name="PhoneUser" Type="nvarchar" MaxLength="20" />
     <Property Name="EmailUser" Type="nvarchar" MaxLength="100" />
-    <Property Name="DeliveryAdress" Type="nvarchar" MaxLength="200" />
+    <Property Name="DeliveryAddress" Type="nvarchar" MaxLength="200" />
     <Property Name="DeliveryDate" Type="datetime" />
     <Property Name="OrderDate" Type="datetime" />
     <Property Name="Note" Type="nvarchar" MaxLength="500" />
@@ -51,6 +51,13 @@
     <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
     <Property Name="CreateDate" Type="datetime" />
     <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="idShop" Type="uniqueidentifier" />
+    <Property Name="ShopName" Type="nvarchar" MaxLength="200" />
+    <Property Name="PhoneShop" Type="nvarchar" MaxLength="20" />
+    <Property Name="AddressShop" Type="nvarchar" MaxLength="200" />
+    <Property Name="TotalQantity" Type="bigint" />
+    <Property Name="Total" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="ShippingFee" Type="decimal" Precision="18" Scale="4" />
   </EntityType>
   <EntityType Name="ChucNang">
     <Key>
@@ -79,46 +86,6 @@
     <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
     <Property Name="CreateDate" Type="datetime" />
     <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
-  </EntityType>
-  <EntityType Name="DonHang">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="idShop" Type="uniqueidentifier" />
-    <Property Name="SoDienThoai" Type="nvarchar" MaxLength="50" />
-    <Property Name="DiaChiGiaoHang" Type="nvarchar" MaxLength="500" />
-    <Property Name="ThoiGianDatHang" Type="datetime" />
-    <Property Name="TrangThai" Type="int" />
-    <Property Name="TongTienSanPham" Type="money" />
-    <Property Name="TrietKhau" Type="money" />
-    <Property Name="PhiShip" Type="money" />
-    <Property Name="Vat" Type="money" />
-    <Property Name="TongThanhToan" Type="money" />
-    <Property Name="NgayCapNhat" Type="datetime" />
-    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
-    <Property Name="NgayTao" Type="datetime" />
-    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
-    <Property Name="StatusDel" Type="int" />
-    <Property Name="KhacHangGhiChu" Type="nvarchar" MaxLength="100" />
-    <Property Name="idVat" Type="int" />
-  </EntityType>
-  <EntityType Name="DonHangChiTiet">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="idDonHang" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="TenSanPham" Type="nvarchar" MaxLength="50" />
-    <Property Name="GiaBan" Type="money" />
-    <Property Name="GiaSale" Type="money" />
-    <Property Name="SoLuong" Type="float" />
-    <Property Name="NgayCapNhat" Type="datetime" />
-    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
-    <Property Name="NgayTao" Type="datetime" />
-    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
-    <Property Name="StatusDel" Type="int" />
-    <Property Name="idSanPham" Type="uniqueidentifier" />
   </EntityType>
   <EntityType Name="ImageProduct">
     <Key>
@@ -234,28 +201,6 @@
     <Property Name="CreateDate" Type="datetime" />
     <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
   </EntityType>
-  <EntityType Name="SanPham">
-    <Key>
-      <PropertyRef Name="ID" />
-    </Key>
-    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="TenSanPham" Type="nvarchar" MaxLength="200" />
-    <Property Name="GiaNiemYet" Type="money" />
-    <Property Name="GiaSale" Type="money" />
-    <Property Name="ConHang" Type="bit" Nullable="false" />
-    <Property Name="GioBatDau" Type="datetime" />
-    <Property Name="GioKetThuc" Type="datetime" />
-    <Property Name="idShop" Type="uniqueidentifier" Nullable="false" />
-    <Property Name="idLoaiSanPham" Type="int" />
-    <Property Name="StatusDel" Type="int" />
-    <Property Name="NgayCapNhat" Type="datetime" />
-    <Property Name="NguoiCapNhat" Type="nvarchar" MaxLength="200" />
-    <Property Name="NgayTao" Type="datetime" />
-    <Property Name="NguoiTao" Type="nvarchar" MaxLength="200" />
-    <Property Name="idNhomSanPham" Type="int" />
-    <Property Name="LuotHienThi" Type="int" />
-    <Property Name="LuotXem" Type="int" />
-  </EntityType>
   <EntityType Name="ShopNhomSanPham">
     <Key>
       <PropertyRef Name="idShop" />
@@ -290,6 +235,7 @@
     <Property Name="CreateDate" Type="datetime" />
     <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
     <Property Name="ShippingFee" Type="decimal" Precision="18" Scale="4" />
+    <Property Name="VoucherCode" Type="nvarchar" MaxLength="200" />
   </EntityType>
   <EntityType Name="ShoppingCartDetail">
     <Key>
@@ -369,6 +315,24 @@
     <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
     <Property Name="PercentVat" Type="int" />
   </EntityType>
+  <EntityType Name="Voucher">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Code" Type="nvarchar" MaxLength="200" />
+    <Property Name="Name" Type="nvarchar" MaxLength="200" />
+    <Property Name="Image" Type="nvarchar(max)" />
+    <Property Name="StartTime" Type="datetime" />
+    <Property Name="EndTime" Type="datetime" />
+    <Property Name="StatusDel" Type="int" />
+    <Property Name="UpdateDate" Type="datetime" />
+    <Property Name="CreateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="UpdateBy" Type="nvarchar" MaxLength="200" />
+    <Property Name="idShop" Type="uniqueidentifier" />
+    <Property Name="Value" Type="int" />
+  </EntityType>
   <EntityType Name="Warranty">
     <Key>
       <PropertyRef Name="ID" />
@@ -393,34 +357,6 @@
       </Principal>
       <Dependent Role="Bill">
         <PropertyRef Name="idShopingCart" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_DonHang_TaiKhoanShop">
-    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="0..1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="DonHang" Type="Self.DonHang" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="TaiKhoanShop">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="DonHang">
-        <PropertyRef Name="idShop" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="FK_DonHangChiTiet_DonHang">
-    <End Role="DonHang" Type="Self.DonHang" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Role="DonHangChiTiet" Type="Self.DonHangChiTiet" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="DonHang">
-        <PropertyRef Name="ID" />
-      </Principal>
-      <Dependent Role="DonHangChiTiet">
-        <PropertyRef Name="idDonHang" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -600,14 +536,26 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Voucher_TaiKhoanShop">
+    <End Role="TaiKhoanShop" Type="Self.TaiKhoanShop" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Voucher" Type="Self.Voucher" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoanShop">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Voucher">
+        <PropertyRef Name="idShop" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="FlashSaleModelStoreContainer">
     <EntitySet Name="Advertisement" EntityType="Self.Advertisement" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Banner" EntityType="Self.Banner" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Bill" EntityType="Self.Bill" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ChucNang" EntityType="Self.ChucNang" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="DefaultImage" EntityType="Self.DefaultImage" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="DonHang" EntityType="Self.DonHang" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="DonHangChiTiet" EntityType="Self.DonHangChiTiet" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ImageProduct" EntityType="Self.ImageProduct" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="NhomSanPham" EntityType="Self.NhomSanPham" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="PhanQuyen" EntityType="Self.PhanQuyen" Schema="dbo" store:Type="Tables" />
@@ -615,7 +563,6 @@
     <EntitySet Name="ProductCategory" EntityType="Self.ProductCategory" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ProductClassification" EntityType="Self.ProductClassification" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ReturnAndExchangePolicy" EntityType="Self.ReturnAndExchangePolicy" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="SanPham" EntityType="Self.SanPham" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ShopNhomSanPham" EntityType="Self.ShopNhomSanPham" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ShoppingCart" EntityType="Self.ShoppingCart" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ShoppingCartDetail" EntityType="Self.ShoppingCartDetail" Schema="dbo" store:Type="Tables" />
@@ -623,18 +570,11 @@
     <EntitySet Name="TaiKhoanShop" EntityType="Self.TaiKhoanShop" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="TypeProducts" EntityType="Self.TypeProducts" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Vat" EntityType="Self.Vat" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Voucher" EntityType="Self.Voucher" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Warranty" EntityType="Self.Warranty" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK_Bill_ShoppingCart" Association="Self.FK_Bill_ShoppingCart">
       <End Role="ShoppingCart" EntitySet="ShoppingCart" />
       <End Role="Bill" EntitySet="Bill" />
-    </AssociationSet>
-    <AssociationSet Name="FK_DonHang_TaiKhoanShop" Association="Self.FK_DonHang_TaiKhoanShop">
-      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
-      <End Role="DonHang" EntitySet="DonHang" />
-    </AssociationSet>
-    <AssociationSet Name="FK_DonHangChiTiet_DonHang" Association="Self.FK_DonHangChiTiet_DonHang">
-      <End Role="DonHang" EntitySet="DonHang" />
-      <End Role="DonHangChiTiet" EntitySet="DonHangChiTiet" />
     </AssociationSet>
     <AssociationSet Name="FK_ImageProduct_Product" Association="Self.FK_ImageProduct_Product">
       <End Role="Product" EntitySet="Product" />
@@ -687,6 +627,10 @@
     <AssociationSet Name="FK_TypeProducts_NhomSanPham" Association="Self.FK_TypeProducts_NhomSanPham">
       <End Role="NhomSanPham" EntitySet="NhomSanPham" />
       <End Role="TypeProducts" EntitySet="TypeProducts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Voucher_TaiKhoanShop" Association="Self.FK_Voucher_TaiKhoanShop">
+      <End Role="TaiKhoanShop" EntitySet="TaiKhoanShop" />
+      <End Role="Voucher" EntitySet="Voucher" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

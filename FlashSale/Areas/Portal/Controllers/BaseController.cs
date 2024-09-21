@@ -17,5 +17,7 @@ namespace FlashSale.Areas.Portal.Controllers
             ViewBag.ShoppingCart =map.getOrderShoppingCart();
             base.OnActionExecuting(filterContext);
         }
+
+      
     }
 }

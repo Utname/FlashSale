@@ -19,9 +19,9 @@ namespace Data.Entity
         {
             this.PhanQuyens = new HashSet<PhanQuyen>();
             this.ShopNhomSanPhams = new HashSet<ShopNhomSanPham>();
-            this.DonHangs = new HashSet<DonHang>();
             this.Products = new HashSet<Product>();
             this.ShoppingCarts = new HashSet<ShoppingCart>();
+            this.Vouchers = new HashSet<Voucher>();
         }
     
         public System.Guid ID { get; set; }
@@ -46,10 +46,10 @@ namespace Data.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShopNhomSanPham> ShopNhomSanPhams { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DonHang> DonHangs { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Product> Products { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Voucher> Vouchers { get; set; }
     }
 }

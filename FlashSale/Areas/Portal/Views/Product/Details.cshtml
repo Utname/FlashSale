@@ -5,6 +5,27 @@
     Layout = "~/Areas/Portal/Views/Shared/_Layout.cshtml";
 }
 
+
+@{
+    var succesModalViewModel = new FlashSale.Areas.Portal.Model.ModalViewReLoadModel
+    {
+        Title = "Thành công",
+        SubClose = "Đóng",
+        SubTitle = "Sản phẩm đã được thêm vào giỏ hàng thành công!",
+    };
+
+    var errorModalViewModel = new FlashSale.Areas.Portal.Model.ModalViewReLoadModel
+    {
+        Title = "Thất bại",
+        SubClose = "Đóng",
+        SubTitle = "Sản phẩm  thêm vào giỏ hàng thất bai. Vui lòng kiểm tra lại!",
+    };
+}
+
+@Html.Partial("Modal/_SuccessModalReLoad", succesModalViewModel)
+@Html.Partial("Modal/_ErrorModalReLoad", errorModalViewModel)
+
+
 <div class="breadcrumb-area">
     <div class="container">
         <div class="breadcrumb-content">
@@ -95,7 +116,7 @@
 
                             </div>
                         </div>
-                     
+
                         <div class="single-add-to-cart">
                             <form id="add-to-cart-form" class="cart-quantity">
                                 <input type="hidden" name="idProduct" value="@Model.ID">
@@ -110,37 +131,18 @@
                                 <button class="add-to-cart" type="button" onclick="submitAddToCart()">Thêm vào giỏ hàng</button>
                             </form>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="successModalLabel">Thành công</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Sản phẩm đã được thêm vào giỏ hàng thành công!
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" onclick="redirectToDetails()">Đóng</button>
+                            @*<form action="/Portal/Product/AddToCart" method="post" class="cart-quantity">
+                                    <input type="hidden" name="idProduct" value="@Model.ID">
+                                    <div class="quantity">
+                                        <label>Quantity</label>
+                                        <div class="cart-plus-minus">
+                                            <input class="cart-plus-minus-box" name="quantity" value="1" type="text">
+                                            <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                                            <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            @*<form action="/Portal/Product/AddToCart" method="post" class="cart-quantity">
-            <input type="hidden" name="idProduct" value="@Model.ID">
-            <div class="quantity">
-                <label>Quantity</label>
-                <div class="cart-plus-minus">
-                    <input class="cart-plus-minus-box" name="quantity" value="1" type="text">
-                    <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
-                    <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
-                </div>
-            </div>
-            <button class="add-to-cart" type="submit">Thêm vào giỏ hàng</button>
-        </form>*@
+                                    <button class="add-to-cart" type="submit">Thêm vào giỏ hàng</button>
+                                </form>*@
                         </div>
                         <div class="product-additional-info pt-25">
                             <a class="wishlist-btn" href="wishlist.html"><i class="fa fa-heart-o"></i>Add to wishlist</a>
@@ -420,21 +422,30 @@
 
         /* 22. Cart Plus Minus Button
 /*----------------------------------------*/
-        $(".cart-plus-minus").append('<div class="dec qtybutton"><i class="fa fa-angle-down"></i></div><div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>');
-        $(".qtybutton").on("click", function () {
-            var $button = $(this);
-            var oldValue = $button.parent().find("input").val();
-            if ($button.hasClass('inc')) {
-                var newVal = parseFloat(oldValue) + 1;
-            } else {
-                // Don't allow decrementing below zero
-                if (oldValue > 0) {
-                    var newVal = parseFloat(oldValue) - 1;
-                } else {
-                    newVal = 0;
+        $(document).ready(function () {
+            // Add increment and decrement buttons if they don't already exist
+            $(".cart-plus-minus").each(function () {
+                if ($(this).find(".qtybutton").length === 0) { // Check if buttons already exist
+                    $(this).append('<div class="dec qtybutton"><i class="fa fa-angle-down"></i></div><div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>');
                 }
-            }
-            $button.parent().find("input").val(newVal);
+            });
+
+            // Event handler for quantity buttons
+            $(".qtybutton").on("click", function () {
+                var $button = $(this);
+                var $input = $button.parent().find("input");
+                var oldValue = parseFloat($input.val());
+
+                if ($button.hasClass('inc')) {
+                    // Increment the value
+                    var newVal = oldValue + 1;
+                } else {
+                    // Decrement the value but ensure it does not go below 1
+                    var newVal = oldValue > 1 ? oldValue - 1 : 1;
+                }
+
+                $input.val(newVal);
+            });
         });
         /*----------------------------------------*/
 
@@ -454,19 +465,22 @@
                             backdrop: 'static',
                             keyboard: false
                         });
-                      //  $('#successModal').modal('show');
+                        //  $('#successModal').modal('show');
                     } else {
-                        alert('Có lỗi xảy ra: ' + data.message);
+                        $('#errorModal').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        });
                     }
                 })
                 .catch(error => {
                     alert('Có lỗi xảy ra: ' + error.message);
                 });
         }
-        function redirectToDetails() {
-            const idProduct = document.querySelector('input[name="idProduct"]').value;
-            window.location.href = `/Portal/Product/Details/${idProduct}`;
-        }
+            //function redirectToDetails() {
+            //    const idProduct = document.querySelector('input[name="idProduct"]').value;
+            //    window.location.href = `/Portal/Product/Details/${idProduct}`;
+            //}
 
     </script>
 }
